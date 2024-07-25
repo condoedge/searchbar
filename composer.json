@@ -1,0 +1,25 @@
+{
+    "name": "kompo/searchbar",
+    "description": "Authentication and teams to your kompo application",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kompo\\Searchbar\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.3|^8.0",
+        "laravel/framework": ">=5.6.0",
+        "kompo/kompo": "*",
+        "kompo/auth": "*"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Kompo\\Searchbar\\SearchbarServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
