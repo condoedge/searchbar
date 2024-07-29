@@ -1,5 +1,5 @@
 {
-    "name": "kompo/searchbar",
+    "name": "condoedge/searchbar",
     "description": "Authentication and teams to your kompo application",
     "license": "MIT",
     "autoload": {
