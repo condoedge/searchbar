@@ -17,7 +17,7 @@ class SearchbarServiceProvider extends ServiceProvider
             return (new (config('searchbar.store'))($params['key']))->injectContext($params['contextService']);
         });
 
-        // Enhanced in \App\Kompo\Helpers\searchbar.php 
+        // Enhanced in Helpers\searchbar.php 
         $this->app->singleton('search-service', function() {
             return new SearchService();
         });

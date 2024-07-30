@@ -62,11 +62,11 @@ trait SearchableModelUtils
 		}
 
 		/**
-		 * @var \App\Searchbar\Filterables\FilterableColumn\FilterableColumn $filterable
+		 * @var \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn $filterable
 		 */
 		$filterable = $this->filterable(self::getBaseFilterable());
 
-		if (!($filterable instanceof \App\Searchbar\Filterables\FilterableColumn\FilterableColumn)) {
+		if (!($filterable instanceof \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn)) {
 			throw new \Exception('The base filterable must be a FilterableColumn');
 		}
 

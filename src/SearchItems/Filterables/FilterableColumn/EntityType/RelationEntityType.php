@@ -2,6 +2,8 @@
 
 namespace Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\EntityType;
 
+use Kompo\Searchbar\Searchable\RelationSearchable;
+
 class RelationEntityType extends EntityType
 {
     protected $relation;
@@ -9,7 +11,7 @@ class RelationEntityType extends EntityType
 
     public function __construct($relation, string $baseQuery)
     {
-        if (!is_subclass_of($relation, 'Kompo\Searchbar\RelationSearchable')) {
+        if (!is_subclass_of($relation, RelationSearchable::class)) {
             throw new \Exception('Relation must implement RelationSearchable interface');
         }
 

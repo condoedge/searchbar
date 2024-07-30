@@ -5,7 +5,7 @@ namespace Kompo\Searchbar\SearchItems\Filterables\FilterableColumn;
 use Kompo\Searchbar\SearchItems\Filterables\AcceptFullTextSearch;
 use Kompo\Searchbar\SearchItems\Filterables\Filterable;
 use Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\EntityType\EntityType;
-use Kompo\Searchbar\Kompo\RuleForm\ColumnRuleForm;
+use Kompo\Searchbar\Components\RuleForm\ColumnRuleForm;
 
 class FilterableColumn extends Filterable
 {

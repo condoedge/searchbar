@@ -23,12 +23,12 @@ abstract class Rule extends SearchItem
         return $this->searchContextService->getStore()->getState();
     }
 
-    public function render($index)
+    public function render($index, $withDeleteButton = true)
     {
         return _Rows(
             _Flex(
                 $this->renderContent(),
-                _Link()->icon('trash')->selfPost('deleteRule', ['i' => $index])
+                !$withDeleteButton ? null : _Link()->icon('trash')->selfPost('deleteRule', ['i' => $index])
                     ->refresh('navbar-search'),
             )->class('gap-4'),
         )->asPill()->class('bg-level4');

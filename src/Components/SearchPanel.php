@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Kompo\Menus;
+namespace Kompo\Searchbar\Components;
 
 use Kompo\Form;
 use Kompo\Searchbar\Components\CustomFiltersModal;

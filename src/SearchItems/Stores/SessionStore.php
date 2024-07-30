@@ -1,4 +1,5 @@
 <?php
+
 namespace Kompo\Searchbar\SearchItems\Stores;
 
 class SessionStore  extends SearchStore

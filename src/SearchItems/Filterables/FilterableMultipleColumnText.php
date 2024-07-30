@@ -5,7 +5,7 @@ namespace Kompo\Searchbar\SearchItems\Filterables;
 use Kompo\Searchbar\SearchItems\Filterables\Filterable;
 use Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumnTypeEnum;
 use Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\OperatorEnum;
-use Kompo\Searchbar\Kompo\RuleForm\MultipleColumnTextRuleForm;
+use Kompo\Searchbar\Components\RuleForm\MultipleColumnTextRuleForm;
 use Kompo\Searchbar\SearchItems\Rules\MultipleColumnTextRule;
 
 class FilterableMultipleColumnText extends Filterable

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Kompo\Search;
+namespace Kompo\Searchbar\Components;
 
 use Kompo\Searchbar\Components\SearchKomponentUtils;
 use Kompo\Searchbar\Components\SearchResults;

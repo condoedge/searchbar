@@ -3,7 +3,7 @@
 namespace Kompo\Searchbar\SearchItems\Filterables;
 
 use Kompo\Searchbar\SearchItems\Filterables\Filterable;
-use Kompo\Searchbar\Kompo\RuleForm\ScopeSelectRuleForm;
+use Kompo\Searchbar\Components\RuleForm\ScopeSelectRuleForm;
 use Kompo\Searchbar\SearchItems\Rules\ScopeRule;
 
 class FilterableSelectScope extends Filterable

@@ -2,7 +2,7 @@
 
 namespace Kompo\Searchbar\SearchItems\Filterables;
 
-use Kompo\Searchbar\Kompo\RuleForm\AbstractRuleForm;
+use Kompo\Searchbar\Components\RuleForm\AbstractRuleForm;
 use Kompo\Searchbar\SearchItems\SearchItem;
 
 abstract class Filterable extends SearchItem

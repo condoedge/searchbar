@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Kompo\Menus;
+namespace Kompo\Searchbar\Components;
 
 use Kompo\Form;
 use Kompo\Searchbar\Components\SearchKomponentUtils;
@@ -34,7 +34,7 @@ class NavbarSearch extends Form
                     ->inputClass('py-2')
                     ->noAutocomplete()
                     ->onFocus(fn($e) => $e->selfGet('openSearch')->refresh('search-panel'))
-                    ->onInput(fn($e) => $e->run($loadingJs) && $e->selfPost('setSearch')->run($loadingJs)->refresh('search-panel')),,
+                    ->onInput(fn($e) => $e->run($loadingJs) && $e->selfPost('setSearch')->run($loadingJs)->refresh('search-panel')),
             )->class('w-full flex-row items-center focus-within:border border-greenmain rounded-lg'),
 
             _Rows(

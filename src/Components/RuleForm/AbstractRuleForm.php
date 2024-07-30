@@ -3,7 +3,7 @@
 namespace Kompo\Searchbar\Components\RuleForm;
 
 use Kompo\Searchbar\SearchItems\Filterables\Filterable;
-use Kompo\Searchbar\Components\SearchKomponentUtils
+use Kompo\Searchbar\Components\SearchKomponentUtils;
 use Kompo\Searchbar\SearchItems\Rules\FilterableRule;
 use Kompo\Auth\Common\Modal;
 

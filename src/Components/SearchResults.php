@@ -2,9 +2,9 @@
 
 namespace Kompo\Searchbar\Components;
 
-use Kompo\Table;
+use Kompo\Form;
 
-class SearchResults extends Table
+class SearchResults extends Form
 {
     const SEARCH_ID = 'searchTable';
     protected $state;
@@ -19,22 +19,18 @@ class SearchResults extends Table
         $this->state = stateStore(self::SEARCH_ID)->getState();
     }
 
-    public function top()
-    {
-        return _Html('filter.search-results')->class('text-2xl font-semibold mb-4');
-    }
-
-    public function query()
-    {
-        return !$this->state ? null : searchService(self::SEARCH_ID)->getQuery()?->take($this->perPage);
-    }
-
     public function render()
     {
         $searchableI = $this->state->getSearchableInstance();
 
         return _Rows(
-            _Html('filter.search-results')->class('text-2xl font-semibold mb-4'),
+            _Html(__(
+                'translate.with-values.filter.search-results', 
+                ['entity' => $this->state->getSearchableInstance()?->searchableName()]
+            ))->class('text-2xl font-semibold mb-4'),
+
+            _Flex($this->state->getRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-3 mb-3'),
+
             $searchableI->getTableClassInstance([
                 'storeKey' => $this->storeKey,
             ]),
