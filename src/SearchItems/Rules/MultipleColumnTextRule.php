@@ -47,7 +47,7 @@ class MultipleColumnTextRule extends FilterableRule
             'columns' => collect($this->getFilterable()->getColumnsOptions())->filter(function($column, $i) {
                 return in_array($i, $this->columns);
             })->map(fn($col) => _($col))->implode(', '),
-            'operator' => $this->operator->label(),
+            'operator' => __($this->operator->label()),
             'value' => $this->value,
         ]));
     }

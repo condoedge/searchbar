@@ -2,6 +2,7 @@
 	"filter.add-rule": "Add rule",
 	"filter.between": "Between",
 	"filter.contains": "Contains",
+	"filter.contains.with-value": "Contains: :value",
 	"filter.different": "Different",
 	"filter.does-not-contain": "Does not contain",
 	"filter.equals-to": "Equals to",

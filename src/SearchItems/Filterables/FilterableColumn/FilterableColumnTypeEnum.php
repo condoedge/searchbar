@@ -73,7 +73,7 @@ enum FilterableColumnTypeEnum: int
     public function getOperatorOptionsParsed()
     {
         return collect($this->operatorOptions())->mapWithKeys(
-            fn($option) => [$option->value => $option->label()]
+            fn($option) => [$option->value => __($option->label())]
         )->toArray();
     }
 
