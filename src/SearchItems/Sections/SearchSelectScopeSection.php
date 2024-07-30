@@ -3,7 +3,7 @@
 namespace Kompo\Searchbar\SearchItems\Sections;
 
 use Kompo\Searchbar\SearchItems\Filterables\FilterableSelectScope;
-use Kompo\Searchbar\Sections\SearchSection;
+use Kompo\Searchbar\SearchItems\Sections\SearchSection;
 
 class SearchSelectScopeSection extends SearchSection
 {
