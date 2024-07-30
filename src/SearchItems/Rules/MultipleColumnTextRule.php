@@ -43,7 +43,7 @@ class MultipleColumnTextRule extends FilterableRule
 
     public function renderContent()
     {
-        return _Html(__('translate.multiple-search', [
+        return _Html(__('translate.with-values.multiple-search', [
             'columns' => collect($this->getFilterable()->getColumnsOptions())->filter(function($column, $i) {
                 return in_array($i, $this->columns);
             })->map(fn($col) => _($col))->implode(', '),
