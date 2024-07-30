@@ -53,12 +53,9 @@ enum OperatorEnum: int
     public function renderRule($rule)
     {
         return match ($this) {
-            default => _Flex(
-                _Html($rule->getFilterable()->getName()),
-                _Html(__($this->label() . '.with-value', [
-                    'value' => $rule->visualValue(),
-                ])),
-            )->class('gap-4'),
+            default => _Html(__($this->label() . '.with-value', [
+                'value' => $rule->visualValue(),
+            ])),
         };
     }
 

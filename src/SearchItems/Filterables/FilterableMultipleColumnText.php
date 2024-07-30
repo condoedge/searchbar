@@ -72,7 +72,7 @@ class FilterableMultipleColumnText extends Filterable
 
     public function getSelectColumnOptions()
     {
-        return _MultiSelect()->options(collect($this->columnsOptions)->mapWithKeys(fn($column, $i) => [$i => $column])->toArray());
+        return _MultiSelect()->options(collect($this->columnsOptions)->mapWithKeys(fn($column, $i) => [$i => __($column)])->toArray());
     }
 
     public function getRuleInstance($params)

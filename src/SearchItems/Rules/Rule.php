@@ -28,7 +28,7 @@ abstract class Rule extends SearchItem
         return _Rows(
             _Flex(
                 $this->renderContent(),
-                !$withDeleteButton ? null : _Link()->icon('trash')->selfPost('deleteRule', ['i' => $index])
+                !$withDeleteButton ? null : _Link()->icon('x')->selfPost('deleteRule', ['i' => $index])
                     ->refresh('navbar-search'),
             )->class('gap-4'),
         )->asPill()->class('bg-level4');

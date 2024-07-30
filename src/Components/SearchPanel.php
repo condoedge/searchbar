@@ -35,7 +35,7 @@ class SearchPanel extends Form
             _Flex(
                 $searchableI ? $this->sections($searchableI) : _Rows(
                     searchService()->optionsSearchables()
-                )->class('p-4'),
+                )->class('py-4 px-2'),
 
                 _Rows(
                     _FlexEnd(
@@ -45,7 +45,7 @@ class SearchPanel extends Form
                     _Rows(
                         $this->instanciateSearchKomponent(EnhancedSearchbar::class),
                     )->class('items-start pr-10')
-                )->class('flex-1 overflow-y-auto mini-scroll !pb-2 relative pl-4 py-4')->style('height:380px')
+                )->class('flex-1 overflow-y-auto mini-scroll !pb-2 relative py-4')->style('height:380px')
             )->alignStart()
         )->class('w-screen md:w-full bg-white rounded-b-2xl border border-gray-200 shadow-xl border-b border-l border-r border-greenmain px-2 py-2');
     }

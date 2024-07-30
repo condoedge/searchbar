@@ -48,4 +48,16 @@ abstract class FilterableRule extends Rule
 
         return $this;
     }
+
+    public function render($index, $withDeleteButton = true)
+    {
+        return _RulePill(
+            $this->getFilterable()?->getFilterName(),
+            _Flex(
+                $this->renderContent(),
+                !$withDeleteButton ? null : _Link()->icon('x')->selfPost('deleteRule', ['i' => $index])
+                    ->refresh('navbar-search'),
+            )->class('gap-2'),
+        );
+    }
 }

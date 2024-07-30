@@ -24,9 +24,9 @@ class NavbarSearch extends Form
             _Rows(
                 _Sax('search-normal-1', 24)->class('text-greenmain mt-0 pt-0 px-2'),
                 !$this->state->getSearchableInstance()?->searchableName() ? null : _Flex(
-                    _Html($this->state->getSearchableInstance()?->searchableName())->asPill()->class('bg-level4'),
+                    _RulePill($this->state->getSearchableInstance()?->searchableName(), icon: 'filter'),
                     ...$this->state->getRules()->map(fn($rule, $i) => $rule->render($i)) 
-                )->class('gap-4 px-2 mr-3'),
+                )->class('gap-2 px-2'),
                 _Input()->name('search')->class('navbar-search-input')
                     ->default($this->state->getSearch())
                     ->placeholder('crm.search')

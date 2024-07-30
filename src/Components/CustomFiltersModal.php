@@ -86,7 +86,7 @@ class CustomFiltersModal extends Modal
             }))->class('mb-4 gap-2'),
 
             _Panel()->id('rule-details-form'),
-        )->class('p-4');
+        )->class('py-4 px-8 max-w-xs w-screen overflow-y-auto mini-scroll')->style('max-height: 95vh');
     }
 
     public function getRuleForm($key)

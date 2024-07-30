@@ -36,7 +36,7 @@ class FilterableScope extends Filterable
     public function formRow($rule, $index): array
     {
         return [
-            _Html($this->getName())->col('!pr-0 col-md-3'),
+            _Html($this->getFilterName())->col('!pr-0 col-md-3'),
             _Html()->col('col-md-3'),
             _Flex(
                 $this->getInputs()->map(fn($input, $i) => $input
