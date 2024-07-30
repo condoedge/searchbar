@@ -30,6 +30,8 @@ class SearchbarServiceProvider extends ServiceProvider
         $this->loadPublishing();
 
         $this->loadHelpers();
+
+        $this->loadJSONTranslationsFrom(__DIR__.'/../resources/lang');
     }
 
     protected function loadHelpers()
