@@ -11,7 +11,7 @@ abstract class AbstractRuleForm extends Modal
 {
     use SearchKomponentUtils;
 
-    protected $_Title = 'translate.add-rule';
+    protected $_Title = 'filter.add-rule';
     protected $key;
     
     public function created()

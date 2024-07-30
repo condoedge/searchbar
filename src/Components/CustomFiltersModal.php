@@ -80,7 +80,7 @@ class CustomFiltersModal extends Modal
         $cols = collect($searchableI::filterables());
 
         return _Rows(
-            _Html('translate.add-rule')->class('text-2xl font-semibold mb-4'),
+            _Html('filter.add-rule')->class('text-2xl font-semibold mb-4'),
             _Rows($cols->map(function($col, $key) {
                 return _Link($col->getName())->selfGet('getRuleForm', ['i' => $key])->inPanel('rule-details-form');
             }))->class('mb-4 gap-2'),

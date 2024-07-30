@@ -1,0 +1,16 @@
+{
+	"filter.add-rule": "Ajouter un filtre",
+	"filter.between": "Entre",
+	"filter.contains": "Contient",
+	"filter.different": "Différent",
+	"filter.does-not-contain": "Ne contient pas",
+	"filter.equals-to": "Égal à",
+	"filter.in": "Est dans",
+	"filter.less-than": "Moins de",
+	"filter.less-than-or-equal": "Inférieur ou égal",
+	"filter.more-than": "Plus de",
+	"filter.more-than-or-equal": "Supérieur ou égal à",
+	"filter.not-in": "N'est pas dans",
+	"filter.with-values.multiple-search": ":operator: :value ",
+	"navbar.see-all": "Ouvrir dans une liste"
+}

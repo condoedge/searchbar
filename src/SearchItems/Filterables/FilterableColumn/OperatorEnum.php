@@ -26,19 +26,19 @@ enum OperatorEnum: int
     public function label()
     {
         return match ($this) {
-            self::EQUALS_TO => 'translate.equal-to',
-            self::DIFFERENT => 'translate.different',
-            self::IN => 'translate.in',
-            self::NOT_IN => 'translate.not-in',
+            self::EQUALS_TO => 'filter.equals-to',
+            self::DIFFERENT => 'filter.different',
+            self::IN => 'filter.in',
+            self::NOT_IN => 'filter.not-in',
 
-            self::CONTAINS => 'translate.contains',
-            self::DOES_NOT_CONTAIN => 'translate.does-not-contain',
+            self::CONTAINS => 'filter.contains',
+            self::DOES_NOT_CONTAIN => 'filter.does-not-contain',
 
-            self::MORE_THAN => 'translate.more-than',
-            self::MORE_THAN_OR_EQUAL => 'translate.more-than-or-equal',
-            self::LESS_THAN => 'translate.less-than',
-            self::LESS_THAN_OR_EQUAL => 'translate.less-than-or-equal',
-            self::BETWEEN => 'translate.between',
+            self::MORE_THAN => 'filter.more-than',
+            self::MORE_THAN_OR_EQUAL => 'filter.more-than-or-equal',
+            self::LESS_THAN => 'filter.less-than',
+            self::LESS_THAN_OR_EQUAL => 'filter.less-than-or-equal',
+            self::BETWEEN => 'filter.between',
         };
     }
 
