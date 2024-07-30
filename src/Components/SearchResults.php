@@ -25,7 +25,7 @@ class SearchResults extends Form
 
         return _Rows(
             _Html(__(
-                'translate.with-values.filter.search-results', 
+                'filter.search-results.with-values', 
                 ['entity' => $this->state->getSearchableInstance()?->searchableName()]
             ))->class('text-2xl font-semibold mb-4'),
 
