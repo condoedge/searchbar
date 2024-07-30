@@ -10,11 +10,15 @@ class CustomFiltersModal extends Modal
     use SearchKomponentUtils;
 
     public $id = 'custom-filters-modal';
-    protected $_Title = 'translate.filters';
+    protected $_Title = 'filter.filters';
+    public $class = 'max-w-2xl w-screen';
 
     public function headerButtons()
 	{
-        return _Button('translate.new-rule')->selfGet('addRuleModal')->inModal();
+        return _FlexEnd(
+            _ButtonOutlined('filter.reset-filter')->selfPost('getBack')->refresh()->refresh('navbar-search'),
+            _Button('filter.new-rule')->selfGet('addRuleModal')->inModal(),
+        )->class('gap-4');
 	}
 
     public function body()
@@ -23,36 +27,38 @@ class CustomFiltersModal extends Modal
 
         return _Rows(
             _Rows(
-                !$this->state->getSearchableEntity() ? _Html('translate.no-rules')->class('text-center mb-2') : null,
                 _Rows(
-                    _FlexBetween(
-                        _Html('translate.searchable'),
-
+                    $this->rowRule(
+                        fn($deleteButton) => $deleteButton->selfPost('getBack')->refresh()->refresh('navbar-search'),
+                        _Html('filter.search-in')->col('!pr-0 col-md-3'),
+                        _Html()->col('col-md-3'),
                         _Select()->name('searchableEntity')->options(searchService()->optionsSearchables())
                             ->default($this->state->getSearchableEntity())
                             ->selfPost('selectSearchableEntity')->refresh('navbar-search')
-                            ->class('!mb-0'),
-                        
-                    )->class('items-center gap-3 w-full'),
+                            ->class('!mb-0 w-full')
+                            ->col('col-md-6'),
+                    ),
                 )->class('mb-4'),
                 _Rows($this->state->getFilterableRules()->map(function($r, $i) use ($typeInstance) {
                     $colInfo = $r->getFilterable($typeInstance);
 
-                    return _Rows(
-                        _FlexBetween(
-                            _FlexBetween(
-                                _Html($colInfo->getFilterName()),
-
-                                $colInfo->formRow($r, $i),
-                                
-                            )->class('items-center gap-3 w-full'),
-                            _DeleteLink()->icon(_Sax('trash', 22))->class("text-gray-700 hover:text-danger")
-                                ->selfPost('deleteRule', ['i' => $i])->refresh()->refresh('navbar-search'),
-                        )->class('gap-6'),
-                    );
+                    return $this->rowRule(function($deleteButton) use ($i) {
+                        return $deleteButton->selfPost('deleteRule', ['i' => $i])->refresh()->refresh('navbar-search');
+                    }, ...$colInfo->formRow($r, $i));
                 }))->class('gap-y-4'),
             ),
         );
+    }
+
+    protected function rowRule($deleteButtonCallback, ...$inputs)
+    {
+        return _Flex(
+            _Columns(
+                ...$inputs,
+            )->class('items-center w-full'),
+
+            $deleteButtonCallback(_DeleteLink()->icon(_Sax('trash', 22))->col('col-md-1')->class("text-gray-700 hover:text-danger"))
+        )->class('gap-3');
     }
 
     public function footer()

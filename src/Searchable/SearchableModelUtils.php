@@ -2,13 +2,13 @@
 
 namespace Kompo\Searchbar\Searchable;
 
+use Kompo\Searchbar\InjectableContextTrait;
 use Kompo\Searchbar\SearchItems\Filterables\Filterable;
-use Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\OperatorEnum;
 
 trait SearchableModelUtils
 {
 	use InjectableContextTrait;
-	
+
 	public static function getBaseFilterable()
 	{
 		if (defined(self::class . '::BASE_FILTERABLE')) {
@@ -18,11 +18,21 @@ trait SearchableModelUtils
 		return 'name_filter';
 	}
 
+	public function getTableClass()
+	{
+		return config('searchbar.base_result_table_namespace') . '\\Search' . class_basename(self::class) . 'Table';
+	}
+
+	public final function getTableClassInstance($parameters = [])
+	{
+		return new ($this->getTableClass())($parameters);
+	}
+
 	public static function searchableName()
 	{
-		return 'translate.' . strtolower(class_basename(self::class));
+		return __('filter.' . strtolower(class_basename(self::class)));
 	}
-	
+
     public function filterable($key): Filterable
 	{
 		return $this->decoratedFilterables()[$key];
@@ -52,11 +62,11 @@ trait SearchableModelUtils
 		}
 
 		/**
-		 * @var \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn $filterable
+		 * @var \App\Searchbar\Filterables\FilterableColumn\FilterableColumn $filterable
 		 */
 		$filterable = $this->filterable(self::getBaseFilterable());
 
-		if (!($filterable instanceof \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn)) {
+		if (!($filterable instanceof \App\Searchbar\Filterables\FilterableColumn\FilterableColumn)) {
 			throw new \Exception('The base filterable must be a FilterableColumn');
 		}
 
@@ -68,5 +78,10 @@ trait SearchableModelUtils
 	public static function baseSearchQuery()
 	{
 		return self::query();
+	}
+
+	public function getEagerRelationsKeys()
+	{
+		return [];
 	}
 }

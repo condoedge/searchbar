@@ -6,7 +6,7 @@ use Kompo\Searchbar\SearchService;
 use Kompo\Searchbar\SearchItems\Stores\SearchStore;
 use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
+class SearchbarServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.

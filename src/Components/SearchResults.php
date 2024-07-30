@@ -6,33 +6,38 @@ use Kompo\Table;
 
 class SearchResults extends Table
 {
+    const SEARCH_ID = 'searchTable';
     protected $state;
-    protected $searchId;
+    protected $storeKey;
 
     public function created()
     {
-        $this->searchId = 'searchTable' . time();
+        $this->storeKey = self::SEARCH_ID . time();
 
-        searchService('searchTable')->setStoreKey($this->searchId);
-        stateStore('searchTable')->setFromRequest();
-        $this->state = stateStore('searchTable')->getState();
+        searchService(self::SEARCH_ID)->setStoreKey($this->storeKey);
+        stateStore(self::SEARCH_ID)->setFromRequest();
+        $this->state = stateStore(self::SEARCH_ID)->getState();
     }
 
     public function top()
     {
-        return _Html('translate.search-results')->class('text-2xl font-semibold mb-4');
+        return _Html('filter.search-results')->class('text-2xl font-semibold mb-4');
     }
 
     public function query()
     {
-        return !$this->state ? null : searchService('searchTable')->getQuery()?->take($this->perPage);
+        return !$this->state ? null : searchService(self::SEARCH_ID)->getQuery()?->take($this->perPage);
     }
 
-    public function render($item)
+    public function render()
     {
         $searchableI = $this->state->getSearchableInstance();
-        $search = $this->state->getSearch();
 
-        return $searchableI->searchElement($item, $search)->class('mb-3');
+        return _Rows(
+            _Html('filter.search-results')->class('text-2xl font-semibold mb-4'),
+            $searchableI->getTableClassInstance([
+                'storeKey' => $this->storeKey,
+            ]),
+        );
     }
 }

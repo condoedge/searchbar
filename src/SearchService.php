@@ -78,7 +78,7 @@ class SearchService
 
         return $rules->reduce(function($query, $rule) {
             return $rule->query($query);
-        }, $state->getSearchableEntity()::baseSearchQuery());
+        }, $state->getSearchableEntity()::baseSearchQuery())->with($state->getSearchableInstance()->getEagerRelationsKeys());
     }
 
     public function getCountSpecificType($type)

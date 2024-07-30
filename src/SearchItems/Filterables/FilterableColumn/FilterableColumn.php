@@ -28,23 +28,24 @@ class FilterableColumn extends Filterable
         $this->entityType = $entityType;
     }
 
-    public function formRow($rule, $index)
+    public function formRow($rule, $index): array
     {
-        return _Flex(
+        return [
+            _Html($this->getName())->col('!pr-0 col-md-3'),
             _Select()->class('!mb-0')->options($this->getInputType()->getOperatorOptionsParsed())
             ->name('operator')->default($rule->getOperator())
             ->onChange(fn($e) => $e->selfPost('executeCustomFilterableFunction', ['i' => $index, 'function' => 'setRuleOperator'])->refresh('navbar-search') &&
                 $e->selfGet('executeCustomFilterableFunction', ['i' => $index, 'function' =>'setValueInput'])
                 ->inPanel('input-panel' . $index)
             )
-            ->class('!mb-0'),
+            ->class('!mb-0')->col('!p-0 col-md-3'),
 
             _Panel(
                 $this->getInput($rule->getOperator())
                     ->selfPost('setRuleValue', ['i' => $index])
                     ->refresh('navbar-search')->class('!mb-0')->value($rule->getValue()),
-            )->id('input-panel' . $index),
-        )->class('gap-4');
+            )->id('input-panel' . $index)->col('col-md-6'),
+        ];
     }
 
     protected function setRuleOperator($i)

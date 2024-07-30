@@ -15,6 +15,13 @@ class SearchPanel extends Form
 
     public $id = 'search-panel';
 
+    public function created()
+    {
+        $this->setSearchProps();
+
+        $this->onLoad(fn($e) => $e->run('() => {setTimeout(() => searchLoadingOff("search-panel-loading' . $this->serviceKey . '"), 100)}'));
+    }
+
     public function render()
     {
         if (!$this->state->isOpen()) {
@@ -23,22 +30,24 @@ class SearchPanel extends Form
 
         $searchableI = $this->state->getSearchableInstance();
 
-        return _Flex(
-            $searchableI ? $this->sections($searchableI) : _Rows(
-                searchService()->optionsSearchables()
-            )->class('p-4'),
-
-            _Rows(
-                _FlexEnd(
-                    _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0')->selfPost('closeSearch')->refresh(),
-                ),
+        return _Rows(
+            _Html('loading...')->class('text-lg p-4')->id('search-panel-loading' . $this->serviceKey)->class('hidden'),
+            _Flex(
+                $searchableI ? $this->sections($searchableI) : _Rows(
+                    searchService()->optionsSearchables()
+                )->class('p-4'),
 
                 _Rows(
-                    $this->instanciateSearchKomponent(EnhancedSearchbar::class),
-                )->class('items-start pr-10')
-            )->class('flex-1 overflow-y-auto mini-scroll !pb-2 relative pl-4 py-4')->style('height:380px')
-        )->alignStart()
-        ->class('w-screen md:w-full bg-white rounded-b-2xl border border-gray-200 shadow-xl border-b border-l border-r border-greenmain px-2 py-2');
+                    _FlexEnd(
+                        _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0')->selfPost('closeSearch')->refresh(),
+                    ),
+
+                    _Rows(
+                        $this->instanciateSearchKomponent(EnhancedSearchbar::class),
+                    )->class('items-start pr-10')
+                )->class('flex-1 overflow-y-auto mini-scroll !pb-2 relative pl-4 py-4')->style('height:380px')
+            )->alignStart()
+        )->class('w-screen md:w-full bg-white rounded-b-2xl border border-gray-200 shadow-xl border-b border-l border-r border-greenmain px-2 py-2');
     }
 
     protected function sections($searchableI)

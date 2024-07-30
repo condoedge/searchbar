@@ -33,14 +33,18 @@ class FilterableScope extends Filterable
         });
     }
 
-    public function formRow($rule, $index)
+    public function formRow($rule, $index): array
     {
-        return _Flex(
-            $this->getInputs()->map(fn($input, $i) => $input
+        return [
+            _Html($this->getName())->col('!pr-0 col-md-3'),
+            _Html()->col('col-md-3'),
+            _Flex(
+                $this->getInputs()->map(fn($input, $i) => $input
                 ->default($rule->getParams()[$i])
                 ->selfPost('setRuleParam', ['i' => $index])->withAllFormValues()->refresh('navbar-search')
-            )
-        )->class('gap-3');
+                )
+            )->col('col-md-6 flex-wrap'),
+        ];
     }
 
     public function getScope()

@@ -18,4 +18,9 @@ interface Searchable
     
     public static function sections();
     public function decoratedSections();
+
+    public function getTableClass();
+    public function getTableClassInstance($parameters = []);
+
+    public function getEagerRelationsKeys();
 }
