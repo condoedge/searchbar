@@ -19,7 +19,7 @@ class EnhancedSearchbar extends Query
 
     public function top()
     {
-        return $this->searchService->getQuery()?->count() > $this->perPage ? _LinkButton('navbar.see-all')->href(
+        return $this->searchService->getQuery()?->count() ? _LinkButton('navbar.see-all')->href(
             'search.results', $this->state->toArray(),
         )->class('mb-4')->inNewTab() : null;
     }

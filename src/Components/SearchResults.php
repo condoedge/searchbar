@@ -27,7 +27,7 @@ class SearchResults extends Form
             _Html(__(
                 'filter.search-results.with-values', 
                 ['entity' => $this->state->getSearchableInstance()?->searchableName()]
-            ))->class('text-2xl font-semibold mb-4'),
+            ))->class('text-2xl font-semibold'),
 
             _Flex($this->state->getRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-3 mb-3'),
 

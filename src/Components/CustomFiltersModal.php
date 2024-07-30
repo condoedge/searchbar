@@ -32,7 +32,9 @@ class CustomFiltersModal extends Modal
                         fn($deleteButton) => $deleteButton->selfPost('getBack')->refresh()->refresh('navbar-search'),
                         _Html('filter.search-in')->col('!pr-0 col-md-3'),
                         _Html()->col('col-md-3'),
-                        _Select()->name('searchableEntity')->options(searchService()->optionsSearchables())
+                        _Select()->name('searchableEntity')->options(searchService()->getSearchables()->mapWithKeys(fn($searchable) =>
+                            [$searchable => $searchable::searchableName()]
+                        ))
                             ->default($this->state->getSearchableEntity())
                             ->selfPost('selectSearchableEntity')->refresh('navbar-search')
                             ->class('!mb-0 w-full')

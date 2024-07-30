@@ -2,13 +2,16 @@
 
 namespace Kompo\Searchbar\Components;
 
+use Kompo\Auth\Exports\TableExportableToExcel;
 use Kompo\Searchbar\Components\SearchKomponentUtils;
 use Kompo\Searchbar\Components\SearchResults;
-use Kompo\Table;
 
-class AbstractResultsTable extends Table
+class AbstractResultsTable extends TableExportableToExcel
 {
+        
     use SearchKomponentUtils;
+
+    protected $filename = 'translate.search-results';
 
     public $class = 'pb-8';
     public $itemsWrapperClass = 'resultTable pb-2';
@@ -18,5 +21,13 @@ class AbstractResultsTable extends Table
     public function query()
     {
         return !$this->state ? null : searchService($this->serviceKey)->getQuery()?->take($this->perPage);
+    }
+
+    public function top()
+    {
+        return _FlexBetween(
+            _Button('translate.grouped-actions'),
+            _ExcelExportButton()->class('!mb-0 mt-3'),
+        )->class('mb-4');
     }
 }
