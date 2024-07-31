@@ -25,4 +25,9 @@ class SelectEntityType extends EntityType
     {
         return $this->options[$value];
     }
+
+    public function getLabel($value)
+    {
+        return $this->from($value);
+    }
 }

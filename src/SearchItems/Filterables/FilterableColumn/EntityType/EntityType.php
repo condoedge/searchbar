@@ -7,6 +7,7 @@ abstract class EntityType extends SearchItem
 {
     abstract public function optionsWithLabels();
     abstract public function from($value);
+    abstract public function getLabel($value);
 
     abstract public function getValue();
 }
