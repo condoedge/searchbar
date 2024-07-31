@@ -31,6 +31,13 @@ abstract class SearchStore extends SearchItem
         $this->storeState($state);
     }
 
+    public function setFromCollection($collection)
+    {
+        $state = $this->getFromStore(fn($key) => $collection->get($key));
+
+        $this->storeState($state);
+    }
+
     protected function getFromStore($store)
     {
         $state = new SearchState();
@@ -51,5 +58,10 @@ abstract class SearchStore extends SearchItem
             ->setSearchableEntity('');
 
         return $state;
+    }
+
+    protected function getKey()
+    {
+        return 'searchState.' . $this->key;
     }
 }

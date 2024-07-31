@@ -27,8 +27,6 @@ class ColumnRuleForm extends AbstractRuleForm
         $colSpec = $this->searchableInstance->filterable($this->key);
 
         return _Rows(
-            _Html($colSpec->getName()),
-
             _Select()->name('operator')->options($colSpec->getInputType()->getOperatorOptionsParsed())
                 ->selfGet('setValueInput')->inPanel('input-panel')->default($colSpec->getInputType()->defaultOperator()),
 
@@ -37,7 +35,7 @@ class ColumnRuleForm extends AbstractRuleForm
             )->id('input-panel'),
 
             _FlexEnd(
-                _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh('navbar-search')->refresh('custom-filters-modal')->closeModal()),
+                _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh('navbar-search')->refresh('custom-filters-modal')->closeModal()->closeModal()),
             ),
         );
     }

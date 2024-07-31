@@ -32,21 +32,28 @@ class SearchPanel extends Form
 
         return _Rows(
             _Html('loading...')->class('text-lg p-4')->id('search-panel-loading' . $this->serviceKey)->class('hidden'),
-            _Flex(
-                $searchableI ? $this->sections($searchableI) : _Rows(
-                    searchService()->optionsSearchables()
-                )->class('py-4 px-2'),
+            _Rows(
+                _FlexEnd(
+                    _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0 right-5 z-10')->selfPost('closeSearch')->refresh(),
+                ),
+                _Columns(
+                    _Rows(
+                        $searchableI ? $this->sections($searchableI) : _Rows(
+                            searchService()->optionsSearchables()
+                        )->class('py-4'),
+                    )->class('px-2')->col('col-md-3'),
 
-                _Rows(
-                    _FlexEnd(
-                        _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0')->selfPost('closeSearch')->refresh(),
-                    ),
-
+    
                     _Rows(
                         $this->instanciateSearchKomponent(EnhancedSearchbar::class),
-                    )->class('items-start pr-10')
-                )->class('flex-1 overflow-y-auto mini-scroll !pb-2 relative py-4')->style('height:380px')
-            )->alignStart()
+                    )->class('items-start pr-10 !pb-2 py-4 overflow-y-auto mini-scroll')->col('col-md-6')->style('height:380px'),
+                
+                    _Rows(
+                        $this->instanciateSearchKomponent(FavoritesSearches::class),
+                    )->col('col-md-3 pt-6'),
+                ),
+            )->class('relative'),
+
         )->class('w-screen md:w-full bg-white rounded-b-2xl border border-gray-200 shadow-xl border-b border-l border-r border-greenmain px-2 py-2');
     }
 

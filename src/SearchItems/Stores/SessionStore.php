@@ -22,9 +22,4 @@ class SessionStore  extends SearchStore
     {
         session()->forget($this->getKey());
     }
-    
-    protected function getKey()
-    {
-        return 'searchState.' . $this->key;
-    }
 }

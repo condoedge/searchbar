@@ -22,8 +22,6 @@ class ScopeRuleForm extends AbstractRuleForm
         $colSpec = $this->searchableInstance->filterable($this->key);
 
         return _Rows(
-            _Html($colSpec->getName()),
-
             _Rows(
                 $colSpec->getInputs()
             ),

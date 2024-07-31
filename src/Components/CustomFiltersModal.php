@@ -2,7 +2,9 @@
 
 namespace Kompo\Searchbar\Components;
 
+use Kompo\Auth\Models\Model;
 use Kompo\Modal;
+use Kompo\Searchbar\Components\RuleForm\BaseRuleForm;
 
 class CustomFiltersModal extends Modal
 {
@@ -77,22 +79,6 @@ class CustomFiltersModal extends Modal
 
     public function addRuleModal()
     {
-        $searchableI = $this->state->getSearchableInstance();
-
-        $cols = collect($searchableI::filterables());
-
-        return _Rows(
-            _Html('filter.add-rule')->class('text-2xl font-semibold mb-4'),
-            _Rows($cols->map(function($col, $key) {
-                return _Link($col->getName())->selfGet('getRuleForm', ['i' => $key])->inPanel('rule-details-form');
-            }))->class('mb-4 gap-2'),
-
-            _Panel()->id('rule-details-form'),
-        )->class('py-4 px-8 max-w-xs w-screen overflow-y-auto mini-scroll')->style('max-height: 95vh');
-    }
-
-    public function getRuleForm($key)
-    {
-        return $this->searchableInstance->filterable($key)->form($key, searchService()->getStoreKey());
+        return $this->instanciateSearchKomponent(BaseRuleForm::class);
     }
 }
