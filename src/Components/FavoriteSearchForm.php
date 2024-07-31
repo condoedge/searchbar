@@ -14,7 +14,7 @@ class FavoriteSearchForm extends Modal
 
     public function handle()
     {
-        $dbStore = DbStore::create(request('name'), $this->searchService);
+        $dbStore = DbStore::createWithContext($this->searchService, request('name'));
 
         $dbStore->storeState($this->state);
     }

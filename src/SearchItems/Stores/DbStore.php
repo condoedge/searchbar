@@ -6,15 +6,6 @@ use Kompo\Searchbar\Facades\SearchStateModel;
 
 class DbStore  extends SearchStore
 {
-    private function __construct($key) { 
-        $this->key = $key;
-    }
-
-    public static function create($key, $searchContext)
-    {
-        return (new static($key))->injectContext($searchContext);
-    }
-
     protected function retrieveState(): ?SearchState
     {
         $searchStateModel = SearchStateModel::find($this->key);

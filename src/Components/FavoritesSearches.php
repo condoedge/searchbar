@@ -46,13 +46,13 @@ class FavoritesSearches extends Query
 
     public function deleteFavorite()
     {
-        $store = DbStore::create(request('id'), $this->searchService);
+        $store = DbStore::createWithContext($this->searchService, request('id'));
         $store->clearState();
     }
 
     public function loadFavorite()
     {
-        $store = DbStore::create(request('id'), $this->searchService);
+        $store = DbStore::createWithContext($this->searchService, request('id'));
         $state = $store->getState();
         $state->setOpen(true);
 
