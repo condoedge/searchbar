@@ -67,7 +67,7 @@ class SearchState extends SearchItem
             return null;
         }
 
-        return (new $this->searchableEntity)->injectContext($this->searchContextService);
+        return $this->searchableEntity::createWithContext($this->searchContextService);
     }
 
     /** SETTERS */

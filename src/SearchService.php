@@ -85,7 +85,7 @@ class SearchService
 
     public function getCountSpecificType($type)
     {
-        $model = (new $type)->injectContext($this);
+        $model = $type::createWithContext($this);
 
         return $model->getInitialRule()->setSearchable($type)->query($model->baseSearchQuery())->count();
     }

@@ -43,7 +43,7 @@ abstract class FilterableRule extends Rule
         $this->searchable = $searchable;
 
         if (is_string($this->searchable)) {
-            $this->searchable = (new $this->searchable)->injectContext($this->searchContextService);
+            $this->searchable = $this->searchable::createWithContext($this->searchContextService);
         }
 
         return $this;
