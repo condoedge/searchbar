@@ -24,6 +24,7 @@ class BaseRuleForm extends Modal
                 })->toArray()
             )->name('key', false)->selfGet('getRuleForm')->inPanel('rule-details-form'),
 
+            // TODO: (Ask to bassem) Close modal on submit inside panel
             _Panel()->id('rule-details-form'),
         );
     }

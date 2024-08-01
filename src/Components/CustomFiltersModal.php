@@ -66,6 +66,7 @@ class CustomFiltersModal extends Modal
                 ...$inputs,
             )->class('items-center w-full'),
 
+            // TODO: (Ask to bassem) how can i remove the modal after delete
             $deleteButtonCallback(_DeleteLink()->icon(_Sax('trash', 22))->col('col-md-1')->class("text-gray-700 hover:text-danger"))
         )->class('gap-3');
     }
