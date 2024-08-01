@@ -13,13 +13,13 @@ class FavoritesSearches extends Query
 
     public function noItemsFound()
     {
-        return _Html('translate.navbar.no-favorites')->class('mt-2');
+        return _Html('filter.no-favorites')->class('mt-2');
     }
 
     public function top()
     {
         return _Rows(
-            _Html('translate.favorites')->icon('filter')->class('text-level1'),
+            _Html('filter.favorites')->icon('star')->class('-mt-4 font-semibold text-level1'),
         )->class('mb-4');
     }
 
@@ -40,7 +40,7 @@ class FavoritesSearches extends Query
     public function bottom()
     {
         return _Flex(
-            _Link('translate.navbar.new-favorite')->selfPost('getNewFavoriteForm')->inModal()->class('mt-2'),
+            _Link('filter.new-favorite')->selfPost('getNewFavoriteForm')->inModal()->class('border-t border-level4 text-black font-semibold pt-3 mt-3 w-full mr-6'),
         );
     }
 

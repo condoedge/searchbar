@@ -26,7 +26,7 @@ class AbstractResultsTable extends TableExportableToExcel
     public function top()
     {
         return _FlexBetween(
-            _Dropdown('translate.grouped-actions')->button()->submenu($this->groupedActionsOptions()),
+            _Dropdown('filter.grouped-actions')->button()->submenu($this->groupedActionsOptions()),
             _ExcelExportButton()->class('!mb-0 mt-3'),
         )->class('mb-4');
     }
@@ -34,7 +34,7 @@ class AbstractResultsTable extends TableExportableToExcel
     protected function groupedActionsOptions()
     {
         return [
-            _Link('translate.delete')->selfPost('deleteEntities')->withAllFormValues()->class('py-2 px-3'),
+            _Link('filter.delete')->selfPost('deleteEntities')->withAllFormValues()->class('py-2 px-3'),
         ];
     }
 

@@ -9,7 +9,7 @@ class FavoriteSearchForm extends Modal
 {
     use SearchKomponentUtils;
 
-    protected $_Title = 'translate.generic.favorite-search';
+    protected $_Title = 'filter.favorite-search';
     protected $noHeaderButtons = true;
 
     public function handle()
@@ -22,10 +22,10 @@ class FavoriteSearchForm extends Modal
     public function body()
     {
         return _Rows(
-            _Input('translate.name')->name('name'),
+            _Input('filter.name')->name('name'),
 
             _FlexEnd(
-                _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh('navbar-search')->refresh('custom-filters-modal')->closeModal()),
+                _SubmitButton('filter.save')->onSuccess(fn($e) => $e->refresh('navbar-search')->refresh('custom-filters-modal')->closeModal()),
             ),
         );
     }

@@ -38,6 +38,7 @@ class SearchPanel extends Form
                 ),
                 _Columns(
                     _Rows(
+                        _Html('filter.filter')->icon('filter')->class('ml-4 mt-2 font-semibold text-level1'),
                         $searchableI ? $this->sections($searchableI) : _Rows(
                             searchService()->optionsSearchables()
                         )->class('py-4'),
@@ -54,7 +55,7 @@ class SearchPanel extends Form
                 ),
             )->class('relative'),
 
-        )->class('w-screen md:w-full bg-white rounded-b-2xl border border-gray-200 shadow-xl border-b border-l border-r border-greenmain px-2 py-2');
+        )->class('w-screen md:w-full bg-white rounded-b-2xl border-gray-200 shadow-xl border-b border-l border-r border-level4 border-t-none px-2 py-2 -mt-2');
     }
 
     protected function sections($searchableI)
