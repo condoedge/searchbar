@@ -2,7 +2,7 @@
 
 namespace Kompo\Searchbar\Components;
 
-use Kompo\Auth\Models\Model;
+
 use Kompo\Modal;
 use Kompo\Searchbar\Components\RuleForm\BaseRuleForm;
 
@@ -30,7 +30,7 @@ class CustomFiltersModal extends Modal
         return _Rows(
             _Rows(
                 _Rows(
-                    collect($typeInstance->getDefaultRulesApplied())->map(fn($r) => _FlexEnd(
+                    collect($typeInstance?->getDefaultRulesApplied())->map(fn($r) => _FlexEnd(
                        $r->getToggle(),
                     ))
                 ),
