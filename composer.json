@@ -11,7 +11,7 @@
         "php": "^7.3|^8.0",
         "laravel/framework": ">=5.6.0",
         "kompo/kompo": ">=3.0.51",
-        "kompo/auth": ">=0.4.33"
+        "kompo/auth": ">=0.4.34"
     },
     "extra": {
         "laravel": {

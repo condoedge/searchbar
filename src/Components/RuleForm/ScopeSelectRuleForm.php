@@ -22,7 +22,7 @@ class ScopeSelectRuleForm extends AbstractRuleForm
         $colSpec = $this->searchableInstance->filterable($this->key);
 
         return _Rows(
-            _Select()->name('scope')->options($colSpec->optionsScopes()->toArray()),
+            _Select()->name('scope')->options($colSpec->optionsScopes()->toArray())->overModal('scope'),
 
             _FlexEnd(
                 _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh('navbar-search')->refresh('custom-filters-modal')->closeModal()),

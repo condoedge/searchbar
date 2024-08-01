@@ -121,8 +121,8 @@ enum FilterableColumnTypeEnum: int
         return match ($this) {
             self::TEXT => _Input(),
             self::ENUM, self::RELATION_SELECT, self::SELECT => match ($operator) {
-                OperatorEnum::IN, OperatorEnum::NOT_IN => _MultiSelect()->options($params),
-                default => _Select()->options($params),
+                OperatorEnum::IN, OperatorEnum::NOT_IN => _MultiSelect()->options($params)->overModal('select'),
+                default => _Select()->options($params)->overModal('select'),
             },
             self::DATE => match ($operator) {
                 OperatorEnum::BETWEEN => _DateRange(),

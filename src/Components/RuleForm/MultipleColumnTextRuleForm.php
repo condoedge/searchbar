@@ -29,6 +29,7 @@ class MultipleColumnTextRuleForm extends AbstractRuleForm
             $colSpec->getSelectColumnOptions()->name('columns'),
 
             _Select()->name('operator')->options(FilterableColumnTypeEnum::TEXT->getOperatorOptionsParsed())
+                ->overModal('operator')
                 ->default(FilterableColumnTypeEnum::TEXT->defaultOperator()->value),
 
             _Input()->name('value'),

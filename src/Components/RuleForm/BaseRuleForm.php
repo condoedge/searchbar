@@ -12,7 +12,7 @@ class BaseRuleForm extends Modal
     protected $_Title = 'filter.add-rule';
     protected $noHeaderButtons = true;
     
-    public $class = 'py-4 px-8 min-w-72 [&>*]:!overflow-y-visible';
+    public $class = 'py-4 px-8 min-w-72 max-w-2xl';
     public $style = 'max-height: 95vh';
 
     public function body()
@@ -22,7 +22,8 @@ class BaseRuleForm extends Modal
                 collect($this->searchableInstance->filterables())->mapWithKeys(function($col, $key) {
                     return [$key => __($col->getName())];
                 })->toArray()
-            )->name('key', false)->selfGet('getRuleForm')->inPanel('rule-details-form'),
+            )->name('key', false)->selfGet('getRuleForm')->inPanel('rule-details-form')
+            ->overModal('rule-key'),
 
             _Panel()->id('rule-details-form'),
         );
