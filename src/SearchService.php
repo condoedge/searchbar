@@ -87,7 +87,15 @@ class SearchService
     {
         $model = $type::createWithContext($this);
 
-        return $model->getInitialRule()->setSearchable($type)->query($model->baseSearchQuery())->count();
+        $rules = $model->getInitialRules();
+
+        if(!$rules) {
+            return '?';
+        }
+
+        return collect($rules)->reduce(function($query, $rule) {
+            return $rule->query($query);
+        }, $model->baseSearchQuery())->count();
     }
 
     // STATES

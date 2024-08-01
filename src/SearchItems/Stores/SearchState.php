@@ -4,6 +4,7 @@ namespace Kompo\Searchbar\SearchItems\Stores;
 
 use Kompo\Searchbar\SearchItems\Rules\FilterableRule;
 use Kompo\Searchbar\Searchable\Searchable;
+use Kompo\Searchbar\SearchItems\Rules\DefaultRuleWrapper;
 use Kompo\Searchbar\SearchItems\SearchItem;
 
 class SearchState extends SearchItem
@@ -35,6 +36,13 @@ class SearchState extends SearchItem
         return $this;
     }
 
+    public function addRuleAtFirst($rule)
+    {
+        $this->setRules(collect([$rule])->merge($this->rules));
+
+        return $this;
+    }
+
     /** GETTERS */
     public function getRules()
     {
@@ -44,6 +52,11 @@ class SearchState extends SearchItem
     public function getFilterableRules()
     {
         return $this->getRules()->filter(fn($r) => $r instanceof FilterableRule);
+    }
+
+    public function getDefaultRules()
+    {
+        return $this->getRules()->filter(fn($r) => $r instanceof DefaultRuleWrapper);
     }
 
     public function getSearch()

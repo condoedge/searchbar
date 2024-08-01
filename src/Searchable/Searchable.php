@@ -7,8 +7,10 @@ interface Searchable
     public function searchElement($result, ?string $search);
 
     public static function baseSearchQuery();
-    public function getInitialRule();
+    public function getInitialRules();
     public static function searchableName();
+    public function defaultRulesApplied();
+    public function getDefaultRulesApplied();
 
     /**
 	 * @return \Kompo\Searchbar\SearchItems\Filterables\Filterable[]

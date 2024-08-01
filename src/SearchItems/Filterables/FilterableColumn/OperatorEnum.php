@@ -52,7 +52,6 @@ enum OperatorEnum: int
 
     public function renderRule($rule)
     {
-        dd($rule->visualValue());
         return match ($this) {
             default => _Html(__($this->label() . '.with-value', [
                 'value' => $rule->visualValue(),

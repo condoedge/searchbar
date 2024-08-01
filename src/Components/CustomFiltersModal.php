@@ -30,6 +30,11 @@ class CustomFiltersModal extends Modal
         return _Rows(
             _Rows(
                 _Rows(
+                    collect($typeInstance->getDefaultRulesApplied())->map(fn($r) => _FlexEnd(
+                       $r->getToggle(),
+                    ))
+                ),
+                _Rows(
                     $this->rowRule(
                         fn($deleteButton) => $deleteButton->selfPost('getBack')->refresh()->refresh('navbar-search'),
                         _Html('filter.search-in')->col('!pr-0 col-md-3'),
