@@ -48,7 +48,7 @@ class AbstractResultsTable extends TableExportableToExcel
     public function getDeleteConfirmModal()
     {
         if (!request('itemIds') || !count(request('itemIds'))) {
-            return _CardWhiteP4(_Html('translate.filter.no-items-selected')->class('text-xl'))->class('!mb-0');
+            return _CardWhiteP4(_Html('filter.no-items-selected')->class('text-xl'))->class('!mb-0');
         }
 
         return $this->instanciateSearchKomponent(ConfirmMultiDeleteModal::class, [

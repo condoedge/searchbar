@@ -8,7 +8,7 @@ class ConfirmMultiDeleteModal extends Modal
 {
     use SearchKomponentUtils;
 
-    protected $_Title = 'translate.filter.delete-confirmation';
+    protected $_Title = 'filter.delete-confirmation';
     protected $noHeaderButtons = true;
 
     protected $ids;
@@ -23,7 +23,7 @@ class ConfirmMultiDeleteModal extends Modal
     public function body()
     {
         return _FlexCenter(
-            _LinkOutlined('translate.filter.cancel')->closeModal(),
+            _LinkOutlined('filter.cancel')->closeModal(),
             _Button('filter.delete')->selfPost('deleteEntities')->refresh(AbstractResultsTable::ID)->closeModal(),
         )->class('gap-4');
     }
