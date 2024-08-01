@@ -35,4 +35,9 @@ class RelationEntityType extends EntityType
     {
         return $this->relation::find($value);
     }
+
+    public function getLabel($value)
+    {
+        return $this->from($value)->label();
+    }
 }

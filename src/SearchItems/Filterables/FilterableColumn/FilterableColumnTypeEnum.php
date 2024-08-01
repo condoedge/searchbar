@@ -7,6 +7,7 @@ use Kompo\Searchbar\SearchItems\Rules\ColumnRule\DateRule;
 use Kompo\Searchbar\SearchItems\Rules\ColumnRule\EnumRule;
 use Kompo\Searchbar\SearchItems\Rules\ColumnRule\InputRelationRule;
 use Kompo\Searchbar\SearchItems\Rules\ColumnRule\SelectRelationRule;
+use Kompo\Searchbar\SearchItems\Rules\ColumnRule\SelectRule;
 use Kompo\Searchbar\SearchItems\Rules\FilterableRule;
 
 enum FilterableColumnTypeEnum: int
@@ -98,6 +99,7 @@ enum FilterableColumnTypeEnum: int
             self::RELATION_INPUT => InputRelationRule::class,
 
             self::DATE => DateRule::class,
+            self::SELECT => SelectRule::class,
             
             default => ColumnRule::class,
         };

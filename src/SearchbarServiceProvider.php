@@ -21,6 +21,10 @@ class SearchbarServiceProvider extends ServiceProvider
         $this->app->singleton('search-service', function() {
             return new SearchService();
         });
+
+        $this->app->bind('search-state-model', function() {
+            return new (config('searchbar.searchstate_model'));
+        });
     }
 
     public function boot(): void
@@ -32,6 +36,8 @@ class SearchbarServiceProvider extends ServiceProvider
         $this->loadHelpers();
 
         $this->loadJSONTranslationsFrom(__DIR__.'/../resources/lang');
+        
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 
     protected function loadHelpers()

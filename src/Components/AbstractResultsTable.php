@@ -26,8 +26,25 @@ class AbstractResultsTable extends TableExportableToExcel
     public function top()
     {
         return _FlexBetween(
-            _Button('filter.grouped-actions'),
+            _Dropdown('translate.grouped-actions')->button()->submenu($this->groupedActionsOptions()),
             _ExcelExportButton()->class('!mb-0 mt-3'),
         )->class('mb-4');
+    }
+
+    protected function groupedActionsOptions()
+    {
+        return [
+            _Link('translate.delete')->selfPost('deleteEntities')->withAllFormValues()->class('py-2 px-3'),
+        ];
+    }
+
+    protected function checkboxGroupedActions($id)
+    {
+        return _Checkbox()->name('ids[' . $id . ']')->class('!mb-0');
+    }
+
+    public function deleteEntities()
+    {
+        // TODO (Bassem info needed): How can i get the ids of the selected entities?
     }
 }

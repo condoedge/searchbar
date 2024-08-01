@@ -53,26 +53,42 @@ trait SearchableModelUtils
 		});
 	}
 
-	public function getInitialRule()
+	public function getInitialRules()
 	{
 		$state = searchService()->getStore()->getState();
 
-		if(!$state->getSearch()) {
-			return null;
+		$rules = $state->getSearchableInstance()?->getDefaultRulesApplied() ?? [];
+
+		if($state->getSearch()) {
+			/**
+			 * @var \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn $filterable
+			 */
+			$filterable = $this->filterable(self::getBaseFilterable());
+
+			if (!($filterable instanceof \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn)) {
+				throw new \Exception('The base filterable must be a FilterableColumn');
+			}
+
+			$defaultSearchRule = ($filterable->getRuleInstance([
+				'value' => $state->getSearch(),
+			]))->setKeyReference(self::getBaseFilterable())->injectContext($this->searchContextService);
+
+			array_push($rules, $defaultSearchRule);
 		}
 
-		/**
-		 * @var \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn $filterable
-		 */
-		$filterable = $this->filterable(self::getBaseFilterable());
+		return $rules;
+	}
 
-		if (!($filterable instanceof \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn)) {
-			throw new \Exception('The base filterable must be a FilterableColumn');
-		}
+	public function defaultRulesApplied()
+	{
+		return [];
+	}
 
-		return ($filterable->getRuleInstance([
-			'value' => $state->getSearch(),
-		]))->setKeyReference(self::getBaseFilterable())->injectContext($this->searchContextService);
+	public final function getDefaultRulesApplied()
+	{
+		return collect($this->defaultRulesApplied())->map(function ($rule) {
+			return $rule->injectContext($this->searchContextService);
+		});
 	}
 
 	public static function baseSearchQuery()

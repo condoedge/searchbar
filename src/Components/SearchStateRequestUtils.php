@@ -3,6 +3,7 @@
 namespace Kompo\Searchbar\Components;
 
 use Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\OperatorEnum;
+use Kompo\Searchbar\SearchItems\Rules\DefaultRuleWrapper;
 use Kompo\Searchbar\SearchItems\Rules\RulesService;
 use Kompo\Searchbar\SearchService;
 
@@ -42,7 +43,7 @@ trait SearchStateRequestUtils
     public function selectSearchableEntity($entity)
     {
         $this->state->setSearchableEntity($entity);
-        $this->state->setRules(collect([$this->state->getSearchableInstance()->getInitialRule()])->filter());
+        $this->state->setRules(collect($this->state->getSearchableInstance()->getInitialRules())->filter());
         $this->state->setSearch(null);
 
         stateStore($this->serviceKey)->storeState($this->state);
@@ -53,6 +54,22 @@ trait SearchStateRequestUtils
         $this->state->removeRule($i);
 
         stateStore($this->serviceKey)->storeState($this->state);
+    }
+
+    public function toggleDefaultRule()
+    {
+        $name = request('key');
+        $value = request('toggle' . str_replace('.', '_', $name));
+
+        $rule = DefaultRuleWrapper::findByKey($this->state->getSearchableInstance(), $name);
+
+        $value = $rule->isInverse() ? !$value : $value;
+
+        if($value) {
+            $this->state->addRuleAtFirst($rule);
+        } else {
+            $this->state->removeRule($rule->getIndexOnRules($this->state->getRules()));
+        }
     }
 
     public function setRuleOperator($i, $operator)

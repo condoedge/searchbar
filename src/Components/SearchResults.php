@@ -29,7 +29,7 @@ class SearchResults extends Form
                 ['entity' => $this->state->getSearchableInstance()?->searchableName()]
             ))->class('text-2xl font-semibold'),
 
-            _Flex($this->state->getRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-3 mb-3'),
+            $this->state->getRules()->count() ? _Flex($this->state->getRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-3 mb-3 mt-4') : null,
 
             $searchableI->getTableClassInstance([
                 'storeKey' => $this->storeKey,
