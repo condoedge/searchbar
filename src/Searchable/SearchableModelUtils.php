@@ -57,7 +57,7 @@ trait SearchableModelUtils
 	{
 		$state = searchService()->getStore()->getState();
 
-		$rules = $state->getSearchableInstance()?->getDefaultRulesApplied() ?? [];
+		$rules = collect($state->getSearchableInstance()?->getDefaultRulesApplied() ?? []);
 
 		if($state->getSearch()) {
 			/**
@@ -73,7 +73,7 @@ trait SearchableModelUtils
 				'value' => $state->getSearch(),
 			]))->setKeyReference(self::getBaseFilterable())->injectContext($this->searchContextService);
 
-			array_push($rules, $defaultSearchRule);
+			$rules->push($defaultSearchRule);
 		}
 
 		return $rules;
