@@ -35,7 +35,8 @@ class NavbarSearch extends Form
                     ->noAutocomplete()
                     ->onFocus(fn($e) => $e->selfGet('openSearch')->refresh('search-panel'))
                     ->onInput(fn($e) => $e->run($loadingJs) && $e->selfPost('setSearch')->run($loadingJs)->refresh('search-panel')),
-            )->class('w-full flex-row items-center focus-within:border border-greenmain rounded-lg'),
+                _Spinner()->id($searchPanelLoadingId)->class('absolute right-8 hidden'),
+            )->class('w-full relative flex-row items-center focus-within:border border-greenmain rounded-lg'),
 
             _Rows(
                 $this->instanciateSearchKomponent(SearchPanel::class),
