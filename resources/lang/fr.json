@@ -10,6 +10,7 @@
 	"filter.does-not-contain.with-value": "Ne contient pas: :value",
 	"filter.equals-to": "Égal à",
 	"filter.equals-to.with-value": "Égal à: :value",
+	"filter.grouped-actions": "Actions groupées",
 	"filter.in": "Est dans",
 	"filter.in.with-value": "Est dans: :value",
 	"filter.less-than": "Moins de",
@@ -22,6 +23,7 @@
 	"filter.more-than.with-value": "Plus de: :value",
 	"filter.not-in": "N'est pas dans",
 	"filter.not-in.with-value": "N'est pas dans: :value",
+	"filter.search-results": "Résultats de la recherche",
 	"filter.search-results.with-values": "Résultats de la recherche pour: :entity",
 	"filter.with-values.multiple-search": ":operator: :value ",
 	"navbar.see-all": "Ouvrir dans une liste"

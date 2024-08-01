@@ -185,6 +185,21 @@
 						</translations>
 					</concept_node>
 					<concept_node>
+						<name>filter.grouped-actions</name>
+						<description/>
+						<comment/>
+						<translations>
+							<translation>
+								<language>en-US</language>
+								<approved>false</approved>
+							</translation>
+							<translation>
+								<language>fr-FR</language>
+								<approved>false</approved>
+							</translation>
+						</translations>
+					</concept_node>
+					<concept_node>
 						<name>filter.in</name>
 						<description/>
 						<comment/>
@@ -351,6 +366,21 @@
 					</concept_node>
 					<concept_node>
 						<name>filter.not-in.with-value</name>
+						<description/>
+						<comment/>
+						<translations>
+							<translation>
+								<language>en-US</language>
+								<approved>false</approved>
+							</translation>
+							<translation>
+								<language>fr-FR</language>
+								<approved>false</approved>
+							</translation>
+						</translations>
+					</concept_node>
+					<concept_node>
+						<name>filter.search-results</name>
 						<description/>
 						<comment/>
 						<translations>

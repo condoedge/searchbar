@@ -11,7 +11,7 @@ class AbstractResultsTable extends TableExportableToExcel
         
     use SearchKomponentUtils;
 
-    protected $filename = 'translate.search-results';
+    protected $filename = 'filter.search-results';
 
     public $class = 'pb-8';
     public $itemsWrapperClass = 'resultTable pb-2';
@@ -26,7 +26,7 @@ class AbstractResultsTable extends TableExportableToExcel
     public function top()
     {
         return _FlexBetween(
-            _Button('translate.grouped-actions'),
+            _Button('filter.grouped-actions'),
             _ExcelExportButton()->class('!mb-0 mt-3'),
         )->class('mb-4');
     }
