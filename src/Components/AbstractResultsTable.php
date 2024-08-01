@@ -7,9 +7,11 @@ use Kompo\Searchbar\Components\SearchKomponentUtils;
 use Kompo\Searchbar\Components\SearchResults;
 
 class AbstractResultsTable extends TableExportableToExcel
-{
-        
+{       
     use SearchKomponentUtils;
+
+    const ID = 'abstract-results-table';
+    public $id = self::ID;
 
     protected $filename = 'filter.search-results';
 
@@ -34,7 +36,7 @@ class AbstractResultsTable extends TableExportableToExcel
     protected function groupedActionsOptions()
     {
         return [
-            _Link('filter.delete')->selfPost('deleteEntities')->config(['withCheckedItemIds' => true])->refresh()->class('py-2 px-3'),
+            _Link('filter.delete')->selfPost('getDeleteConfirmModal')->inModal()->config(['withCheckedItemIds' => true])->class('py-2 px-3'),
         ];
     }
 
@@ -43,8 +45,14 @@ class AbstractResultsTable extends TableExportableToExcel
         return _Checkbox()->emit('checkItemId', ['id' => $id])->class('!mb-0 child-checkbox');
     }
 
-    public function deleteEntities()
+    public function getDeleteConfirmModal()
     {
-        $this->searchableInstance->destroy(request('itemIds'));
+        if (!request('itemIds') || !count(request('itemIds'))) {
+            return _CardWhiteP4(_Html('translate.filter.no-items-selected')->class('text-xl'))->class('!mb-0');
+        }
+
+        return $this->instanciateSearchKomponent(ConfirmMultiDeleteModal::class, [
+            'itemIds' => implode(',', request('itemIds')),
+        ]);
     }
 }
