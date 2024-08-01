@@ -34,7 +34,7 @@ class AbstractResultsTable extends TableExportableToExcel
     protected function groupedActionsOptions()
     {
         return [
-            _Link('translate.delete')->selfPost('deleteEntities')->config(['withCheckedItemIds' => true])->refresh()->class('py-2 px-3'),
+            _Link('filter.delete')->selfPost('deleteEntities')->config(['withCheckedItemIds' => true])->refresh()->class('py-2 px-3'),
         ];
     }
 
