@@ -35,7 +35,6 @@ class ColumnRuleForm extends AbstractRuleForm
             )->id('input-panel'),
 
             _FlexEnd(
-                // TODO: (Ask to bassem) Close modal on submit inside panel
                 _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh('navbar-search')->refresh('custom-filters-modal')->closeModal()->closeModal()),
             ),
         );
