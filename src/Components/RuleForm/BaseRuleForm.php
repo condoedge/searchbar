@@ -12,7 +12,7 @@ class BaseRuleForm extends Modal
     protected $_Title = 'filter.add-rule';
     protected $noHeaderButtons = true;
     
-    public $class = 'py-4 px-8 min-w-72 overflow-y-auto mini-scroll';
+    public $class = 'py-4 px-8 min-w-72 [&>*]:!overflow-y-visible';
     public $style = 'max-height: 95vh';
 
     public function body()
@@ -24,7 +24,6 @@ class BaseRuleForm extends Modal
                 })->toArray()
             )->name('key', false)->selfGet('getRuleForm')->inPanel('rule-details-form'),
 
-            // TODO: (Ask to bassem) Close modal on submit inside panel
             _Panel()->id('rule-details-form'),
         );
     }
