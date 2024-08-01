@@ -34,17 +34,17 @@ class AbstractResultsTable extends TableExportableToExcel
     protected function groupedActionsOptions()
     {
         return [
-            _Link('translate.delete')->selfPost('deleteEntities')->withAllFormValues()->class('py-2 px-3'),
+            _Link('translate.delete')->selfPost('deleteEntities')->config(['withCheckedItemIds' => true])->refresh()->class('py-2 px-3'),
         ];
     }
 
     protected function checkboxGroupedActions($id)
     {
-        return _Checkbox()->name('ids[' . $id . ']')->class('!mb-0');
+        return _Checkbox()->emit('checkItemId', ['id' => $id])->class('!mb-0 child-checkbox');
     }
 
     public function deleteEntities()
     {
-        // TODO (Bassem info needed): How can i get the ids of the selected entities?
+        $this->searchableInstance->destroy(request('itemIds'));
     }
 }
