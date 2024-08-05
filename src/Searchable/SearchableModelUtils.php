@@ -11,8 +11,8 @@ trait SearchableModelUtils
 
 	public static function getBaseFilterable()
 	{
-		if (defined(self::class . '::BASE_FILTERABLE')) {
-			return self::BASE_FILTERABLE;
+		if (defined(static::class . '::BASE_FILTERABLE')) {
+			return static::BASE_FILTERABLE;
 		}
 
 		return 'name_filter';
@@ -20,7 +20,7 @@ trait SearchableModelUtils
 
 	public function getTableClass()
 	{
-		return config('searchbar.base_result_table_namespace') . '\\Search' . class_basename(self::class) . 'Table';
+		return config('searchbar.base_result_table_namespace') . '\\Search' . class_basename(static::class) . 'Table';
 	}
 
 	public final function getTableClassInstance($parameters = [])
@@ -30,7 +30,7 @@ trait SearchableModelUtils
 
 	public static function searchableName()
 	{
-		return __('filter.' . strtolower(class_basename(self::class)));
+		return __('filter.' . strtolower(class_basename(static::class)));
 	}
 
     public function filterable($key): Filterable
@@ -40,7 +40,7 @@ trait SearchableModelUtils
 
 	public function decoratedFilterables()
 	{
-		return collect(self::filterables())->map(function ($filterable) {
+		return collect(static::filterables())->map(function ($filterable) {
 			return $filterable->injectContext($this->searchContextService);
 		});
 	}
@@ -48,7 +48,7 @@ trait SearchableModelUtils
 
 	public function decoratedSections()
 	{
-		return collect(self::sections())->map(function ($section) {
+		return collect(static::sections())->map(function ($section) {
 			return $section->injectContext($this->searchContextService);
 		});
 	}
@@ -63,7 +63,7 @@ trait SearchableModelUtils
 			/**
 			 * @var \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn $filterable
 			 */
-			$filterable = $this->filterable(self::getBaseFilterable());
+			$filterable = $this->filterable(static::getBaseFilterable());
 
 			if (!($filterable instanceof \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn)) {
 				throw new \Exception('The base filterable must be a FilterableColumn');
@@ -71,7 +71,7 @@ trait SearchableModelUtils
 
 			$defaultSearchRule = ($filterable->getRuleInstance([
 				'value' => $state->getSearch(),
-			]))->setKeyReference(self::getBaseFilterable())->injectContext($this->searchContextService);
+			]))->setKeyReference(static::getBaseFilterable())->injectContext($this->searchContextService);
 
 			$rules->push($defaultSearchRule);
 		}
@@ -93,7 +93,7 @@ trait SearchableModelUtils
 
 	public static function baseSearchQuery()
 	{
-		return self::query();
+		return static::query();
 	}
 
 	public function getEagerRelationsKeys()
