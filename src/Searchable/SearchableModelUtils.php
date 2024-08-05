@@ -53,11 +53,12 @@ trait SearchableModelUtils
 		});
 	}
 
-	public function getInitialRules()
+	public function getInitialRules(?Searchable $searchable = null)
 	{
 		$state = searchService()->getStore()->getState();
+		$searchable = $searchable ?? $state->getSearchableInstance();
 
-		$rules = collect($state->getSearchableInstance()?->getDefaultRulesApplied() ?? []);
+		$rules = collect($searchable?->getDefaultRulesApplied() ?? []);
 
 		if($state->getSearch()) {
 			/**

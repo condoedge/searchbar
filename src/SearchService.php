@@ -87,7 +87,7 @@ class SearchService
     {
         $model = $type::createWithContext($this);
 
-        $rules = $model->getInitialRules();
+        $rules = $model->getInitialRules($model);
 
         if(!$rules) {
             return '?';
