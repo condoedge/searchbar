@@ -28,8 +28,8 @@ class ColumnRuleForm extends AbstractRuleForm
 
         return _Rows(
             _Select()->name('operator')->options($colSpec->getInputType()->getOperatorOptionsParsed())
-                ->overModal('operator')
-                ->selfGet('setValueInput')->inPanel('input-panel')->default($colSpec->getInputType()->defaultOperator()),
+                ->selfGet('setValueInput')->inPanel('input-panel')->default($colSpec->getInputType()->defaultOperator())
+                ->overModal('operator'), 
 
             _Panel(
                 $colSpec->getInput(),

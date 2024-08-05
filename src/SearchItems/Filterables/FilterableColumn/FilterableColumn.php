@@ -42,8 +42,9 @@ class FilterableColumn extends Filterable
 
             _Panel(
                 $this->getInput($rule->getOperator())
-                    ->selfPost('setRuleValue', ['i' => $index])
-                    ->refresh('navbar-search')->class('!mb-0')->value($rule->getValue()),
+                    ->onChange(fn($e) => $e->selfPost('setRuleValue', ['i' => $index])
+                    ->refresh('navbar-search'))
+                    ->class('!mb-0')->value($rule->getValue()),
             )->id('input-panel' . $index)->col('col-md-6'),
         ];
     }
