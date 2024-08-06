@@ -42,7 +42,9 @@ class AbstractResultsTable extends TableExportableToExcel
 
     protected function checkboxGroupedActions($id)
     {
-        return _Checkbox()->emit('checkItemId', ['id' => $id])->class('!mb-0 child-checkbox');
+        return _Rows(
+                _Checkbox()->emit('checkItemId', ['id' => $id])->class('!mb-0 child-checkbox')
+            )->stopPropagation();
     }
 
     public function getDeleteConfirmModal()
