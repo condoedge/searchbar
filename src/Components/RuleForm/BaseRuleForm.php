@@ -22,7 +22,8 @@ class BaseRuleForm extends Modal
                 collect($this->searchableInstance->filterables())->mapWithKeys(function($col, $key) {
                     return [$key => __($col->getName())];
                 })->toArray()
-            )->name('key', false)->selfGet('getRuleForm')->inPanel('rule-details-form')
+            )->name('key', false)
+            ->onChange(fn($e) => $e->selfGet('getRuleForm')->inPanel('rule-details-form'))
             ->overModal('rule-key'),
 
             _Panel()->id('rule-details-form'),

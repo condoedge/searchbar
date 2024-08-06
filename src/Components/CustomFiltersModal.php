@@ -13,7 +13,8 @@ class CustomFiltersModal extends Modal
 
     public $id = 'custom-filters-modal';
     protected $_Title = 'filter.filters';
-    public $class = 'max-w-2xl w-screen';
+    public $class = 'max-w-2xl w-screen overflow-y-auto mini-scroll';
+    public $style = 'max-height: 95vh';
 
     public function headerButtons()
 	{
@@ -43,7 +44,8 @@ class CustomFiltersModal extends Modal
                             [$searchable => $searchable::searchableName()]
                         ))
                             ->default($this->state->getSearchableEntity())
-                            ->selfPost('selectSearchableEntity')->refresh('navbar-search')
+                            ->onChange(fn($e) => $e->selfPost('selectSearchableEntity')->refresh('navbar-search'))
+                            ->overModal('search-in')
                             ->class('!mb-0 w-full')
                             ->col('col-md-6'),
                     ),

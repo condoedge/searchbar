@@ -31,12 +31,16 @@ class FilterableMultipleColumnText extends Filterable
             $this->getSelectColumnOptions()->class('!mb-0')
                 ->name('columns')->default($rule->getColumns())
                 ->onChange(fn($e) => $e->selfPost('executeCustomFilterableFunction', ['i' => $index, 'function' => 'setColumns'])->refresh('navbar-search'))
+                ->overModal('columns')
                 ->class('!mb-0')
                 ->col('col-md-3'),
 
             _Select()->class('!mb-0')->options(FilterableColumnTypeEnum::TEXT->getOperatorOptionsParsed())
                 ->name('operator')->default($rule->getOperator())
-                ->selfPost('executeCustomFilterableFunction', ['i' => $index, 'function' => 'setRuleOperator'])->refresh('navbar-search')
+                ->onChange(fn($e) => $e
+                    ->selfPost('executeCustomFilterableFunction', ['i' => $index, 'function' => 'setRuleOperator'])->refresh('navbar-search')
+                )
+                ->overModal('operator')
                 ->class('!mb-0')
                 ->col('!p-0 col-md-3'),
 

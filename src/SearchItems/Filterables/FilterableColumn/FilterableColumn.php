@@ -38,6 +38,7 @@ class FilterableColumn extends Filterable
                 $e->selfGet('executeCustomFilterableFunction', ['i' => $index, 'function' =>'setValueInput'])
                 ->inPanel('input-panel' . $index)
             )
+            ->overModal('operator')
             ->class('!mb-0')->col('!p-0 col-md-3'),
 
             _Panel(

@@ -2,23 +2,10 @@
 
 namespace Kompo\Searchbar\Components;
 
-use Kompo\Auth\Common\Modal;
 
-class ConfirmMultiDeleteModal extends Modal
+class ConfirmMultiDeleteModal extends AbstractGroupedActionModal
 {
-    use SearchKomponentUtils;
-
     protected $_Title = 'filter.delete-confirmation';
-    protected $noHeaderButtons = true;
-
-    protected $ids;
-
-    public function created()
-    {
-        $this->setSearchProps();
-
-        $this->ids = explode(',', $this->prop('itemIds'));
-    }
 
     public function body()
     {
