@@ -24,9 +24,10 @@ abstract class SearchStore extends SearchItem
     abstract public function storeState(SearchState $state): void;
     abstract public function clearState(): void;
     
-    public function setFromRequest()
+    public function setFromRequest($key)
     {
-        $state = $this->getFromStore(fn($key) => request($key));
+        $data = uncompressArray(request($key));
+        $state = $this->getFromStore(fn($key) => $data[$key]);
 
         $this->storeState($state);
     }

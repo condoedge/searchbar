@@ -17,7 +17,7 @@ class SearchResults extends Form
         $this->storeKey = self::SEARCH_ID . time();
 
         searchService(self::SEARCH_ID)->setStoreKey($this->storeKey);
-        stateStore(self::SEARCH_ID)->setFromRequest();
+        stateStore(self::SEARCH_ID)->setFromRequest('searchDetails');
         $this->state = stateStore(self::SEARCH_ID)->getState();
     }
 

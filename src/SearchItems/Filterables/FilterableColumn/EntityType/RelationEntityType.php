@@ -9,7 +9,7 @@ class RelationEntityType extends EntityType
     protected $relation;
     protected $baseQuery;
 
-    public function __construct($relation, string $baseQuery)
+    public function __construct($relation, string $baseQuery, bool $allowAllOption = false)
     {
         if (!is_subclass_of($relation, RelationSearchable::class)) {
             throw new \Exception('Relation must implement RelationSearchable interface');
@@ -23,7 +23,10 @@ class RelationEntityType extends EntityType
     {
         $baseQuery = $this->baseQuery;
 
-        return $this->relation::parseOptions($this->relation::$baseQuery()->get());
+        $options = $this->relation::parseOptions($this->relation::$baseQuery()->get());
+        $options->prepend('all', 'All');
+        
+        return $options;
     }
 
     public function getValue()
