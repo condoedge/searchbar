@@ -6,6 +6,8 @@ use Kompo\Form;
 
 class SearchResults extends Form
 {
+    public $containerClass = 'container-table';
+
     const SEARCH_ID = 'searchTable';
     protected $state;
     protected $storeKey;
@@ -29,7 +31,7 @@ class SearchResults extends Form
                 ['entity' => $this->state->getSearchableInstance()?->searchableName()]
             ))->class('text-2xl font-semibold'),
 
-            $this->state->getRules()->count() ? _Flex($this->state->getRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-3 mb-3 mt-4') : null,
+            $this->state->getRules()->count() ? _Flex($this->state->getRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-2 mb-3 mt-4') : null,
 
             $searchableI->getTableClassInstance([
                 'storeKey' => $this->storeKey,

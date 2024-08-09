@@ -47,7 +47,7 @@ class SearchPanel extends Form
     
                     _Rows(
                         $this->instanciateSearchKomponent(EnhancedSearchbar::class),
-                    )->class('items-start pr-10 !pb-2 py-4 overflow-y-auto mini-scroll')->col('col-md-6')->style('height:380px'),
+                    )->class('items-start !pb-2 py-4 overflow-y-auto mini-scroll')->col('col-md-6')->style('height:420px'),
                 
                     _Rows(
                         $this->instanciateSearchKomponent(FavoritesSearches::class),
@@ -65,7 +65,7 @@ class SearchPanel extends Form
             _Rows($searchableI->decoratedSections()->map(fn($s) => $s->showOptions()->class('border-b py-4 border-level4'))),
             _Link('filter.custom-filters')->class('text-black font-semibold py-4')
                 ->selfGet('getCustomFiltersModal')->inModal(),
-        )->class('px-4');
+        )->class('pl-4');
     }
 
     public function getCustomFiltersModal()

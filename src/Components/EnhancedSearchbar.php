@@ -34,6 +34,6 @@ class EnhancedSearchbar extends Query
         $searchableI = $this->state?->getSearchableInstance();
         $search = $this->state?->getSearch();
 
-        return $searchableI->searchElement($item, $search)->class('mb-3');
+        return $searchableI->searchElement($item, $search)->class('!mb-2');
     }
 }
