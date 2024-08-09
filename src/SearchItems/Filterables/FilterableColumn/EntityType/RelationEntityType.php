@@ -6,6 +6,8 @@ use Kompo\Searchbar\Searchable\RelationSearchable;
 
 class RelationEntityType extends EntityType
 {
+    use HasAllOptionTrait;
+
     protected $relation;
     protected $baseQuery;
 
@@ -17,16 +19,14 @@ class RelationEntityType extends EntityType
 
         $this->relation = $relation;
         $this->baseQuery = $baseQuery;
+        $this->allowAllOption = $allowAllOption;
     }
 
     public function optionsWithLabels()
     {
         $baseQuery = $this->baseQuery;
 
-        $options = $this->relation::parseOptions($this->relation::$baseQuery()->get());
-        $options->prepend('all', 'All');
-        
-        return $options;
+        return $this->addAllOption($this->relation::parseOptions($this->relation::$baseQuery()->get()));
     }
 
     public function getValue()
@@ -41,6 +41,6 @@ class RelationEntityType extends EntityType
 
     public function getLabel($value)
     {
-        return $this->from($value)->label();
+        return $this->parseLabelWithAllOption($value, fn() => $this->from($value)->label());
     }
 }
