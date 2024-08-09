@@ -55,7 +55,7 @@ class SearchPanel extends Form
                 ),
             )->class('relative'),
 
-        )->class('w-screen md:w-full bg-white rounded-b-2xl border-gray-200 shadow-xl border-b border-l border-r border-level4 border-t-none px-2 py-2 -mt-2');
+        )->class('max-w-6xl w-screen md:w-full bg-white rounded-b-2xl border-gray-200 shadow-xl border-b border-l border-r border-level4 border-t-none px-2 py-2 -mt-2');
     }
 
     protected function sections($searchableI)
