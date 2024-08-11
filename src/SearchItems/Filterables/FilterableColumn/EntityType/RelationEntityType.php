@@ -6,8 +6,6 @@ use Kompo\Searchbar\Searchable\RelationSearchable;
 
 class RelationEntityType extends EntityType
 {
-    use HasAllOptionTrait;
-
     protected $relation;
     protected $baseQuery;
 

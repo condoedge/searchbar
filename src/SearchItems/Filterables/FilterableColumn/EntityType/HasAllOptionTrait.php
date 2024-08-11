@@ -30,4 +30,9 @@ trait HasAllOptionTrait
 
         return $this;
     }
+
+    public function hasAllowAllOption()
+    {
+        return $this->allowAllOption;
+    }
 }

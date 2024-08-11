@@ -6,9 +6,10 @@ class EnumEntityType extends EntityType
 {
     protected $enum;
 
-    public function __construct($enum)
+    public function __construct($enum, bool $allowAllOption = false)
     {
         $this->enum = $enum;
+        $this->allowAllOption = $allowAllOption;
     }
 
     public function optionsWithLabels()

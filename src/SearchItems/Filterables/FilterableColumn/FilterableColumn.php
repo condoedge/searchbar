@@ -78,6 +78,19 @@ class FilterableColumn extends Filterable
             ->when($value, fn($el) => $el->value($value));
     }
 
+    public function defaultValueParsed($val)
+    {
+        $entityType = $this->getEntityType();
+
+        if($entityType && $entityType->hasAllowAllOption() && is_array($val) && in_array('all', $val)) {
+            $values = $entityType->optionsWithLabels()->values();
+
+            return array_slice($values->toArray(), 1);
+        }
+
+        return $val;
+    }
+
     // GETTERS
     public function getColumn()
     {
