@@ -80,16 +80,21 @@ trait SearchableModelUtils
 		return $rules;
 	}
 
-	public function defaultRulesApplied()
+	public function premadeRules()
 	{
 		return [];
 	}
 
-	public final function getDefaultRulesApplied()
+	public final function getPremadeRules()
 	{
-		return collect($this->defaultRulesApplied())->map(function ($rule) {
+		return collect($this->premadeRules())->map(function ($rule) {
 			return $rule->injectContext($this->searchContextService);
 		});
+	}
+
+	public final function getDefaultRulesApplied()
+	{
+		return $this->getPremadeRules()->filter(fn($r) => $r->isDefault());
 	}
 
 	public static function baseSearchQuery()

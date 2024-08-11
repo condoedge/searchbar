@@ -31,8 +31,8 @@ class CustomFiltersModal extends Modal
         return _Rows(
             _Rows(
                 _Rows(
-                    collect($typeInstance?->getDefaultRulesApplied())->map(fn($r) => _FlexEnd(
-                       $r->getToggle(),
+                    collect($typeInstance?->getPremadeRules())->map(fn($r) => _FlexEnd(
+                       $r->getToggle()->class('[&>.vlFormLabel]:w-max'),
                     ))
                 ),
                 _Rows(
