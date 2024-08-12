@@ -82,4 +82,9 @@ abstract class Filterable extends SearchItem
     abstract public function getRuleInstance($params);
 
     abstract public function formRow($rule, $index): array;
+
+    public function defaultValueParsed($val)
+    {
+        return $val;
+    }
 }

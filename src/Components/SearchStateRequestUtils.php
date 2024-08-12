@@ -3,7 +3,7 @@
 namespace Kompo\Searchbar\Components;
 
 use Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\OperatorEnum;
-use Kompo\Searchbar\SearchItems\Rules\DefaultRuleWrapper;
+use Kompo\Searchbar\SearchItems\Rules\PremadeRuleWrapper;
 use Kompo\Searchbar\SearchItems\Rules\RulesService;
 use Kompo\Searchbar\SearchService;
 
@@ -61,7 +61,7 @@ trait SearchStateRequestUtils
         $name = request('key');
         $value = request('toggle' . str_replace('.', '_', $name));
 
-        $rule = DefaultRuleWrapper::findByKey($this->state->getSearchableInstance(), $name);
+        $rule = PremadeRuleWrapper::findByKey($this->state->getSearchableInstance(), $name);
 
         $value = $rule->isInverse() ? !$value : $value;
 

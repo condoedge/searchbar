@@ -38,12 +38,6 @@ trait RelationRuleUtils
 
     public function queryValue()
     {
-        if(is_array($this->value) && in_array('all', $this->value)) {
-            $values = $this->getFilterable()->getEntityType()->optionsWithLabels()->values();
-
-            return array_slice($values->toArray(), 1);
-        }
-
-        return $this->operator->constructValue($this->value);
+        return $this->operator->constructValue($this->value, $this);
     }
 }

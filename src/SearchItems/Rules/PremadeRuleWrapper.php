@@ -2,16 +2,17 @@
 
 namespace Kompo\Searchbar\SearchItems\Rules;
 
-class DefaultRuleWrapper extends Rule
+class PremadeRuleWrapper extends Rule
 {
     protected Rule $rule;
     protected string $name;
     protected string $key;
     protected string $description;
     protected bool $removable;
+    protected bool $default = false;
     protected bool $inverse = false;
 
-    public function __construct($rule, $key, $name = '', $description = '', $removable = true, $inverse = false)
+    public function __construct($rule, $key, $name = '', $description = '', $removable = true, $inverse = false, $default = false)
     {
         $this->rule = $rule;
         $this->key = $key;
@@ -19,6 +20,7 @@ class DefaultRuleWrapper extends Rule
         $this->description = $description;
         $this->removable = $removable;
         $this->inverse = $inverse;
+        $this->default = $default;
     }
 
     public function created()
@@ -43,7 +45,7 @@ class DefaultRuleWrapper extends Rule
 
     public static function findByKey($searchable, $key)
     {
-        return $searchable->getDefaultRulesApplied()->first(function ($defaultRule) use ($key) {
+        return $searchable->getPremadeRules()->first(function ($defaultRule) use ($key) {
             return $defaultRule->getKey() == $key;
         });
     }
@@ -51,7 +53,7 @@ class DefaultRuleWrapper extends Rule
     public function getIndexOnRules($rules)
     {
         return $rules->search(function ($rule) {
-            if($rule instanceof DefaultRuleWrapper) {
+            if($rule instanceof static) {
                 return $rule->getKey() == $this->getKey();
             }
 
@@ -90,6 +92,11 @@ class DefaultRuleWrapper extends Rule
         return $this->removable;
     }
 
+    public function isDefault()
+    {
+        return $this->default;
+    }
+
     public function isInverse()
     {
         return $this->inverse;
@@ -100,16 +107,23 @@ class DefaultRuleWrapper extends Rule
         return $this->key;
     }
 
-    public function setInverse($inverse)
+    public function inverse($inverse = true)
     {
         $this->inverse = $inverse;
 
         return $this;
     }
 
-    public function setRemovable($removable)
+    public function removable($removable = true)
     {
         $this->removable = $removable;
+
+        return $this;
+    }
+
+    public function default($default = true)
+    {
+        $this->default = $default;
 
         return $this;
     }

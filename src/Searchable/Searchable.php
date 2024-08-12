@@ -9,7 +9,8 @@ interface Searchable
     public static function baseSearchQuery();
     public function getInitialRules();
     public static function searchableName();
-    public function defaultRulesApplied();
+    public function premadeRules();
+    public function getPremadeRules();
     public function getDefaultRulesApplied();
 
     /**

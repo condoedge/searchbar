@@ -19,9 +19,13 @@ class EnhancedSearchbar extends Query
 
     public function top()
     {
-        return $this->searchService->getQuery()?->count() ? _LinkButton('navbar.see-all')->href(
+        $count = $this->searchService->getQuery()?->count();
+        return $count ? _Flex(
+            _Html('navbar.see-all'),
+            _Pill($count)->class('bg-warning text-white !px-3'),
+        )->class('gap-2 mb-4 vlBtn')->href(
             'search.results', ['searchDetails' => compressArray($this->state->toArray())],
-        )->class('mb-4')->inNewTab() : null;
+        )->inNewTab() : null;
     }
 
     public function query()
@@ -31,9 +35,9 @@ class EnhancedSearchbar extends Query
 
     public function render($item)
     {
-        $searchableI = $this->state?->getSearchableInstance();
+        $typeInstance = $this->state?->getSearchableInstance();
         $search = $this->state?->getSearch();
 
-        return $searchableI->searchElement($item, $search)->class('!mb-2');
+        return $typeInstance->searchElement($item, $search)->class('!mb-2');
     }
 }

@@ -6,9 +6,10 @@ class SelectEntityType extends EntityType
 {
     protected $options;
 
-    public function __construct($options)
+    public function __construct($options, $allowAllOption = false)
     {
         $this->options = $options;
+        $this->allowAllOption = $allowAllOption;
     }
 
     public function optionsWithLabels()

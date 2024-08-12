@@ -28,7 +28,7 @@ class SearchPanel extends Form
             return null;
         }
 
-        $searchableI = $this->state->getSearchableInstance();
+        $typeInstance = $this->state->getSearchableInstance();
 
         return _Rows(
             _Html('loading...')->class('text-lg p-4')->id('search-panel-loading' . $this->serviceKey)->class('hidden'),
@@ -39,7 +39,7 @@ class SearchPanel extends Form
                 _Columns(
                     _Rows(
                         _Html('filter.filter')->icon('filter')->class('ml-4 mt-2 font-semibold text-level1'),
-                        $searchableI ? $this->sections($searchableI) : _Rows(
+                        $typeInstance ? $this->sections($typeInstance) : _Rows(
                             searchService()->optionsSearchables()
                         )->class('py-4'),
                     )->class('px-2')->col('col-md-3'),
@@ -51,6 +51,8 @@ class SearchPanel extends Form
                 
                     _Rows(
                         $this->instanciateSearchKomponent(FavoritesSearches::class),
+
+                        _Rows(collect($typeInstance?->getPremadeRules())->map(fn($r) => $r->getToggle()))->class('mt-6')
                     )->col('col-md-3 pt-6'),
                 ),
             )->class('relative'),

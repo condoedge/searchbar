@@ -23,7 +23,7 @@ class SearchResults extends Form
 
     public function render()
     {
-        $searchableI = $this->state->getSearchableInstance();
+        $typeInstance = $this->state->getSearchableInstance();
 
         return _Rows(
             _Html(__(
@@ -33,7 +33,7 @@ class SearchResults extends Form
 
             $this->state->getRules()->count() ? _Flex($this->state->getRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-2 mb-3 mt-4') : null,
 
-            $searchableI->getTableClassInstance([
+            $typeInstance->getTableClassInstance([
                 'storeKey' => $this->storeKey,
             ]),
         );

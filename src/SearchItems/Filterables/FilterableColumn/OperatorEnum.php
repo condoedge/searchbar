@@ -2,6 +2,8 @@
 
 namespace Kompo\Searchbar\SearchItems\Filterables\FilterableColumn;
 
+use Kompo\Searchbar\SearchItems\Rules\ColumnRule\ColumnRule;
+
 enum OperatorEnum: int
 {
     use \Kompo\Auth\Models\Traits\EnumKompo;
@@ -102,13 +104,13 @@ enum OperatorEnum: int
         };
     }
 
-    public function constructValue($val)
+    public function constructValue($val, ColumnRule $rule = null)
     {
         return match ($this) {
             self::CONTAINS => wildcardSpace($val),
             self::DOES_NOT_CONTAIN => wildcardSpace($val),
 
-            default => $val,
+            default => $rule?->getFilterable()?->defaultValueParsed($val) ?? $val,
         };
     }
 }
