@@ -1,5 +1,7 @@
 {
 	"filter.add-rule": "Add rule",
+	"filter.all": "All",
+	"filter.all-options": "All options",
 	"filter.between": "Between",
 	"filter.between.with-value": "Between: :value",
 	"filter.cancel": "Cancel",

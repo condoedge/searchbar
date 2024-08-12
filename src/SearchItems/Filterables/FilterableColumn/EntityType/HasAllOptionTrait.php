@@ -9,7 +9,7 @@ trait HasAllOptionTrait
     public function addAllOption($options)
     {
         if($this->allowAllOption) {
-            $options->prepend('translate.all-options', 'all');
+            $options->prepend('filter.all-options', 'all');
         }
 
         return $options;
@@ -18,7 +18,7 @@ trait HasAllOptionTrait
     public function parseLabelWithAllOption($value, $defaultCallback = null)
     {
         if($value == 'all') {
-            return 'translate.all';
+            return 'filter.all';
         }
 
         return $defaultCallback ? $defaultCallback() : $value;
