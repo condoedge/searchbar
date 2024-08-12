@@ -9,7 +9,7 @@ trait HasAllOptionTrait
     public function addAllOption($options)
     {
         if($this->allowAllOption) {
-            $options->prepend('translate.all', 'all');
+            $options->prepend('translate.all-options', 'all');
         }
 
         return $options;

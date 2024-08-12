@@ -37,5 +37,6 @@
 	"filter.search-results": "Résultats de la recherche",
 	"filter.search-results.with-values": "Résultats de la recherche pour: :entity",
 	"filter.with-values.multiple-search": ":operator: :value ",
-	"navbar.see-all": "Ouvrir dans une liste"
+	"navbar.see-all": "Ouvrir dans une liste",
+	"translate.all-options": "Toutes ces options"
 }
