@@ -1,5 +1,7 @@
 {
 	"filter.add-rule": "Add rule",
+	"filter.all": "All",
+	"filter.all-options": "All options",
 	"filter.between": "Between",
 	"filter.between.with-value": "Between: :value",
 	"filter.cancel": "Cancel",
@@ -37,5 +39,6 @@
 	"filter.search-results": "Search results",
 	"filter.search-results.with-values": "Search results for: :entity",
 	"filter.with-values.multiple-search": ":operator: :value ",
-	"navbar.see-all": "Open in a table"
+	"navbar.see-all": "Open in a table",
+	"translate.all-options": "All these options"
 }
