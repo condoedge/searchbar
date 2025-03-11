@@ -3,6 +3,7 @@
 namespace Kompo\Searchbar;
 
 use Kompo\Searchbar\Searchable\Searchable;
+use Kompo\Searchbar\SearchItems\Rules\FilterableRule;
 use Kompo\Searchbar\SearchItems\Stores\SearchStore;
 
 class SearchService
@@ -93,7 +94,11 @@ class SearchService
             return '?';
         }
 
-        return collect($rules)->reduce(function($query, $rule) {
+        return collect($rules)->reduce(function($query, $rule) use ($model) {
+            if ($rule instanceof FilterableRule) {
+                $rule->setSearchable($model);
+            }
+
             return $rule->query($query);
         }, $model->baseSearchQuery())->count();
     }

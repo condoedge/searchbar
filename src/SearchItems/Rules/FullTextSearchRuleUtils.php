@@ -2,6 +2,8 @@
 
 namespace Kompo\Searchbar\SearchItems\Rules;
 
+use  Illuminate\Database\Query\Expression;
+
 trait FullTextSearchRuleUtils
 {
     protected function fullSearchQuery($query)
@@ -19,7 +21,7 @@ trait FullTextSearchRuleUtils
 
     protected function getColumnForFullTextSearch()
     {
-        return $this->column;
+        return $this->column instanceof Expression ? $this->column->getValue(\DB::getQueryGrammar()) : $this->column;
     }
 
     protected function constructValueForFullTextSearch($value)

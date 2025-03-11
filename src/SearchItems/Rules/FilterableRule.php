@@ -22,7 +22,7 @@ abstract class FilterableRule extends Rule
         if (!$searchable) {
             return null;
         }
-    
+
         return $searchable->filterable($this->keyReference)->setAssignedRule($this);
     }
 
