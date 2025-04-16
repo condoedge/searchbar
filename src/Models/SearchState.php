@@ -2,7 +2,7 @@
 
 namespace Kompo\Searchbar\Models;
 
-use Kompo\Auth\Models\Model;
+use Condoedge\Utils\Models\Model;
 
 class SearchState extends Model
 {

@@ -2,7 +2,7 @@
 
 namespace Kompo\Searchbar\Components;
 
-use Kompo\Query;
+use Condoedge\Utils\Kompo\Common\Query;
 
 class EnhancedSearchbar extends Query
 {

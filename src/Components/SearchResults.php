@@ -2,7 +2,7 @@
 
 namespace Kompo\Searchbar\Components;
 
-use Kompo\Form;
+use Condoedge\Utils\Kompo\Common\Form;
 
 class SearchResults extends Form
 {

@@ -6,7 +6,7 @@ use Kompo\Searchbar\SearchItems\Rules\ColumnRule\ColumnRule;
 
 enum OperatorEnum: int
 {
-    use \Kompo\Auth\Models\Traits\EnumKompo;
+    use \Condoedge\Utils\Models\Traits\EnumKompo;
 
     // GENERAL
     case EQUALS_TO = 1;

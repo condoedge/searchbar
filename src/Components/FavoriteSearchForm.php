@@ -2,7 +2,7 @@
 
 namespace Kompo\Searchbar\Components;
 
-use Kompo\Auth\Common\Modal;
+use Condoedge\Utils\Kompo\Common\Modal;
 use Kompo\Searchbar\SearchItems\Stores\DbStore;
 
 class FavoriteSearchForm extends Modal

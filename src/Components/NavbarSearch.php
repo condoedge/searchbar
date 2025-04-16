@@ -2,7 +2,7 @@
 
 namespace Kompo\Searchbar\Components;
 
-use Kompo\Form;
+use Condoedge\Utils\Kompo\Common\Form;
 use Kompo\Searchbar\Components\SearchKomponentUtils;
 use Kompo\Searchbar\Components\SearchStateRequestUtils;
 

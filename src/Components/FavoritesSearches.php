@@ -2,7 +2,7 @@
 
 namespace Kompo\Searchbar\Components;
 
-use Kompo\Query;
+use Condoedge\Utils\Kompo\Common\Query;
 use Kompo\Searchbar\Facades\SearchStateModel;
 use Kompo\Searchbar\SearchItems\Stores\DbStore;
 

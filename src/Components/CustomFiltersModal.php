@@ -2,8 +2,7 @@
 
 namespace Kompo\Searchbar\Components;
 
-
-use Kompo\Modal;
+use Condoedge\Utils\Kompo\Common\Modal;
 use Kompo\Searchbar\Components\RuleForm\BaseRuleForm;
 
 class CustomFiltersModal extends Modal

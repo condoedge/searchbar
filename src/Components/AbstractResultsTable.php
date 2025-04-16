@@ -2,11 +2,11 @@
 
 namespace Kompo\Searchbar\Components;
 
-use Kompo\Auth\Exports\TableExportableToExcel;
+use Condoedge\Utils\Kompo\Common\Table;
 use Kompo\Searchbar\Components\SearchKomponentUtils;
 use Kompo\Searchbar\Components\SearchResults;
 
-class AbstractResultsTable extends TableExportableToExcel
+class AbstractResultsTable extends Table
 {       
     use SearchKomponentUtils;
 

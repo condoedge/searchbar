@@ -2,10 +2,10 @@
 
 namespace Kompo\Searchbar\Components\RuleForm;
 
+use Condoedge\Utils\Kompo\Common\Modal;
 use Kompo\Searchbar\SearchItems\Filterables\Filterable;
 use Kompo\Searchbar\Components\SearchKomponentUtils;
 use Kompo\Searchbar\SearchItems\Rules\FilterableRule;
-use Kompo\Auth\Common\Modal;
 
 abstract class AbstractRuleForm extends Modal
 {

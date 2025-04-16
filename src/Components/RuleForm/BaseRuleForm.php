@@ -2,7 +2,7 @@
 
 namespace Kompo\Searchbar\Components\RuleForm;
 
-use Kompo\Auth\Common\Modal;
+use Condoedge\Utils\Kompo\Common\Modal;
 use Kompo\Searchbar\Components\SearchKomponentUtils;
 
 class BaseRuleForm extends Modal
