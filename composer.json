@@ -11,7 +11,7 @@
         "php": "^7.3|^8.0",
         "laravel/framework": ">=5.6.0",
         "kompo/kompo": ">=3.0.51",
-        "condoedge/utils": "^v0.2.12"
+        "condoedge/utils": "^0.2.12"
     },
     "extra": {
         "laravel": {
