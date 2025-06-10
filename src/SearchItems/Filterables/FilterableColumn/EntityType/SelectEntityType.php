@@ -12,23 +12,32 @@ class SelectEntityType extends EntityType
         $this->allowAllOption = $allowAllOption;
     }
 
+    protected function calculateOptions()
+    {
+        if (is_callable($this->options)) {
+            $this->options = call_user_func($this->options);
+        }
+
+        return $this->options;
+    }
+
     public function optionsWithLabels()
     {
-        return $this->options;
+        return $this->calculateOptions();
     }
 
     public function getValue()
     {
-        return $this->options;
+        return $this->calculateOptions();
     }
 
     public function from($value)
     {
-        return $this->options[$value];
+        return $this->calculateOptions()[$value] ?? $value;
     }
 
     public function getLabel($value)
     {
-        return $this->from($value);
+        return $this->calculateOptions()[$value] ?? $value;
     }
 }
