@@ -26,6 +26,10 @@ trait FullTextSearchRuleUtils
 
     protected function constructValueForFullTextSearch($value)
     {
+        if (is_null($value) || $value === '') {
+            return '';
+        }
+
         return collect(explode(' ', $value))->map(function($word) {
             return '+' . $word . '*';
         })->implode(' ');

@@ -104,10 +104,16 @@ class SearchStateController extends Controller
     {
         $i = request('i');
         $value = request('value');
-        $rule = $this->state->getRules()->get($i);
-        $rule->setValue($value);
 
-        $this->state->replaceRule($i, $rule);
+        if ($value) {
+            $rule = $this->state->getRules()->get($i);
+            $rule->setValue($value);
+
+            $this->state->replaceRule($i, $rule);
+        } else {
+            // If the value is empty, we remove the rule
+            $this->state->removeRule($i);
+        }
 
         stateStore($this->serviceKey)->storeState($this->state);
     }
@@ -126,7 +132,9 @@ class SearchStateController extends Controller
 
     public function addRule()
     {
-        $this->state->addRule(RulesService::retrieveRuleFromRequest('rule'));
+        $rule = RulesService::retrieveRuleFromRequest('rule');
+
+        $this->state->addRule($rule );
 
         stateStore($this->serviceKey)->storeState($this->state);
     }
