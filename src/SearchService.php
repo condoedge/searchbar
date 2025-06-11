@@ -55,12 +55,12 @@ class SearchService
         
         return $this->getSearchables()->mapWithKeys(function($searchable) use($search) {
             $count = strlen($search) < 1 ? '?' : $this->getCountSpecificType($searchable);
-        
+
             return [
                 $searchable => _FlexBetween(
                     _Html($searchable::searchableName()),
                     _Html($count)->class('py-px px-2 text-sm rounded text-white')->class(($count == 0 || $count == '?') ? 'bg-grayscout bg-opacity-50' : 'bg-warning')
-                )->class('gap-4 hover:bg-gray-100 min-w-48 px-4 py-1')->selfPost('selectSearchableEntity', ['entity' => $searchable])
+                )->class('gap-4 hover:bg-gray-100 min-w-48 px-4 py-1')->post('searchstate.select-entity', ['searchableEntity' => $searchable, 'storeKey' => $this->storeKey, 'serviceKey' => $this->key])->withAllFormValues()
                 ->refresh('navbar-search')->refresh(),
             ];
         });
@@ -116,7 +116,7 @@ class SearchService
         if(!$this->store) {
             $this->store = app(SearchStore::class, ['key' => $this->storeKey, 'contextService' => $this]);
         }
-        
+
         return $this->store;
     }
 

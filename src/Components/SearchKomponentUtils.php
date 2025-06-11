@@ -9,6 +9,7 @@ trait SearchKomponentUtils
     protected $searchService;
     protected $state;
     protected $searchableInstance;
+    protected $storeKey;
 
     public function created()
     {
@@ -17,6 +18,13 @@ trait SearchKomponentUtils
 
     protected function setSearchProps()
     {
+        if (!$this->prop('storeKey')) {
+            searchService($this->getServiceKey())->setStoreKey();
+            $this->store(['storeKey' => searchService($this->getServiceKey())->getStoreKey()]);
+        }
+
+        $this->storeKey = $this->prop('storeKey');
+
         $this->searchService = searchService($this->getServiceKey())->setStoreKey($this->prop('storeKey'));
         $this->state = stateStore($this->getServiceKey())->getState();
         $this->searchableInstance = $this->state->getSearchableInstance();

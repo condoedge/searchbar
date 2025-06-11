@@ -32,7 +32,7 @@ abstract class SearchSection extends SearchItem
 
     protected function linkOption($option, $index)
     {
-        return _Link($option)->selfPost('addRule', ['rule' => serialize($this->getRule($index))])->refresh('navbar-search');
+        return _Link($option)->post('searchstate.add-rule', ['rule' => serialize($this->getRule($index))])->withAllFormValues()->refresh('navbar-search');
     }
 
 	abstract public function getRule($type);

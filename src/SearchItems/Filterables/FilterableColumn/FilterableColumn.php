@@ -34,8 +34,8 @@ class FilterableColumn extends Filterable
             _Html($this->getFilterName())->col('!pr-0 col-md-3'),
             _Select()->class('!mb-0')->options($this->getInputType()->getOperatorOptionsParsed())
             ->name('operator')->default($rule->getOperator())
-            ->onChange(fn($e) => $e->selfPost('executeCustomFilterableFunction', ['i' => $index, 'function' => 'setRuleOperator'])->refresh('navbar-search') &&
-                $e->selfGet('executeCustomFilterableFunction', ['i' => $index, 'function' =>'setValueInput'])
+            ->onChange(fn($e) => $e->post('searchstate.execute-custom-filterable-function', ['i' => $index, 'function' => 'setRuleOperator'])->withAllFormValues()->refresh('navbar-search') &&
+                $e->post('searchstate.execute-custom-filterable-function', ['i' => $index, 'function' =>'setValueInput'])->withAllFormValues()
                 ->inPanel('input-panel' . $index)
             )
             ->overModal('operator')
@@ -43,7 +43,7 @@ class FilterableColumn extends Filterable
 
             _Panel(
                 $this->getInput($rule->getOperator())
-                    ->onChange(fn($e) => $e->selfPost('setRuleValue', ['i' => $index])
+                    ->onChange(fn($e) => $e->post('searchstate.set-rule-value', ['i' => $index])->withAllFormValues()
                     ->refresh('navbar-search'))
                     ->class('!mb-0')->value($rule->getValue()),
             )->id('input-panel' . $index)->col('col-md-6'),
@@ -74,7 +74,7 @@ class FilterableColumn extends Filterable
             $value = null;
         } 
 
-        return $colSpec->getInput($operator)->selfPost('setRuleValue', ['i' => $i])->refresh('navbar-search')->class('!mb-0')
+        return $colSpec->getInput($operator)->post('searchstate.set-rule-value', ['i' => $i])->withAllFormValues()->refresh('navbar-search')->class('!mb-0')
             ->when($value, fn($el) => $el->value($value));
     }
 

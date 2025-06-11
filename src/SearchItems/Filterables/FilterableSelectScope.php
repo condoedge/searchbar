@@ -48,7 +48,7 @@ class FilterableSelectScope extends Filterable
             _Html($this->getFilterName())->col('!pr-0 col-md-3'),
             _Html()->col('col-md-3'),
             _Select()->name('value')->options($this->optionsScopes()->toArray())
-                ->selfPost('setRuleValue', ['i' => $index])->withAllFormValues()
+                ->post('searchstate.set-rule-value', ['i' => $index])->withAllFormValues()
                 ->refresh('navbar-search')->class('!mb-0')->value($rule->getValue())
                 ->col('col-md-6'),
         ];

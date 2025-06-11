@@ -25,6 +25,10 @@ class SearchbarServiceProvider extends ServiceProvider
         $this->app->bind('search-state-model', function() {
             return new (config('searchbar.searchstate_model'));
         });
+
+        $this->booted(function () {
+            \Route::middleware('web')->group(__DIR__ . '/../routes/web.php');
+        });
     }
 
     public function boot(): void

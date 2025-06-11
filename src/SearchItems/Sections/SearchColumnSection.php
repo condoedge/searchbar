@@ -35,6 +35,6 @@ class SearchColumnSection extends SearchSection
 
     protected function linkOption($option, $index)
     {
-        return _Link($option)->selfPost('addRule', ['rule' => serialize($this->getRule($index))])->selfPost('cleanSearch')->refresh('navbar-search');
+        return _Link($option)->post('searchstate.add-rule', ['rule' => serialize($this->getRule($index))])->withAllFormValues()->post('searchstate.clean-search')->withAllFormValues()->refresh('navbar-search');
     }
 }

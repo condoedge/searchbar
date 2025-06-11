@@ -55,7 +55,7 @@ abstract class FilterableRule extends Rule
             $this->getFilterable()?->getFilterName(),
             _Flex(
                 $this->renderContent(),
-                !$withDeleteButton ? null : _Link()->icon('x')->selfPost('deleteRule', ['i' => $index])
+                !$withDeleteButton ? null : _Link()->icon('x')->post('searchstate.delete-rule', ['i' => $index])->withAllFormValues()
                     ->refresh('navbar-search'),
             )->class('gap-2'),
         );

@@ -18,7 +18,7 @@ class CustomFiltersModal extends Modal
     public function headerButtons()
 	{
         return _FlexEnd(
-            _ButtonOutlined('filter.reset-filter')->selfPost('getBack')->refresh()->refresh('navbar-search'),
+            _ButtonOutlined('filter.reset-filter')->post('searchstate.get-back')->withAllFormValues()->refresh()->refresh('navbar-search'),
             _Button('filter.new-rule')->selfGet('addRuleModal')->inModal(),
         )->class('gap-4');
 	}
@@ -36,14 +36,14 @@ class CustomFiltersModal extends Modal
                 ),
                 _Rows(
                     $this->rowRule(
-                        fn($deleteButton) => $deleteButton->selfPost('getBack')->refresh()->refresh('navbar-search'),
+                        fn($deleteButton) => $deleteButton->post('searchstate.get-back')->withAllFormValues()->refresh()->refresh('navbar-search'),
                         _Html('filter.search-in')->col('!pr-0 col-md-3'),
                         _Html()->col('col-md-3'),
                         _Select()->name('searchableEntity')->options(searchService()->getSearchables()->mapWithKeys(fn($searchable) =>
                             [$searchable => $searchable::searchableName()]
                         ))
                             ->default($this->state->getSearchableEntity())
-                            ->onChange(fn($e) => $e->selfPost('selectSearchableEntity')->refresh('navbar-search'))
+                            ->onChange(fn($e) => $e->post('searchstate.select-entity')->withAllFormValues()->refresh('navbar-search'))
                             ->overModal('search-in')
                             ->class('!mb-0 w-full')
                             ->col('col-md-6'),
@@ -53,7 +53,7 @@ class CustomFiltersModal extends Modal
                     $colInfo = $r->getFilterable($typeInstance);
 
                     return $this->rowRule(function($deleteButton) use ($i) {
-                        return $deleteButton->selfPost('deleteRule', ['i' => $i])->refresh()->refresh('navbar-search');
+                        return $deleteButton->post('searchstate.delete-rule', ['i' => $i])->withAllFormValues()->refresh()->refresh('navbar-search');
                     }, ...$colInfo->formRow($r, $i));
                 }))->class('gap-y-4'),
             ),
@@ -74,13 +74,6 @@ class CustomFiltersModal extends Modal
     public function footer()
     {
         return null;
-    }
-
-    public function executeCustomFilterableFunction($i, $function)
-    {
-        $rule = $this->state->getRules()->get($i);
-
-        return $rule->getFilterable($this->state->getSearchableInstance())->executeCustomMethod($function, $i);
     }
 
     public function addRuleModal()

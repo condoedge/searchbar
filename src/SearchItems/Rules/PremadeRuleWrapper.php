@@ -73,7 +73,7 @@ class PremadeRuleWrapper extends Rule
         $active = $this->isActive();
         $value = $this->isInverse() ? !$active : $active;
 
-        return _Toggle($this->getDescription())->name('toggle' . $this->getKey())->value($value)->selfPost('toggleDefaultRule', ['key' => $this->getKey()])->refresh('navbar-search');
+        return _Toggle($this->getDescription())->name('toggle' . $this->getKey())->value($value)->post('searchstate.toggle-default', ['key' => $this->getKey()])->withAllFormValues()->refresh('navbar-search');
     }
 
     // GETTERS AND SETTERS

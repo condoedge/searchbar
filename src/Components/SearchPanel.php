@@ -31,10 +31,12 @@ class SearchPanel extends Form
         $typeInstance = $this->state->getSearchableInstance();
 
         return _Rows(
+            _Hidden()->name('serviceKey')->default($this->serviceKey),
+            _Hidden()->name('storeKey')->default($this->storeKey),
             _Html('loading...')->class('text-lg p-4')->id('search-panel-loading' . $this->serviceKey)->class('hidden'),
             _Rows(
                 _FlexEnd(
-                    _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0 right-5 z-10')->selfPost('closeSearch')->refresh(),
+                    _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0 right-5 z-10')->post('searchstate.close')->withAllFormValues()->refresh(),
                 ),
                 _Columns(
                     _Rows(
@@ -63,7 +65,7 @@ class SearchPanel extends Form
     protected function sections($searchableI)
     {
         return _Rows(
-            _Link('filter.back')->icon(_sax('arrow-left',20))->selfGet('getBack')->refresh('navbar-search')->class('mt-4 border-b py-4 border-level4 text-black font-semibold'),
+            _Link('filter.back')->icon(_sax('arrow-left',20))->post('searchstate.get-back')->withAllFormValues()->refresh('navbar-search')->class('mt-4 border-b py-4 border-level4 text-black font-semibold'),
             _Rows($searchableI->decoratedSections()->map(fn($s) => $s->showOptions()->class('border-b py-4 border-level4'))),
             _Link('filter.custom-filters')->class('text-black font-semibold py-4')
                 ->selfGet('getCustomFiltersModal')->inModal(),

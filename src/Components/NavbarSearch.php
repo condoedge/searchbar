@@ -21,6 +21,8 @@ class NavbarSearch extends Form
         $loadingJs = '() => {searchLoadingOn("'. $searchPanelLoadingId .'")}';
 
         return _Rows(
+            _Hidden()->name('serviceKey')->default($this->serviceKey),
+            _Hidden()->name('storeKey')->default($this->storeKey),
             _Rows(
                 _Sax('search-normal-1', 24)->class('text-greenmain mt-0 pt-0 px-2'),
                 !$this->state->getSearchableInstance()?->searchableName() ? null : _Flex(
@@ -33,8 +35,8 @@ class NavbarSearch extends Form
                     ->class('w-full mb-0 text-xl [&>.vlInputWrapper:focus-within]:shadow-none min-w-72')
                     ->inputClass('py-2')
                     ->noAutocomplete()
-                    ->onFocus(fn($e) => $e->selfGet('openSearch')->refresh('search-panel'))
-                    ->onInput(fn($e) => $e->run($loadingJs) && $e->selfPost('setSearch')->run($loadingJs)->refresh('search-panel')),
+                    ->onFocus(fn($e) => $e->post('searchstate.open')->withAllFormValues()->refresh('search-panel'))
+                    ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('search-panel')),
                 _Spinner()->id($searchPanelLoadingId)->class('relative right-8 hidden'),
             )->class('w-full relative flex-row items-center focus-within:border border-greenmain rounded-lg max-w-6xl overflow-x-auto mini-scroll'),
 

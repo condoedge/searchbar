@@ -41,7 +41,7 @@ class FilterableScope extends Filterable
             _Flex(
                 $this->getInputs()->map(fn($input, $i) => $input
                 ->default($rule->getParams()[$i])
-                ->selfPost('setRuleParam', ['i' => $index])->withAllFormValues()->refresh('navbar-search')
+                ->post('searchstate.set-rule-param', ['i' => $index])->withAllFormValues()->refresh('navbar-search')
                 )
             )->col('col-md-6 flex-wrap'),
         ];
