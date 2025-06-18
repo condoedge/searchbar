@@ -19,20 +19,20 @@ class NavbarSearch extends Form
     {
         $this->setSearchProps();
 
-        $this->onLoad(fn($e) => $e->run('() => {
-            document.addEventListener("click", (event) => {
-                const navbarSearch = document.getElementById("navbar-search");
-                const searchPanel = document.getElementById("search-panel");
+        // $this->onLoad(fn($e) => $e->run('() => {
+        //     document.addEventListener("click", (event) => {
+        //         const navbarSearch = document.getElementById("navbar-search");
+        //         const searchPanel = document.getElementById("search-panel");
 
-                const isSearchPanelOpen = !searchPanel.classList.contains("hidden");
+        //         const isSearchPanelOpen = !searchPanel.classList.contains("hidden");
 
-                const isTheClickOutsideNavbarSearch = !navbarSearch.contains(event.target) && !event.target.classList.contains("navbar-search-input");
+        //         const isTheClickOutsideNavbarSearch = !navbarSearch.contains(event.target) && !event.target.classList.contains("navbar-search-input");
 
-                if (isSearchPanelOpen && isTheClickOutsideNavbarSearch) {
-                    searchPanel.classList.add("hidden");
-                }
-            });
-        }'));
+        //         if (isSearchPanelOpen && isTheClickOutsideNavbarSearch) {
+        //             searchPanel.classList.add("hidden");
+        //         }
+        //     });
+        // }'));
     }
 
     public function render()
