@@ -19,20 +19,41 @@ class NavbarSearch extends Form
     {
         $this->setSearchProps();
 
-        // $this->onLoad(fn($e) => $e->run('() => {
-        //     document.addEventListener("click", (event) => {
-        //         const navbarSearch = document.getElementById("navbar-search");
-        //         const searchPanel = document.getElementById("search-panel");
+        $this->onLoad(fn($e) => $e->run('() => {
+            const opened = window.navbar_search_opened || false;
 
-        //         const isSearchPanelOpen = !searchPanel.classList.contains("hidden");
+            window.openSearchPanel = () => {
+                const searchPanel = document.getElementById("search-panel-container");
+                searchPanel.classList.remove("hidden");
+                window.navbar_search_opened = true;
+            }
 
-        //         const isTheClickOutsideNavbarSearch = !navbarSearch.contains(event.target) && !event.target.classList.contains("navbar-search-input");
+            window.closeSearchPanel = () => {
+                const searchPanel = document.getElementById("search-panel-container");
+                searchPanel.classList.add("hidden");
+                window.navbar_search_opened = false;
+            }
 
-        //         if (isSearchPanelOpen && isTheClickOutsideNavbarSearch) {
-        //             searchPanel.classList.add("hidden");
-        //         }
-        //     });
-        // }'));
+            if (opened) {
+                openSearchPanel();
+            } else {
+                closeSearchPanel();
+            }
+
+            document.addEventListener("click", (event) => {
+                const navbarSearch = document.getElementById("navbar-search");
+                const searchPanel = document.getElementById("search-panel-container");
+
+                const isSearchPanelOpen = !searchPanel.classList.contains("hidden");
+
+                const isTheClickOutsideNavbarSearch = !navbarSearch.contains(event.target) && !event.target.classList.contains("navbar-search-input");
+
+                if (isSearchPanelOpen && isTheClickOutsideNavbarSearch) {
+                    closeSearchPanel();
+                    window.navbar_search_opened = false;
+                }
+            });
+        }'));
     }
 
     public function render()
@@ -56,7 +77,7 @@ class NavbarSearch extends Form
                     ->inputClass('py-2')
                     ->noAutocomplete()
                     ->onFocus(fn($e) => $e->run('() => {
-                        $("#search-panel").removeClass("hidden");
+                        openSearchPanel();
                     }'))
                     ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('search-panel')),
                 _Spinner()->id($searchPanelLoadingId)->class('relative right-8 hidden'),
@@ -64,7 +85,7 @@ class NavbarSearch extends Form
 
             _Rows(
                 $this->instanciateSearchKomponent(SearchPanel::class),
-            )->id('search-panel')->class('hidden fixed top-14 md:top-full left-0 md:absolute z-[110] w-screen md:w-full'),
+            )->id('search-panel-container')->class('hidden fixed top-14 md:top-full left-0 md:absolute z-[110] w-screen md:w-full'),
         )->class('nav-search-box flex-1 pb-[7px]');
     }
 

@@ -33,7 +33,7 @@ class SearchPanel extends Form
             _Rows(
                 _FlexEnd(
                     _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0 right-5 z-10')->run('() => {
-                        $("#search-panel").addClass("hidden");
+                        closeSearchPanel();
                     }'),
                 ),
                 _Columns(
