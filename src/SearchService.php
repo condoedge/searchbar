@@ -2,6 +2,7 @@
 
 namespace Kompo\Searchbar;
 
+use Illuminate\Support\Facades\DB;
 use Kompo\Searchbar\Searchable\Searchable;
 use Kompo\Searchbar\SearchItems\Rules\FilterableRule;
 use Kompo\Searchbar\SearchItems\Stores\SearchStore;
@@ -94,13 +95,25 @@ class SearchService
             return '?';
         }
 
-        return collect($rules)->reduce(function($query, $rule) use ($model) {
+        $subQuery = collect($rules)->reduce(function($query, $rule) use ($model) {
             if ($rule instanceof FilterableRule) {
                 $rule->setSearchable($model);
             }
 
             return $rule->query($query);
-        }, $model->baseSearchQuery())->count();
+        }, $model->baseSearchQuery())->limit(config('searchbar.max-count-searchable') + 1);
+
+        // To being able to limit the count, we need to wrap the subquery
+        $count =  DB::table(DB::raw("({$subQuery->toSql()}) as sub"))
+            ->mergeBindings($subQuery->toBase()) 
+            ->count();
+
+
+        if($count > config('searchbar.max-count-searchable')) {
+            return config('searchbar.max-count-searchable') . '+';
+        }
+
+        return $count;
     }
 
     // STATES

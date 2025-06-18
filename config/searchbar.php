@@ -9,4 +9,6 @@ return [
     'base_result_table_namespace' => 'App\Kompo\Search',
 
     'searchstate_model' => SearchState::class,
+
+    'max-count-searchable' => 100,
 ];
