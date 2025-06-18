@@ -24,10 +24,6 @@ class SearchPanel extends Form
 
     public function render()
     {
-        if (!$this->state->isOpen()) {
-            return null;
-        }
-
         $typeInstance = $this->state->getSearchableInstance();
 
         return _Rows(
@@ -36,7 +32,9 @@ class SearchPanel extends Form
             _Html('loading...')->class('text-lg p-4')->id('search-panel-loading' . $this->serviceKey)->class('hidden'),
             _Rows(
                 _FlexEnd(
-                    _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0 right-5 z-10')->post('searchstate.close')->withAllFormValues()->refresh(),
+                    _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0 right-5 z-10')->run('() => {
+                        $("#search-panel").addClass("hidden");
+                    }'),
                 ),
                 _Columns(
                     _Rows(

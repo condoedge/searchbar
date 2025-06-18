@@ -15,6 +15,26 @@ class NavbarSearch extends Form
 
     public $id = 'navbar-search';
 
+    public function created()
+    {
+        $this->setSearchProps();
+
+        $this->onLoad(fn($e) => $e->run('() => {
+            document.addEventListener("click", (event) => {
+                const navbarSearch = document.getElementById("navbar-search");
+                const searchPanel = document.getElementById("search-panel");
+
+                const isSearchPanelOpen = !searchPanel.classList.contains("hidden");
+
+                const isTheClickOutsideNavbarSearch = !navbarSearch.contains(event.target) && !event.target.classList.contains("navbar-search-input");
+
+                if (isSearchPanelOpen && isTheClickOutsideNavbarSearch) {
+                    searchPanel.classList.add("hidden");
+                }
+            });
+        }'));
+    }
+
     public function render()
     {
         $searchPanelLoadingId = 'search-panel-loading' . $this->serviceKey;
@@ -35,14 +55,16 @@ class NavbarSearch extends Form
                     ->class('w-full mb-0 text-xl [&>.vlInputWrapper:focus-within]:shadow-none min-w-72')
                     ->inputClass('py-2')
                     ->noAutocomplete()
-                    ->onFocus(fn($e) => $e->post('searchstate.open')->withAllFormValues()->refresh('search-panel'))
+                    ->onFocus(fn($e) => $e->run('() => {
+                        $("#search-panel").removeClass("hidden");
+                    }'))
                     ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('search-panel')),
                 _Spinner()->id($searchPanelLoadingId)->class('relative right-8 hidden'),
             )->class('w-full relative flex-row items-center focus-within:border border-greenmain rounded-lg max-w-6xl overflow-x-auto mini-scroll'),
 
             _Rows(
                 $this->instanciateSearchKomponent(SearchPanel::class),
-            )->id('search-panel')->class('fixed top-14 md:top-full left-0 md:absolute z-[110] w-screen md:w-full'),
+            )->id('search-panel')->class('hidden fixed top-14 md:top-full left-0 md:absolute z-[110] w-screen md:w-full'),
         )->class('nav-search-box flex-1 pb-[7px]');
     }
 
