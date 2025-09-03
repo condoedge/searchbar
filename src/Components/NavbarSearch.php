@@ -61,12 +61,40 @@ class NavbarSearch extends Form
             function searchLoadingOn(id) {
                 $("#" + id).removeClass("hidden");
 
-                $("#" + id).closest("#navbar-search").find("#search-panel-container").find("a")
+                const searchContainer = $("#" + id).closest("#navbar-search").find("#search-panel-container");
+
+                searchContainer.find("a")
                     .attr("disabled", "disabled");
+
+                searchContainer.find(".searchbar-loading").removeClass("hidden");
+
+                searchContainer.find(".entityCountPill").addClass("hidden")
+                    .parent().removeClass("bg-warning")
+                    .addClass("bg-grayscout bg-opacity-50");
             }
 
             function searchLoadingOff(id) {
                 $("#" + id).addClass("hidden");
+
+                const searchContainer = $("#" + id).closest("#navbar-search").find("#search-panel-container");
+
+                searchContainer.find("a")
+                    .removeAttr("disabled");
+
+                searchContainer.find(".searchbar-loading").addClass("hidden");
+
+                searchContainer.find(".entityCountPill").removeClass("hidden");
+
+                searchContainer.find(".entityCountPill").each(function() {
+                    const count = $(this).text();
+                    if (count == "0" || count == "?") {
+                        $(this).parent().removeClass("bg-warning")
+                            .addClass("bg-grayscout bg-opacity-50");
+                    } else {
+                        $(this).parent().removeClass("bg-grayscout bg-opacity-50")
+                            .addClass("bg-warning");
+                    }
+                });
             }
         ';
     }

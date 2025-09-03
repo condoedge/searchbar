@@ -60,7 +60,11 @@ class SearchService
             return [
                 $searchable => _FlexBetween(
                     _Html($searchable::searchableName()),
-                    _Html($count)->class('py-px px-2 text-sm rounded text-white')->class(($count == 0 || $count == '?') ? 'bg-grayscout bg-opacity-50' : 'bg-warning')
+                    _Rows(
+                        _Html($count)->class('entityCountPill'),
+                        _Spinner('w-3 h-3', 'text-gray-600')->class('relative p-1 hidden searchbar-loading'),
+                    )->class('py-px px-2 text-sm rounded text-white')->class(($count == 0 || $count == '?') ? 'bg-grayscout bg-opacity-50' : 'bg-warning'),
+                    
                 )->class('gap-4 hover:bg-gray-100 min-w-48 px-4 py-1')->post('searchstate.select-entity', ['searchableEntity' => $searchable, 'storeKey' => $this->storeKey, 'serviceKey' => $this->key])->withAllFormValues()
                 ->refresh('navbar-search')->refresh(),
             ];
