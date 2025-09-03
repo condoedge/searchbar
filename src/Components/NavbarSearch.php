@@ -25,7 +25,7 @@ class NavbarSearch extends Form
     public function render()
     {
         $searchPanelLoadingId = 'search-panel-loading' . $this->serviceKey;
-        $loadingJs = '() => {searchLoadingOn("'. $searchPanelLoadingId .'")}';
+        $loadingJs = '() => {searchLoadingOn("'. $searchPanelLoadingId .'");}';
 
         return _Rows(
             _Hidden()->name('serviceKey')->default($this->serviceKey),
@@ -46,7 +46,7 @@ class NavbarSearch extends Form
                         openSearchPanel();
                     }'))
                     ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('search-panel')),
-                _Spinner()->id($searchPanelLoadingId)->class('relative right-8 hidden'),
+                _Spinner()->id($searchPanelLoadingId)->class('relative right-8 hidden searchbar-loading'),
             )->class('w-full relative flex-row items-center focus-within:border border-greenmain rounded-lg max-w-6xl overflow-x-auto mini-scroll'),
 
             _Rows(
@@ -60,6 +60,9 @@ class NavbarSearch extends Form
         return '<<<javascript
             function searchLoadingOn(id) {
                 $("#" + id).removeClass("hidden");
+
+                $("#" + id).closest("#navbar-search").find("#search-panel-container").find("a")
+                    .attr("disabled", "disabled");
             }
 
             function searchLoadingOff(id) {
@@ -102,7 +105,9 @@ class NavbarSearch extends Form
 
                 const isTheClickOutsideNavbarSearch = !navbarSearch.contains(event.target) && !event.target.classList.contains("navbar-search-input");
 
-                if (isSearchPanelOpen && isTheClickOutsideNavbarSearch) {
+                const isTheClickOnAModal = event.target.closest(".vlMask") !== null;
+
+                if (isSearchPanelOpen && isTheClickOutsideNavbarSearch && !isTheClickOnAModal) {
                     closeSearchPanel();
                     window.navbar_search_opened = false;
                 }

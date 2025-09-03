@@ -28,6 +28,8 @@ class CustomFiltersModal extends Modal
         $typeInstance = $this->state->getSearchableInstance();
 
         return _Rows(
+            _Hidden()->name('serviceKey')->default($this->serviceKey),
+            _Hidden()->name('storeKey')->default($this->storeKey),
             _Rows(
                 _Rows(
                     collect($typeInstance?->getPremadeRules())->map(fn($r) => _FlexEnd(
