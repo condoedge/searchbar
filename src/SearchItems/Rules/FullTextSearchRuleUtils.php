@@ -33,11 +33,17 @@ trait FullTextSearchRuleUtils
         return $this->constructValueForFullTextSearchFlexible($value);
     }
 
-    protected function useFullTextSearch()
+    protected function usesFullTextSearch()
     {
         return $this->getFilterable() && method_exists($this->getFilterable(), 'hasFullTextSearch') &&
             $this->getFilterable()->hasFullTextSearch() &&
             (!property_exists($this, 'operator') || $this->operator->acceptFullTextSearch());
+    }
+
+    protected function usesNgramSearch()
+    {
+        return $this->getFilterable() && method_exists($this->getFilterable(), 'usesNgramSearch') &&
+            $this->getFilterable()->usesNgramSearch();
     }
 
     protected function constructValueForFullTextSearchFlexible(?string $value, int $minLen = 3): string
@@ -69,7 +75,7 @@ trait FullTextSearchRuleUtils
                 // Respect minimum length for FT
                 if (mb_strlen($w) >= $minLen) {
                     // Prefix to expand coverage (autocomplete)
-                    $out[] = $w . '*';
+                    $out[] = $this->buildPrefixes($w);
                 }
                 continue;
             }
@@ -90,7 +96,7 @@ trait FullTextSearchRuleUtils
             $parts = preg_split('/[^\pL\pN]+/u', $w, -1, PREG_SPLIT_NO_EMPTY);
             foreach ($parts as $p) {
                 if (mb_strlen($p) >= $minLen) {
-                    $out[] = $p . '*';
+                    $out[] = $this->buildPrefixes($p);
                 }
             }
         }
@@ -101,5 +107,14 @@ trait FullTextSearchRuleUtils
         }
 
         return implode(' ', $out);
+    }
+
+    protected function buildPrefixes($word)
+    {
+        if ($this->usesNgramSearch()) {
+            return '\"'. $word . '\"';
+        } else {
+            return $word . '*';
+        }
     }
 }

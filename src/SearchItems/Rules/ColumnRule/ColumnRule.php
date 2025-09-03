@@ -26,7 +26,7 @@ class ColumnRule extends FilterableRule
     public function decorateQuery($query)
     {
         // If we have full text search enabled and the operator allows it, we use it. Here we don't derivate the responsibility to the operator.
-        if($this->useFullTextSearch()) {
+        if($this->usesFullTextSearch()) {
             return $this->fullSearchQuery($query);
         }
 
