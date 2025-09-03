@@ -14,9 +14,13 @@ trait FullTextSearchRuleUtils
             return $query;
         }
 
+        $naturalLanguageValue = trim(preg_replace('/[+\-*~<>()"@]+/', ' ', $value));
         $column = $this->getColumnForFullTextSearch();
 
-        return $query->whereRaw("MATCH(" . $column . ") AGAINST(? IN BOOLEAN MODE)", [$value]);
+        return $query->whereRaw("MATCH(" . $column . ") AGAINST(? IN BOOLEAN MODE)", [$value])
+            ->selectRaw("*, MATCH({$column}) AGAINST('{$naturalLanguageValue}' IN NATURAL LANGUAGE MODE) AS relevance")
+            ->orderByRaw('relevance DESC')
+            ->orderByRaw("LENGTH(" . $column . ") ASC");
     }
 
     protected function getColumnForFullTextSearch()
