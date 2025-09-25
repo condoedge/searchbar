@@ -46,7 +46,7 @@ class CustomFiltersModal extends Modal
                         ))
                             ->default($this->state->getSearchableEntity())
                             ->onChange(fn($e) => $e->post('searchstate.select-entity')->withAllFormValues()->refresh('navbar-search'))
-                            ->overModal('search-in')
+                            ->overModal('search-in' . \Str::random(5) . time())
                             ->class('!mb-0 w-full')
                             ->col('col-md-6'),
                     ),

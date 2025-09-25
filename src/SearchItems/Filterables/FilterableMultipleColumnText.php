@@ -31,7 +31,7 @@ class FilterableMultipleColumnText extends Filterable
             $this->getSelectColumnOptions()->class('!mb-0')
                 ->name('columns')->default($rule->getColumns())
                 ->onChange(fn($e) => $e->post('searchstate.execute-custom-filterable-function', ['i' => $index, 'function' => 'setColumns'])->withAllFormValues()->refresh('navbar-search'))
-                ->overModal('columns')
+                ->overModal('columns' . \Str::random(5) . time())
                 ->class('!mb-0')
                 ->col('col-md-3'),
 
@@ -40,7 +40,7 @@ class FilterableMultipleColumnText extends Filterable
                 ->onChange(fn($e) => $e
                     ->post('searchstate.execute-custom-filterable-function', ['i' => $index, 'function' => 'setRuleOperator'])->withAllFormValues()->refresh('navbar-search')
                 )
-                ->overModal('operator')
+                ->overModal('operator' . \Str::random(5) . time())
                 ->class('!mb-0')
                 ->col('!p-0 col-md-3'),
 

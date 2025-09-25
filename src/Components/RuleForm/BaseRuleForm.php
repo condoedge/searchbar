@@ -24,7 +24,7 @@ class BaseRuleForm extends Modal
                 })->toArray()
             )->name('key', false)
             ->onChange(fn($e) => $e->selfGet('getRuleForm')->inPanel('rule-details-form'))
-            ->overModal('rule-key'),
+            ->overModal('rule-key' . \Str::random(5) . time()),
 
             _Panel()->id('rule-details-form'),
         );

@@ -38,7 +38,7 @@ class FilterableColumn extends Filterable
                 $e->post('searchstate.execute-custom-filterable-function', ['i' => $index, 'function' =>'setValueInput'])->withAllFormValues()
                 ->inPanel('input-panel' . $index)
             )
-            ->overModal('operator')
+            ->overModal('operator' . \Str::random(5) . time())
             ->class('!mb-0')->col('!p-0 col-md-3'),
 
             _Panel(

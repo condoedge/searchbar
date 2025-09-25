@@ -32,7 +32,7 @@ class ColumnRuleForm extends AbstractRuleForm
                 ->onChange(fn($e) => $e
                     ->selfGet('setValueInput')->inPanel('input-panel')
                 )
-                ->overModal('operator'), 
+                ->overModal('operator' . \Str::random(5) . time()), 
 
             _Panel(
                 $colSpec->getInput(),
