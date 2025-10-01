@@ -36,7 +36,7 @@ class AbstractResultsTable extends Table
     protected function groupedActionsOptions()
     {
         return [
-            _Link('filter.delete')->selfPost('getDeleteConfirmModal')->inModal()->config(['withCheckedItemIds' => true])->class('py-2 px-3'),
+            _DropdownLink('filter.delete')->selfPost('getDeleteConfirmModal')->inModal()->config(['withCheckedItemIds' => true])->class('py-2 px-3'),
         ];
     }
 
