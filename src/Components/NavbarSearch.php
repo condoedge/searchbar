@@ -45,7 +45,8 @@ class NavbarSearch extends Form
                     ->onFocus(fn($e) => $e->run('() => {
                         openSearchPanel();
                     }'))
-                    ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('search-panel')),
+                    ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('search-panel'))
+                    ->debounce(900),
                 _Spinner()->id($searchPanelLoadingId)->class('relative right-8 hidden searchbar-loading'),
             )->class('w-full relative flex-row items-center focus-within:border border-greenmain rounded-lg max-w-6xl overflow-x-auto mini-scroll'),
 
