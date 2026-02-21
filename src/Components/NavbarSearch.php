@@ -42,9 +42,11 @@ class NavbarSearch extends Form
                     ->class('w-full mb-0 text-xl [&>.vlInputWrapper:focus-within]:shadow-none min-w-72')
                     ->inputClass('py-2')
                     ->noAutocomplete()
+                    ->dontSubmitOnEnter()
                     ->onFocus(fn($e) => $e->run('() => {
                         openSearchPanel();
                     }'))
+                    ->onEnter(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('search-panel'))
                     ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('search-panel'))
                     ->debounce(900),
                 _Spinner()->id($searchPanelLoadingId)->class('relative right-8 hidden searchbar-loading'),
@@ -118,6 +120,12 @@ class NavbarSearch extends Form
                 else searchPanel.fadeOut(250);
 
                 window.navbar_search_opened = false;
+            }
+
+            // Prevent native form submission on Enter key (causes page reload)
+            const navSearchForm = document.getElementById("navbar-search")?.closest("form");
+            if (navSearchForm) {
+                navSearchForm.addEventListener("submit", (e) => e.preventDefault());
             }
 
             if (opened) {
