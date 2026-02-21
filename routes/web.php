@@ -12,6 +12,7 @@ Route::prefix('searchstate')->middleware('web')->group(function() {
     Route::post('select-entity',     [SearchStateController::class, 'selectSearchableEntity'])->name('searchstate.select-entity');
     Route::post('add-rule',          [SearchStateController::class, 'addRule'])->name('searchstate.add-rule');
     Route::post('delete-rule',       [SearchStateController::class, 'deleteRule'])->name('searchstate.delete-rule');
+    Route::post('toggle-section-rule', [SearchStateController::class, 'toggleSectionRule'])->name('searchstate.toggle-section-rule');
     Route::post('toggle-default',    [SearchStateController::class, 'toggleDefaultRule'])->name('searchstate.toggle-default');
     Route::post('set-rule-value',    [SearchStateController::class, 'setRuleValue'])->name('searchstate.set-rule-value');
     Route::post('set-rule-param',    [SearchStateController::class, 'setRuleParam'])->name('searchstate.set-rule-param');

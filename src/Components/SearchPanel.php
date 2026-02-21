@@ -30,42 +30,48 @@ class SearchPanel extends Form
             _Hidden()->name('serviceKey')->default($this->serviceKey),
             _Hidden()->name('storeKey')->default($this->storeKey),
             _Html('loading...')->class('text-lg p-4')->id('search-panel-loading' . $this->serviceKey)->class('hidden'),
+
+            // Top bar: Filter toggle + Back button
+            _FlexBetween(
+                _Flex(
+                    _Sax('filter', 16)->class('text-level1'),
+                    _Html('filter.filters')->class('font-semibold text-level1 text-lg'),
+                    _Sax('arrow-left', 16)->class('transition-transform search-filters-arrow')->id('search-filters-arrow'),
+                )->class('items-center gap-2 cursor-pointer select-none')
+                  ->onClick(fn($e) => $e->run('() => { toggleSearchFilters(); }')),
+                $typeInstance ? _Link('filter.back')->icon(_sax('arrow-left', 20))->post('searchstate.get-back')->withAllFormValues()->refresh('navbar-search')->class('text-black font-semibold') : null,
+            )->class('px-4 py-2'),
+
+            // Main content: filters + results side by side (flex, not grid)
+            _Flex(
+                // LEFT: Filters column (collapsible)
+                _Rows(
+                    $typeInstance ? $this->sections($typeInstance) : _Rows(
+                        searchService()->optionsSearchables()
+                    )->class('py-2'),
+                )->class('overflow-y-auto overflow-x-hidden mini-scroll px-2 shrink-0 border-r border-level4 self-stretch')->id('search-filters-panel')->style('width:33.333%;transition:width 0.25s ease,opacity 0.2s ease,margin-left 0.25s ease'),
+
+                // RIGHT: Results column
+                _Rows(
+                    $this->instanciateSearchKomponent(EnhancedSearchbar::class),
+                )->class('items-start !pb-2 py-4 pl-4 overflow-y-auto mini-scroll flex-1 min-w-0 self-stretch'),
+            )->class('w-full overflow-hidden flex-1'),
+
+            // BOTTOM: Favorites section (always visible, full width)
             _Rows(
-                _FlexEnd(
-                    _Link()->icon('x')->class('text-3xl mb-3 mt-1 absolute top-0 right-5 z-10')->run('() => {
-                        closeSearchPanel();
-                    }'),
-                ),
-                _Columns(
-                    _Rows(
-                        _Html('filter.filter')->icon('filter')->class('ml-4 mt-2 font-semibold text-level1'),
-                        $typeInstance ? $this->sections($typeInstance) : _Rows(
-                            searchService()->optionsSearchables()
-                        )->class('py-4'),
-                    )->class('px-2')->col('col-md-3'),
+                $this->instanciateSearchKomponent(FavoritesSearches::class),
+            )->class('border-t border-level4 pt-3 px-4 mt-2'),
 
-    
-                    _Rows(
-                        $this->instanciateSearchKomponent(EnhancedSearchbar::class),
-                    )->class('items-start !pb-2 py-4 overflow-y-auto mini-scroll')->col('col-md-6')->style('height:420px'),
-                
-                    _Rows(
-                        $this->instanciateSearchKomponent(FavoritesSearches::class),
-
-                        _Rows(collect($typeInstance?->getPremadeRules())->map(fn($r) => $r->getToggle()))->class('mt-6')
-                    )->col('col-md-3 pt-6'),
-                ),
-            )->class('relative'),
-
-        )->class('max-w-6xl w-screen md:w-full bg-white rounded-b-2xl border-gray-200 shadow-xl border-b border-l border-r border-level4 border-t-none px-2 py-2 -mt-2');
+        )->class('max-w-6xl w-screen md:w-full h-full md:h-auto bg-white rounded-b-2xl border-gray-200 shadow-xl border-b border-l border-r border-level4 border-t-none px-2 py-2 -mt-2');
     }
 
     protected function sections($searchableI)
     {
         return _Rows(
-            _Link('filter.back')->icon(_sax('arrow-left',20))->post('searchstate.get-back')->withAllFormValues()->refresh('navbar-search')->class('mt-4 border-b py-4 border-level4 text-black font-semibold'),
             _Rows($searchableI->decoratedSections()->map(fn($s) => $s->showOptions()->class('border-b py-4 border-level4'))),
-            _Link('filter.custom-filters')->class('text-black font-semibold py-4')
+            // Premade rules (toggles) under filters
+            _Rows(collect($searchableI->getPremadeRules())->map(fn($r) => $r->getToggle()))->class('py-3'),
+            _Link('filter.custom-filters')->icon(_Sax('add-circle', 16))->class('bg-greenmain text-white font-semibold rounded-lg px-3 py-2 text-sm mt-2 inline-flex items-center gap-2 hover:bg-green-700')
                 ->selfGet('getCustomFiltersModal')->inModal(),
         )->class('pl-4');
     }

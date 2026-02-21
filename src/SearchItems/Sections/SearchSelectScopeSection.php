@@ -32,4 +32,16 @@ class SearchSelectScopeSection extends SearchSection
             'scope' => $type,
         ])->setKeyReference($this->filterableKey);
 	}
+
+	public function isOptionSelected($index): bool
+	{
+		return $this->getActiveFilterableRules()->contains(function ($rule) use ($index) {
+			return $rule->getKeyReference() === $this->filterableKey && $rule->getValue() == $index;
+		});
+	}
+
+	protected function getSectionLabel(): ?string
+	{
+		return $this->filterable->getFilterName();
+	}
 }

@@ -4,6 +4,7 @@ namespace Kompo\Searchbar\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\OperatorEnum;
+use Kompo\Searchbar\SearchItems\Rules\FilterableRule;
 use Kompo\Searchbar\SearchItems\Rules\PremadeRuleWrapper;
 use Kompo\Searchbar\SearchItems\Rules\RulesService;
 use Kompo\Searchbar\SearchService;
@@ -135,6 +136,25 @@ class SearchStateController extends Controller
         $rule = RulesService::retrieveRuleFromRequest('rule');
 
         $this->state->addRule($rule );
+
+        stateStore($this->serviceKey)->storeState($this->state);
+    }
+
+    public function toggleSectionRule()
+    {
+        $rule = RulesService::retrieveRuleFromRequest('rule');
+
+        $existingIndex = $this->state->getFilterableRules()->search(function ($r) use ($rule) {
+            return $r instanceof FilterableRule
+                && $r->getKeyReference() === $rule->getKeyReference()
+                && $r->getValue() == $rule->getValue();
+        });
+
+        if ($existingIndex !== false) {
+            $this->state->removeRule($existingIndex);
+        } else {
+            $this->state->addRule($rule);
+        }
 
         stateStore($this->serviceKey)->storeState($this->state);
     }

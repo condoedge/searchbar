@@ -31,4 +31,17 @@ class SearchEntitySection extends SearchSection
             'value' => [$type],
         ])->setKeyReference($this->filterableKey);
 	}
+
+	public function isOptionSelected($index): bool
+	{
+		return $this->getActiveFilterableRules()->contains(function ($rule) use ($index) {
+			return $rule->getKeyReference() === $this->filterableKey
+				&& is_array($rule->getValue()) && in_array($index, $rule->getValue());
+		});
+	}
+
+	protected function getSectionLabel(): ?string
+	{
+		return $this->filterable->getFilterName();
+	}
 }

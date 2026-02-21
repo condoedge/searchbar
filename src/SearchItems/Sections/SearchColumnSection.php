@@ -35,6 +35,40 @@ class SearchColumnSection extends SearchSection
 
     protected function linkOption($option, $index)
     {
-        return _Link($option)->post('searchstate.add-rule', ['rule' => serialize($this->getRule($index))])->withAllFormValues()->post('searchstate.clean-search')->withAllFormValues()->refresh('navbar-search');
+        $isSelected = $this->isOptionSelected($index);
+        $search = $this->searchContextService->getStore()->getState()?->getSearch();
+
+        $link = $isSelected
+            ? _Link($option)->icon(_Sax('tick-circle', 16))->class($this->chipClasses($isSelected))
+            : _Link($option)->icon(_Sax('search-normal-1', 14))->class($this->chipClasses($isSelected));
+
+        if ($isSelected) {
+            $ruleIndex = $this->getActiveFilterableRules()->search(fn($rule) => $rule->getKeyReference() === $index);
+
+            return $link->post('searchstate.delete-rule', ['i' => $ruleIndex])
+                ->withAllFormValues()
+                ->refresh('navbar-search');
+        }
+
+        // Only add rule if there's search text
+        if (!$search) {
+            return $link->class('opacity-50 cursor-not-allowed');
+        }
+
+        return $link->post('searchstate.add-rule', ['rule' => serialize($this->getRule($index))])
+            ->withAllFormValues()
+            ->refresh('navbar-search');
+    }
+
+    public function isOptionSelected($index): bool
+    {
+        return $this->getActiveFilterableRules()->contains(function ($rule) use ($index) {
+            return $rule->getKeyReference() === $index;
+        });
+    }
+
+    protected function getSectionLabel(): ?string
+    {
+        return 'filter.search-by';
     }
 }

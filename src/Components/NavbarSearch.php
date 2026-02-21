@@ -39,7 +39,7 @@ class NavbarSearch extends Form
                 _Input()->name('search')->class('navbar-search-input')
                     ->default($this->state->getSearch())
                     ->placeholder('crm.search')
-                    ->class('w-full mb-0 text-xl [&>.vlInputWrapper:focus-within]:shadow-none min-w-72')
+                    ->class('w-full mb-0 text-xl [&>.vlInputWrapper:focus-within]:shadow-none min-w-0 md:min-w-48')
                     ->inputClass('py-2')
                     ->noAutocomplete()
                     ->dontSubmitOnEnter()
@@ -50,11 +50,13 @@ class NavbarSearch extends Form
                     ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('search-panel'))
                     ->debounce(900),
                 _Spinner()->id($searchPanelLoadingId)->class('relative right-8 hidden searchbar-loading'),
-            )->class('w-full relative flex-row items-center focus-within:border border-greenmain rounded-lg max-w-6xl overflow-x-auto mini-scroll'),
+                _Link()->icon('x')->class('text-2xl px-3 text-level1 search-close-btn shrink-0')->style('display:none')
+                    ->run('() => { closeSearchPanel(); }'),
+            )->class('w-full relative flex-row items-center focus-within:border border-greenmain rounded-lg max-w-6xl overflow-x-auto mini-scroll overflow-y-hidden'),
 
             _Rows(
                 $this->instanciateSearchKomponent(SearchPanel::class),
-            )->id('search-panel-container')->class('fixed top-14 md:top-full left-0 md:absolute z-[110] w-screen md:w-full'),
+            )->id('search-panel-container')->class('fixed top-14 md:top-full left-0 md:absolute z-[110] w-screen md:w-full h-[calc(100vh-3.5rem)] md:h-auto max-h-[calc(100vh-3.5rem)] md:max-h-[85vh] overflow-y-auto'),
         )->class('nav-search-box flex-1 pb-[7px]');
     }
 
@@ -107,10 +109,35 @@ class NavbarSearch extends Form
         $this->onLoad(fn($e) => $e->run('() => {
             const opened = window.navbar_search_opened || false;
 
+            const isSmallScreen = () => window.innerWidth < 1024;
+
+            window.toggleSearchFilters = () => {
+                const panel = $("#search-filters-panel");
+                const arrow = $("#search-filters-arrow");
+                const isVisible = panel.data("visible") !== false;
+
+                if (isVisible) {
+                    panel.css({width: "0", opacity: "0", overflow: "hidden", "margin-left": "-8px"});
+                    arrow.css("transform", "rotate(0deg)");
+                    panel.data("visible", false);
+                } else {
+                    panel.css({width: "33.333%", opacity: "1", overflow: "", "margin-left": "0"});
+                    arrow.css("transform", "rotate(180deg)");
+                    panel.data("visible", true);
+                }
+            }
+
             window.openSearchPanel = () => {
                 const searchPanel = $("#search-panel-container");
                 searchPanel.fadeIn(250);
                 window.navbar_search_opened = true;
+
+                $(".search-close-btn").show();
+
+                if (isSmallScreen()) {
+                    $("#intro-dashboard-help1, #intro-dashboard-help3, #intro-dashboard-user-account").css("display", "none");
+                    $("#intro-dashboard-role-switcher").css("display", "none");
+                }
             }
 
             window.closeSearchPanel = (fast = false) => {
@@ -120,12 +147,25 @@ class NavbarSearch extends Form
                 else searchPanel.fadeOut(250);
 
                 window.navbar_search_opened = false;
+
+                $(".search-close-btn").hide();
+
+                if (isSmallScreen()) {
+                    $("#intro-dashboard-help1, #intro-dashboard-help3, #intro-dashboard-user-account").css("display", "");
+                    $("#intro-dashboard-role-switcher").css("display", "");
+                }
             }
 
             // Prevent native form submission on Enter key (causes page reload)
             const navSearchForm = document.getElementById("navbar-search")?.closest("form");
             if (navSearchForm) {
                 navSearchForm.addEventListener("submit", (e) => e.preventDefault());
+            }
+
+            // Always restore navbar icons on desktop
+            if (!isSmallScreen()) {
+                $("#intro-dashboard-help1, #intro-dashboard-help3, #intro-dashboard-user-account").css("display", "");
+                $("#intro-dashboard-role-switcher").css("display", "");
             }
 
             if (opened) {
