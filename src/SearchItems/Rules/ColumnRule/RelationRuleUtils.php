@@ -6,6 +6,10 @@ trait RelationRuleUtils
 {    
     public function decorateQuery($query)
     {
+        if ($this->isPendingValue()) {
+            return $query;
+        }
+
         $columnInfo = explode('.', $this->getRawColumn());
 
         return $this->applyRelationQuery($query, $columnInfo, $query->getModel(), true);

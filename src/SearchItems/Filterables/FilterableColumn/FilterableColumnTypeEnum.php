@@ -116,6 +116,27 @@ enum FilterableColumnTypeEnum: int
         };
     }
 
+    public function inlineInput($name, $onEnter = null)
+    {
+        $compact = 'mb-0 text-xs h-7 [&>.vlInputWrapper]:py-0 [&>.vlInputWrapper]:shadow-none';
+
+        $applyEvents = fn($input) => $onEnter
+            ? $input->dontSubmitOnEnter()->onEnter($onEnter)
+            : $input;
+
+        return match ($this) {
+            self::NUMBER, self::NUMBER_CURRENCY => _Flex(
+                $applyEvents(_InputNumber()->name($name . '[0]')->placeholder('filter.min')->class($compact . ' w-16')),
+                _Html('—')->class('text-xs px-1 text-gray-400'),
+                $applyEvents(_InputNumber()->name($name . '[1]')->placeholder('filter.max')->class($compact . ' w-16')),
+            )->class('items-center gap-0.5'),
+
+            self::DATE => $applyEvents(_Date()->name($name)->class($compact . ' w-28')),
+
+            default => $applyEvents(_Input()->name($name)->placeholder('...')->class($compact . ' w-32')),
+        };
+    }
+
     public function input($params = [], ?OperatorEnum $operator = null)
     {
         return match ($this) {

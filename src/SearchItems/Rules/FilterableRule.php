@@ -2,6 +2,7 @@
 
 namespace Kompo\Searchbar\SearchItems\Rules;
 
+use Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn;
 use Kompo\Searchbar\SearchItems\Rules\Rule;
 use Kompo\Searchbar\Searchable\Searchable;
 
@@ -51,6 +52,10 @@ abstract class FilterableRule extends Rule
 
     public function render($index, $withDeleteButton = true)
     {
+        if ($this->isPendingValue()) {
+            return $this->renderInline($index);
+        }
+
         return _RulePill(
             $this->getFilterable()?->getFilterName(),
             _Flex(
@@ -59,5 +64,46 @@ abstract class FilterableRule extends Rule
                     ->refresh('navbar-search'),
             )->class('gap-2'),
         );
+    }
+
+    protected function renderInline($index)
+    {
+        $filterable = $this->getFilterable();
+
+        if (!$filterable instanceof FilterableColumn) {
+            return _RulePill(
+                $filterable?->getFilterName(),
+                _Flex(
+                    $this->renderContent(),
+                    _Link()->icon('x')->post('searchstate.delete-rule', ['i' => $index])->withAllFormValues()
+                        ->refresh('navbar-search'),
+                )->class('gap-2'),
+            );
+        }
+
+        $key = $this->getKeyReference();
+
+        $onEnter = fn($e) => $e->post('searchstate.set-inline-value', ['key' => $key])
+            ->withAllFormValues()
+            ->refresh('navbar-search');
+
+        $inlineInput = $filterable->getInlineInput('inline_' . $key, $onEnter);
+
+        return _Flex(
+            _Html($filterable->getFilterName())
+                ->class('text-sm bg-level1 text-white px-2 p-1 rounded-l-md whitespace-nowrap'),
+            _Flex(
+                $inlineInput,
+                _Link()->icon('x')
+                    ->post('searchstate.delete-rule', ['i' => $index])
+                    ->withAllFormValues()
+                    ->refresh('navbar-search'),
+            )->class('items-center gap-1 bg-level4 px-2 p-1 rounded-r-md'),
+        )->class('rounded-md w-max overflow-hidden items-center');
+    }
+
+    public function isPendingValue(): bool
+    {
+        return false;
     }
 }

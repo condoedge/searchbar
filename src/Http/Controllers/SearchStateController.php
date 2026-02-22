@@ -166,6 +166,29 @@ class SearchStateController extends Controller
         stateStore($this->serviceKey)->storeState($this->state);
     }
 
+    public function setInlineFilterValue()
+    {
+        $key = request('key');
+        $value = request('inline_' . $key);
+
+        $ruleIndex = $this->state->getFilterableRules()->search(
+            fn($rule) => $rule->getKeyReference() === $key
+        );
+
+        if ($ruleIndex === false) return;
+
+        $rule = $this->state->getRules()->get($ruleIndex);
+
+        if ($value !== null && $value !== '' && $value !== [null, null]) {
+            $rule->setValue($value);
+            $this->state->replaceRule($ruleIndex, $rule);
+        } else {
+            $this->state->removeRule($ruleIndex);
+        }
+
+        stateStore($this->serviceKey)->storeState($this->state);
+    }
+
     public function executeCustomFilterableFunction()
     {
         $i = request('i');

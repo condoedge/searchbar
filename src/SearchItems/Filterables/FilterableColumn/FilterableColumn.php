@@ -119,4 +119,9 @@ class FilterableColumn extends Filterable
     {
         return $this->getInputType()?->input($this->getEntityType()?->optionsWithLabels() ?: [], $operator ?? $this->getInputType()->defaultOperator())->name('value');
     }
+
+    public function getInlineInput($name, $onEnter = null)
+    {
+        return $this->getInputType()->inlineInput($name, $onEnter);
+    }
 }

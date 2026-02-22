@@ -25,13 +25,17 @@ class ColumnRule extends FilterableRule
 
     public function decorateQuery($query)
     {
+        if ($this->isPendingValue()) {
+            return $query;
+        }
+
         // If we have full text search enabled and the operator allows it, we use it. Here we don't derivate the responsibility to the operator.
         if($this->usesFullTextSearch()) {
             return $this->fullSearchQuery($query);
         }
 
         /*
-            Before i use $query->where, but i changed the responsibility to the operator. 
+            Before i use $query->where, but i changed the responsibility to the operator.
             Sometimes the operator needs to use whereIn, whereBetween, etc.
             So: type define rule define operator define query
         */
@@ -110,5 +114,10 @@ class ColumnRule extends FilterableRule
     public function setValue($value)
     {
         $this->value = $value;
+    }
+
+    public function isPendingValue(): bool
+    {
+        return $this->value === null || $this->value === '' || $this->value === [null] || $this->value === [null, null];
     }
 }
