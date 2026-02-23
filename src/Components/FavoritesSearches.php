@@ -22,9 +22,7 @@ class FavoritesSearches extends Query
 
     public function top()
     {
-        return _Flex(
-            _Html('filter.favorites')->icon('star')->class('font-semibold text-level1 text-lg'),
-        )->class('mb-3');
+        return null;
     }
 
     public function query()

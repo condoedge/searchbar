@@ -117,15 +117,37 @@ class NavbarSearch extends Form
                 const isVisible = panel.data("visible") !== false;
 
                 if (isVisible) {
-                    panel.css({width: "0", opacity: "0", overflow: "hidden", "margin-left": "-8px"});
-                    arrow.css("transform", "rotate(0deg)");
+                    panel.css({width: "0", opacity: "0", overflow: "hidden", "margin-right": "-8px"});
+                    arrow.css("transform", "rotate(180deg)");
                     panel.data("visible", false);
                 } else {
-                    panel.css({width: "33.333%", opacity: "1", overflow: "", "margin-left": "0"});
-                    arrow.css("transform", "rotate(180deg)");
+                    panel.css({width: "33.333%", opacity: "1", overflow: "", "margin-right": "0"});
+                    arrow.css("transform", "rotate(0deg)");
                     panel.data("visible", true);
                 }
             }
+
+            window.switchSearchTab = (tab) => {
+                const filtersContent = $("#search-content-filters");
+                const favoritesContent = $("#search-content-favorites");
+                const filtersTab = $("#search-tab-filters");
+                const favoritesTab = $("#search-tab-favorites");
+
+                if (tab === "filters") {
+                    filtersContent.show();
+                    favoritesContent.hide();
+                    filtersTab.addClass("search-tab-active").removeClass("text-gray-400");
+                    favoritesTab.removeClass("search-tab-active").addClass("text-gray-400");
+                } else {
+                    filtersContent.hide();
+                    favoritesContent.show();
+                    favoritesTab.addClass("search-tab-active").removeClass("text-gray-400");
+                    filtersTab.removeClass("search-tab-active").addClass("text-gray-400");
+                }
+            }
+
+            // Ensure correct initial state: only filters visible
+            switchSearchTab("filters");
 
             window.openSearchPanel = () => {
                 const searchPanel = $("#search-panel-container");
