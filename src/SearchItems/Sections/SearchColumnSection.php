@@ -30,6 +30,7 @@ class SearchColumnSection extends SearchSection
 
 		return $filterable->getRuleInstance([
             // 'value' => $search, For now putting this to null so we now the value is pending (We are going to open the input so they can change the value)
+            'value' => null,
         ])->setKeyReference($index);
 	}
 
