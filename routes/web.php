@@ -17,6 +17,7 @@ Route::prefix('searchstate')->middleware('web')->group(function() {
     Route::post('set-rule-value',    [SearchStateController::class, 'setRuleValue'])->name('searchstate.set-rule-value');
     Route::post('set-rule-param',    [SearchStateController::class, 'setRuleParam'])->name('searchstate.set-rule-param');
     Route::post('set-inline-value',    [SearchStateController::class, 'setInlineFilterValue'])->name('searchstate.set-inline-value');
+    Route::post('make-rule-editable',  [SearchStateController::class, 'makeRuleEditable'])->name('searchstate.make-rule-editable');
     Route::post('execute-custom-filterable-function',    [SearchStateController::class, 'executeCustomFilterableFunction'])->name('searchstate.execute-custom-filterable-function');
 });
 

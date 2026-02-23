@@ -122,8 +122,8 @@ enum FilterableColumnTypeEnum: int
         $compact = 'mb-0 text-xs [&>div]:flex [&>div]:h-5 [&>div]:items-center [&>div>input]:!px-1';
 
         $applyEvents = fn($input) => $onEnter
-            ? $input->dontSubmitOnEnter()->onEnter($onEnter)->onBlur($onEnter)->onLoad->jsFocus()
-            : $input->onLoad->jsFocus();
+            ? $input->dontSubmitOnEnter()->onEnter($onEnter)->onBlur($onEnter)->focusOnLoad()
+            : $input->focusOnLoad();
 
         return match ($this) {
             self::NUMBER, self::NUMBER_CURRENCY => _Flex(

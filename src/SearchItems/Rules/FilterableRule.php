@@ -15,6 +15,7 @@ abstract class FilterableRule extends Rule
     protected $searchable;
     protected $keyReference;
     protected $rule;
+    protected bool $editing = false;
 
     public function getFilterable(Searchable $searchable = null)
     {
@@ -52,14 +53,24 @@ abstract class FilterableRule extends Rule
 
     public function render($index, $withDeleteButton = true)
     {
-        if ($this->isPendingValue()) {
+        if ($this->isPendingValue() || $this->isEditing()) {
             return $this->renderInline($index);
         }
 
+        $filterable = $this->getFilterable();
+        $isEditable = $filterable instanceof FilterableColumn;
+
+        $contentEl = $isEditable
+            ? _Flex($this->renderContent())->class('cursor-pointer')
+                ->post('searchstate.make-rule-editable', ['i' => $index])
+                ->withAllFormValues()
+                ->refresh('navbar-search')
+            : $this->renderContent();
+
         return _RulePill(
-            $this->getFilterable()?->getFilterName(),
+            $filterable?->getFilterName(),
             _Flex(
-                $this->renderContent(),
+                $contentEl,
                 !$withDeleteButton ? null : _Link()->icon('x')->post('searchstate.delete-rule', ['i' => $index])->withAllFormValues()
                     ->refresh('navbar-search'),
             )->class('gap-2'),
@@ -87,7 +98,9 @@ abstract class FilterableRule extends Rule
             ->withAllFormValues()
             ->refresh('navbar-search');
 
-        $inlineInput = $filterable->getInlineInput('inline_' . $key, $onEnter);
+        $editingValue = ($this->isEditing() && $this instanceof \Kompo\Searchbar\SearchItems\Rules\ColumnRule\ColumnRule) ? $this->getValue() : null;
+
+        $inlineInput = $filterable->getInlineInput('inline_' . $key, $onEnter, $editingValue);
 
         return _Flex(
             _Html($filterable->getFilterName())
@@ -100,6 +113,18 @@ abstract class FilterableRule extends Rule
                     ->refresh('navbar-search'),
             )->class('items-center gap-1 bg-level4 px-2 p-1 rounded-r-md'),
         )->class('rounded-md w-max overflow-hidden items-center');
+    }
+
+    public function setEditing(bool $editing = true)
+    {
+        $this->editing = $editing;
+
+        return $this;
+    }
+
+    public function isEditing(): bool
+    {
+        return $this->editing;
     }
 
     public function isPendingValue(): bool
