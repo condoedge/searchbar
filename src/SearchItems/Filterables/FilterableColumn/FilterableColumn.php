@@ -122,6 +122,8 @@ class FilterableColumn extends Filterable
 
     public function getInlineInput($name, $onEnter = null)
     {
-        return $this->getInputType()->inlineInput($name, $onEnter);
+        $search = searchService()->getStore()->getState()->getSearch();
+
+        return $this->getInputType()->inlineInput($name, $onEnter, $search);
     }
 }

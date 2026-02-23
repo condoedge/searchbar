@@ -116,24 +116,24 @@ enum FilterableColumnTypeEnum: int
         };
     }
 
-    public function inlineInput($name, $onEnter = null)
+    public function inlineInput($name, $onEnter = null, $search = null)
     {
-        $compact = 'mb-0 text-xs h-7 [&>.vlInputWrapper]:py-0 [&>.vlInputWrapper]:shadow-none';
+        $compact = 'mb-0 text-xs [&>div]:flex [&>div]:h-5 [&>div]:items-center [&>div>input]:!px-1';
 
         $applyEvents = fn($input) => $onEnter
-            ? $input->dontSubmitOnEnter()->onEnter($onEnter)
-            : $input;
+            ? $input->dontSubmitOnEnter()->onEnter($onEnter)->onBlur($onEnter)->onLoad->jsFocus()
+            : $input->onLoad->jsFocus();
 
         return match ($this) {
             self::NUMBER, self::NUMBER_CURRENCY => _Flex(
-                $applyEvents(_InputNumber()->name($name . '[0]')->placeholder('filter.min')->class($compact . ' w-16')),
+                $applyEvents(_InputNumber()->noInputWrapper()->name($name . '[0]')->placeholder('filter.min')->class($compact . ' w-16')),
                 _Html('—')->class('text-xs px-1 text-gray-400'),
-                $applyEvents(_InputNumber()->name($name . '[1]')->placeholder('filter.max')->class($compact . ' w-16')),
+                $applyEvents(_InputNumber()->noInputWrapper()->name($name . '[1]')->placeholder('filter.max')->class($compact . ' w-16')),
             )->class('items-center gap-0.5'),
 
-            self::DATE => $applyEvents(_Date()->name($name)->class($compact . ' w-28')),
+            self::DATE => $applyEvents(_Date()->noInputWrapper()->name($name)->class($compact . ' w-28')),
 
-            default => $applyEvents(_Input()->name($name)->placeholder('...')->class($compact . ' w-32')),
+            default => $applyEvents(_Input()->default($search)->noInputWrapper()->name($name)->placeholder('...')->class($compact . ' w-32')),
         };
     }
 

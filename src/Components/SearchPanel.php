@@ -54,8 +54,8 @@ class SearchPanel extends Form
                 // RIGHT: Results column
                 _Rows(
                     $this->instanciateSearchKomponent(EnhancedSearchbar::class),
-                )->class('items-start !pb-2 py-4 pl-4 overflow-y-auto mini-scroll flex-1 min-w-0 self-stretch'),
-            )->class('w-full overflow-hidden flex-1'),
+                )->class('items-start !pb-2 py-4 pl-4 overflow-y-auto mini-scroll flex-1 min-w-0 self-stretch max-h-[95vh] md:max-h-[65vh]'),
+            )->class('w-full overflow-y-auto flex-1')->style('max-height: 95vh;'),
 
             // BOTTOM: Favorites section (always visible, full width)
             _Rows(

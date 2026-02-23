@@ -81,23 +81,8 @@ class SearchService
         }
 
         $rules = $state->getRules();
-
-        if ($state->getSearch()) {
-            $searchable = $state->getSearchableInstance();
-            $baseFilterableKey = $searchable::getBaseFilterable();
-            $filterable = $searchable->filterable($baseFilterableKey);
-
-            if ($filterable instanceof \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn) {
-                // Remove any existing base filterable rule to avoid duplicates
-                $rules = $rules->filter(fn($rule) => !($rule instanceof FilterableRule) || $rule->getKeyReference() !== $baseFilterableKey);
-
-                $searchRule = ($filterable->getRuleInstance([
-                    'value' => $state->getSearch(),
-                ]))->setKeyReference($baseFilterableKey)->injectContext($this);
-
-                $rules->push($searchRule);
-            }
-        }
+            
+        $rules->push($state->getSearchableInstance()->defaultFilterRule());
 
         return $rules->reduce(function($query, $rule) {
             return $rule->query($query);
