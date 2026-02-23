@@ -108,11 +108,12 @@ enum FilterableColumnTypeEnum: int
     public function getRuleInstance($params): FilterableRule
     {
         $rule = $this->rule();
+        $value = $params['value'] ?? null;
 
         return match($this) {
-            self::SELECT, self::RELATION_SELECT, self::ENUM => new $rule($params['column'], $params['operator'], is_array($params['value']) ? $params['value'] : [$params['value']]),
+            self::SELECT, self::RELATION_SELECT, self::ENUM => new $rule($params['column'], $params['operator'], is_array($value) ? $value : [$value]),
 
-            default => new $rule($params['column'], $params['operator'], $params['value']),
+            default => new $rule($params['column'], $params['operator'], $value),
         };
     }
 

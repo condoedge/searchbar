@@ -81,6 +81,6 @@ class FilterableMultipleColumnText extends Filterable
 
     public function getRuleInstance($params)
     {
-        return new MultipleColumnTextRule($params['columns'], $params['operator'], $params['value']);
+        return new MultipleColumnTextRule($params['columns'], $params['operator'], $params['value'] ?? null);
     }
 }
