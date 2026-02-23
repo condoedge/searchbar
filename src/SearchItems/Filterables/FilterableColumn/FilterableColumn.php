@@ -120,9 +120,9 @@ class FilterableColumn extends Filterable
         return $this->getInputType()?->input($this->getEntityType()?->optionsWithLabels() ?: [], $operator ?? $this->getInputType()->defaultOperator())->name('value');
     }
 
-    public function getInlineInput($name, $onEnter = null)
+    public function getInlineInput($name, $onEnter = null, $defaultValue = null)
     {
-        $search = searchService()->getStore()->getState()->getSearch();
+        $search = $defaultValue ?? searchService()->getStore()->getState()->getSearch();
 
         return $this->getInputType()->inlineInput($name, $onEnter, $search);
     }

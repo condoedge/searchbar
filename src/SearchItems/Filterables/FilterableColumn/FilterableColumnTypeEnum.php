@@ -108,11 +108,12 @@ enum FilterableColumnTypeEnum: int
     public function getRuleInstance($params): FilterableRule
     {
         $rule = $this->rule();
+        $value = $params['value'] ?? null;
 
         return match($this) {
-            self::SELECT, self::RELATION_SELECT, self::ENUM => new $rule($params['column'], $params['operator'], is_array($params['value']) ? $params['value'] : [$params['value']]),
+            self::SELECT, self::RELATION_SELECT, self::ENUM => new $rule($params['column'], $params['operator'], is_array($value) ? $value : [$value]),
 
-            default => new $rule($params['column'], $params['operator'], $params['value']),
+            default => new $rule($params['column'], $params['operator'], $value),
         };
     }
 
@@ -121,8 +122,8 @@ enum FilterableColumnTypeEnum: int
         $compact = 'mb-0 text-xs [&>div]:flex [&>div]:h-5 [&>div]:items-center [&>div>input]:!px-1';
 
         $applyEvents = fn($input) => $onEnter
-            ? $input->dontSubmitOnEnter()->onEnter($onEnter)->onBlur($onEnter)->onLoad->jsFocus()
-            : $input->onLoad->jsFocus();
+            ? $input->dontSubmitOnEnter()->onEnter($onEnter)->onBlur($onEnter)->focusOnLoad()
+            : $input->focusOnLoad();
 
         return match ($this) {
             self::NUMBER, self::NUMBER_CURRENCY => _Flex(

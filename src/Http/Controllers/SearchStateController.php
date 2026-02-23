@@ -181,9 +181,23 @@ class SearchStateController extends Controller
 
         if ($value !== null && $value !== '' && $value !== [null, null]) {
             $rule->setValue($value);
+            $rule->setEditing(false);
             $this->state->replaceRule($ruleIndex, $rule);
         } else {
             $this->state->removeRule($ruleIndex);
+        }
+
+        stateStore($this->serviceKey)->storeState($this->state);
+    }
+
+    public function makeRuleEditable()
+    {
+        $i = request('i');
+        $rule = $this->state->getRules()->get($i);
+
+        if ($rule) {
+            $rule->setEditing(true);
+            $this->state->replaceRule($i, $rule);
         }
 
         stateStore($this->serviceKey)->storeState($this->state);
