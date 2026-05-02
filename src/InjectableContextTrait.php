@@ -21,4 +21,9 @@ trait InjectableContextTrait
 
         return $this;
     }
+
+    public function getContext()
+    {
+        return $this->searchContextService;
+    }
 }

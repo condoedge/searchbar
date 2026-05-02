@@ -83,6 +83,30 @@ class SearchState extends SearchItem
         return $this->searchableEntity::createWithContext($this->searchContextService);
     }
 
+    /**
+     * WAS ENABLED FOR THE NEXT PURPOSE:
+     * To have a default entity to show in the results panel even if the user didn't select any, 
+     * we needed to use this method to return an instance of that default entity when we don't have any selected searchable entity.
+     * 
+     * But since it's a weird behaviour i set it as configuration that can be disabled
+     * And just being more specific but still abstract, we just call it in results panel
+     * but panel doesn't know about the specific implementation
+     */
+    public function getSearchableInstanceForResultsPanel(): ?Searchable
+    {
+        $searchableEntity = $this->getSearchableEntity();
+
+        if (config('searchbar.default-results-entity') && !$searchableEntity) {
+            $searchableEntity = new (config('searchbar.default-results-entity'));
+        }
+
+        if (!$searchableEntity) {
+            return null;
+        }
+
+        return $searchableEntity::createWithContext($this->searchContextService);
+    }
+
     /** SETTERS */
     public function setRules($rules)
     {

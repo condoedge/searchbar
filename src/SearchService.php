@@ -76,17 +76,18 @@ class SearchService
     {
         $state = $this->getStore()->getState();
 
-        if(!$state->getSearchableEntity()) {
+        $searchableEntity = $state->getSearchableInstanceForResultsPanel();
+
+        if(!$searchableEntity) {
             return null;
         }
 
-        $rules = $state->getRules();
-            
-        $rules->push($state->getSearchableInstance()->defaultFilterRule());
+        $rules = $state->getSearchableEntity() ? $state->getRules() : $searchableEntity->getInitialRules($searchableEntity);
+        $rules->push($searchableEntity->defaultFilterRule());
 
         return $rules->reduce(function($query, $rule) {
             return $rule->query($query);
-        }, $state->getSearchableEntity()::baseSearchQuery())->with($state->getSearchableInstance()->getEagerRelationsKeys());
+        }, $searchableEntity::baseSearchQuery())->with($searchableEntity->getEagerRelationsKeys());
     }
 
     public function getCountSpecificType($type)
