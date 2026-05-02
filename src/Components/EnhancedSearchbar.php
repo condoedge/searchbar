@@ -20,12 +20,20 @@ class EnhancedSearchbar extends Query
     public function top()
     {
         $count = $this->searchService->getQuery()?->count();
-        return $count ? _Flex(
-            _Html('navbar.see-all'),
-            _Pill($count)->class('bg-warning text-white !px-3'),
-        )->class('gap-2 mb-4 vlBtn')->href(
-            'search.results', ['searchDetails' => compressArray($this->state->toArray())],
-        )->inNewTab() : null;
+
+        $searchableEntity = $this->state->getSearchableInstanceForResultsPanel();
+
+        return _Rows(
+            _Html($searchableEntity::searchableName())->class('text-lg font-semibold mb-2 absolute')
+                ->class(!$this->state->getSearchableEntity() ? ' top-8' : 'top-[3.75rem]'),
+
+            $count ? _Flex(
+                _Html('navbar.see-all'),
+                _Pill($count)->class('bg-warning text-white !px-3'),
+            )->class('gap-2 mb-4 vlBtn')->class($this->state->getSearchableEntity() ? ' mt-6' : '')->href(
+                'search.results', ['searchDetails' => compressArray($this->state->toArray())],
+            )->inNewTab() : null
+        );
     }
 
     public function query()
@@ -35,7 +43,7 @@ class EnhancedSearchbar extends Query
 
     public function render($item)
     {
-        $typeInstance = $this->state?->getSearchableInstance();
+        $typeInstance = $this->state?->getSearchableInstanceForResultsPanel();
         $search = $this->state?->getSearch();
 
         return $typeInstance->searchElement($item, $search)->class('!mb-2');
