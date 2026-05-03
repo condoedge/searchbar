@@ -24,7 +24,7 @@ class EnhancedSearchbar extends Query
         $searchableEntity = $this->state->getSearchableInstanceForResultsPanel();
 
         return _Rows(
-            _Html($searchableEntity::searchableName())->class('text-lg font-semibold mb-2 absolute')
+            !$searchableEntity ? null : _Html($searchableEntity::searchableName())->class('text-lg font-semibold mb-2 absolute')
                 ->class(!$this->state->getSearchableEntity() ? ' top-8' : 'top-[3.75rem]'),
 
             $count ? _Flex(
