@@ -56,7 +56,7 @@ class NavbarSearch extends Form
 
             _Rows(
                 $this->instanciateSearchKomponent(SearchPanel::class),
-            )->id('search-panel-container')->class('fixed top-14 md:top-full left-0 md:absolute z-[110] w-screen md:w-full h-[calc(100vh-3.5rem)] md:h-auto max-h-[calc(100vh-3.5rem)] md:max-h-[85vh] overflow-y-auto'),
+            )->id('search-panel-container')->class('fixed top-14 md:top-full left-0 md:absolute z-[110] w-screen md:w-full h-[calc(100vh-3.5rem)] md:h-auto max-h-[calc(100vh-3.5rem)] md:max-h-[85vh]'),
         )->class('nav-search-box flex-1 pb-[7px]');
     }
 

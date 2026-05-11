@@ -13,6 +13,7 @@ class EnhancedSearchbar extends Query
     public $perPage = 6;
     public $paginationType = 'Scroll';
     public $style = 'width: calc(100% - 5px)';
+    public $class = 'overflow-y-auto mini-scroll';
 
     public function noItemsFound()
     {

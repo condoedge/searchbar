@@ -55,7 +55,7 @@ class SearchPanel extends Form
                         $this->resultsSkeleton(),
                     )->id($bodyId)->class('w-full'),
                     _Hidden()->onLoad(fn($e) => $e->selfGet('loadResultsColumn')->inPanel($bodyId)),
-                )->class('relative items-start !pb-2 !pt-0 py-4 px-4 flex-1 min-w-0 self-stretch')
+                )->class('relative items-start !pb-2 !pt-0 py-4 px-4 flex-1 min-w-0 self-stretch overflow-y-auto mini-scroll')
                   ->class($this->state->getSearchableEntity() ? '' : '-mt-8'),
 
                 // RIGHT: filters/favorites panel
@@ -70,7 +70,7 @@ class SearchPanel extends Form
                         $this->instanciateSearchKomponent(FavoritesSearches::class),
                     )->id('search-content-favorites')->class('px-2 py-2 overflow-y-auto mini-scroll flex-1 min-h-[40vh] md:min-h-[30vh] lg:min-h-[35vh]')->style('display:none'),
                 )->class('overflow-y-auto overflow-x-hidden mini-scroll shrink-0 border-l border-level4 self-stretch')->id('search-filters-panel')->style('width:33.333%;transition:width 0.25s ease,opacity 0.2s ease,margin-right 0.25s ease'),
-            )->class('w-full overflow-y-auto flex-1')->style('max-height: 95vh;'),
+            )->class('w-full flex-1')->style('max-height: 95vh;'),
 
             _Hidden()->onLoad(fn($e) => $e->run('() => {setTimeout(() => { searchLoadingOff("search-panel-loading' . $sk . '"); if(typeof switchSearchTab === "function") switchSearchTab("filters"); }, 100)}')),
 
