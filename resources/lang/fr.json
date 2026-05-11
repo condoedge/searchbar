@@ -42,5 +42,7 @@
 	"filter.search-results.with-values": "Résultats de la recherche pour: :entity",
 	"filter.with-values.multiple-search": ":operator: :value ",
 	"navbar.see-all": "Ouvrir dans une liste",
+	"navbar.no-results": "Aucun résultat.",
+	"navbar.search.type-min-chars": "Tapez au moins :min caractères pour voir des résultats.",
 	"translate.all-options": "Toutes ces options"
 }

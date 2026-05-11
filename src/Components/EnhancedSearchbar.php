@@ -8,6 +8,8 @@ class EnhancedSearchbar extends Query
 {
     use SearchKomponentUtils;
 
+    public $id = 'enhanced-searchbar';
+
     public $perPage = 6;
     public $paginationType = 'Scroll';
     public $style = 'width: calc(100% - 5px)';
@@ -20,19 +22,19 @@ class EnhancedSearchbar extends Query
     public function top()
     {
         $count = $this->searchService->getQuery()?->count();
-
         $searchableEntity = $this->state->getSearchableInstanceForResultsPanel();
 
         return _Rows(
-            !$searchableEntity ? null : _Html($searchableEntity::searchableName())->class('text-lg font-semibold mb-2 absolute')
-                ->class(!$this->state->getSearchableEntity() ? ' top-8' : 'top-[3.75rem]'),
+            !$searchableEntity ? null : _Html($searchableEntity::searchableName())
+                ->class('text-lg font-semibold mb-2'),
 
             $count ? _Flex(
                 _Html('navbar.see-all'),
                 _Pill($count)->class('bg-warning text-white !px-3'),
-            )->class('gap-2 mb-4 vlBtn')->class($this->state->getSearchableEntity() ? ' mt-6' : '')->href(
-                'search.results', ['searchDetails' => compressArray($this->state->toArray())],
-            )->inNewTab() : null
+            )
+                ->class('gap-2 mb-4 vlBtn')
+                ->href('search.results', ['searchDetails' => compressArray($this->state->toArray())])
+                ->inNewTab() : null,
         );
     }
 
