@@ -71,6 +71,7 @@ class SearchStateController extends Controller
         $entity = request('searchableEntity');
 
         $this->state->setSearchableEntity($entity);
+        stateStore($this->serviceKey)->storeState($this->state);
         $this->state->setRules(collect($this->state->getSearchableInstance()->getInitialRules())->filter());
         $this->state->setSearch(null);
 
