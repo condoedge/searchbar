@@ -55,7 +55,8 @@ trait SearchableModelUtils
 
 	public function getInitialRules(?Searchable $searchable = null)
 	{
-		$state = searchService()->getStore()->getState();
+		$searchService = $this->searchContextService ?? searchService();
+		$state = $searchService->getStore()->getState();
 		$searchable = $searchable ?? $state->getSearchableInstance();
 
 		$rules = collect($searchable?->getDefaultRulesApplied() ?? []);
@@ -69,7 +70,8 @@ trait SearchableModelUtils
 
 	public function defaultFilterRule()
 	{
-		$state = searchService()->getStore()->getState();
+		$searchService = $this->searchContextService ?? searchService();
+		$state = $searchService->getStore()->getState();
 		
 		$filterable = $this->filterable(static::getBaseFilterable());
 

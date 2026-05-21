@@ -75,6 +75,22 @@ class SearchService
     public function getQuery()
     {
         $state = $this->getStore()->getState();
+        $searchableEntity = $state->getSearchableInstanceForResultsPanel();
+
+        if(!$searchableEntity) {
+            return null;
+        }
+
+        $rules = $this->getQueryRules();
+
+        return $rules->reduce(function($query, $rule) {
+            return $rule->query($query);
+        }, $searchableEntity::baseSearchQuery())->with($searchableEntity->getEagerRelationsKeys());
+    }
+
+    public function getQueryRules()
+    {
+        $state = $this->getStore()->getState();
 
         $searchableEntity = $state->getSearchableInstanceForResultsPanel();
 
@@ -85,9 +101,7 @@ class SearchService
         $rules = $state->getSearchableEntity() ? $state->getRules() : $searchableEntity->getInitialRules($searchableEntity);
         $rules->push($searchableEntity->defaultFilterRule());
 
-        return $rules->reduce(function($query, $rule) {
-            return $rule->query($query);
-        }, $searchableEntity::baseSearchQuery())->with($searchableEntity->getEagerRelationsKeys());
+        return $rules;
     }
 
     public function getCountSpecificType($type)

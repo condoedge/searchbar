@@ -19,7 +19,7 @@ abstract class FilterableRule extends Rule
 
     public function getFilterable(Searchable $searchable = null)
     {
-        $searchable = $searchable ?? $this->searchable ?? $this->getState()->getSearchableInstance();
+        $searchable = $searchable ?? $this->searchable ?? $this->getState()->getSearchableInstanceForResultsPanel();
 
         if (!$searchable) {
             return null;

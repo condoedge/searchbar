@@ -11,13 +11,14 @@ class SearchResults extends Form
     const SEARCH_ID = 'searchTable';
     protected $state;
     protected $storeKey;
+    protected $searchService;
 
     public function created()
     {
         $this->storeKey = self::SEARCH_ID . time();
 
-        searchService(self::SEARCH_ID)->setStoreKey($this->storeKey);
-        stateStore(self::SEARCH_ID)->setFromRequest('searchDetails');
+        $this->searchService = searchService(self::SEARCH_ID)->setStoreKey($this->storeKey);
+        $this->searchService->getStore()->setFromRequest('searchDetails');
         $this->state = stateStore(self::SEARCH_ID)->getState();
     }
 
@@ -31,7 +32,7 @@ class SearchResults extends Form
                 ['entity' => $typeInstance?->searchableName()]
             ))->class('text-2xl font-semibold'),
 
-            $this->state->getRules()->count() ? _Flex($this->state->getRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-2 mb-3 mt-4') : null,
+            $this->searchService->getQueryRules()->count() ? _Flex($this->searchService->getQueryRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-2 mb-3 mt-4') : null,
 
             !$typeInstance ? null : $typeInstance->getTableClassInstance([
                 'storeKey' => $this->storeKey,
