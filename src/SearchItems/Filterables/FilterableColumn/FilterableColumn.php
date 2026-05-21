@@ -67,7 +67,7 @@ class FilterableColumn extends Filterable
         $value = $rule->getValue();
         $previousOperator = $rule->getOperator();
 
-        $colSpec =$rule->getFilterable($state->getSearchableInstance());
+        $colSpec = $rule->getFilterable();
         $operator = OperatorEnum::from(request('operator'));
 
         if ($colSpec->getInput($previousOperator)::class != $colSpec->getInput($operator)::class) {

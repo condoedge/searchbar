@@ -57,7 +57,7 @@ trait SearchableModelUtils
 	{
 		$searchService = $this->searchContextService ?? searchService();
 		$state = $searchService->getStore()->getState();
-		$searchable = $searchable ?? $state->getSearchableInstance();
+		$searchable = $searchable ?? $state->getSearchableInstanceForResultsPanel();
 
 		$rules = collect($searchable?->getDefaultRulesApplied() ?? []);
 

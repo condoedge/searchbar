@@ -61,9 +61,7 @@ class SearchPanel extends Form
                 // RIGHT: filters/favorites panel
                 _Rows(
                     _Rows(
-                        $typeInstance ? $this->sections($typeInstance) : _Rows(
-                            searchService()->optionsSearchables()
-                        )->class('py-2'),
+                        $typeInstance ? $this->sections($typeInstance) : $this->instanciateSearchKomponent(SearchableOptions::class),
                     )->id('search-content-filters')->class('overflow-y-auto overflow-x-hidden mini-scroll flex-1'),
 
                     _Rows(

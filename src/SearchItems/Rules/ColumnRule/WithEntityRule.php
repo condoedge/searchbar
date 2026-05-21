@@ -16,7 +16,7 @@ abstract class WithEntityRule extends ColumnRule
         /**
          * @var \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn $filtSpec
          */
-        $filtSpec = $this->getFilterable($this->getState()->getSearchableInstance());
+        $filtSpec = $this->getFilterable();
 
         if (is_array($this->value)) {
             return collect($this->value)->map(function ($value) use($filtSpec) {

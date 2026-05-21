@@ -26,6 +26,11 @@ class EnhancedSearchbar extends Query
         $searchableEntity = $this->state->getSearchableInstanceForResultsPanel();
 
         return _Rows(
+            // Turn the navbar search loading state off once the (re)fetched results
+            // have mounted. onInput/onEnter refresh only this komponent, so the
+            // off-switch must live here rather than in SearchPanel.
+            _Hidden()->onLoad(fn($e) => $e->run('() => { searchLoadingOff("search-panel-loading' . $this->getServiceKey() . '"); }')),
+
             !$searchableEntity ? null : _Html($searchableEntity::searchableName())
                 ->class('text-lg font-semibold mb-2'),
 

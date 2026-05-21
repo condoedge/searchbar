@@ -46,8 +46,8 @@ class NavbarSearch extends Form
                     ->onFocus(fn($e) => $e->run('() => {
                         openSearchPanel();
                     }'))
-                    ->onEnter(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('enhanced-searchbar'))
-                    ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->run($loadingJs)->refresh('enhanced-searchbar'))
+                    ->onEnter(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->refresh('enhanced-searchbar')->refresh('searchable-options'))
+                    ->onInput(fn($e) => $e->run($loadingJs) && $e->post('searchstate.set-search')->withAllFormValues()->refresh('enhanced-searchbar')->refresh('searchable-options'))
                     ->debounce(900),
                 _Spinner()->id($searchPanelLoadingId)->class('relative right-8 hidden searchbar-loading'),
                 _Link()->icon('x')->class('text-2xl px-3 text-level1 search-close-btn shrink-0')->style('display:none')
@@ -71,6 +71,8 @@ class NavbarSearch extends Form
                 searchContainer.find("a")
                     .attr("disabled", "disabled");
 
+                searchContainer.addClass("pointer-events-none");
+
                 searchContainer.find(".searchbar-loading").removeClass("hidden");
 
                 searchContainer.find(".entityCountPill").addClass("hidden")
@@ -85,6 +87,8 @@ class NavbarSearch extends Form
 
                 searchContainer.find("a")
                     .removeAttr("disabled");
+
+                searchContainer.removeClass("pointer-events-none");
 
                 searchContainer.find(".searchbar-loading").addClass("hidden");
 
@@ -195,6 +199,12 @@ class NavbarSearch extends Form
             } else {
                 closeSearchPanel(true);
             }
+
+            $(document).off("mousedown.inlineFilterCancel").on("mousedown.inlineFilterCancel", ".inline-filter-cancel", (event) => {
+                // Keep the inline filter input focused when its X is pressed, so the
+                // input onBlur (save) does not fire — clicking X cancels, not saves.
+                event.preventDefault();
+            });
 
             document.addEventListener("click", (event) => {
                 const navbarSearch = document.getElementById("navbar-search");

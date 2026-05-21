@@ -27,7 +27,10 @@ trait SearchKomponentUtils
 
         $this->searchService = searchService($this->getServiceKey())->setStoreKey($this->prop('storeKey'));
         $this->state = stateStore($this->getServiceKey())->getState();
-        $this->searchableInstance = $this->state->getSearchableInstance();
+        // Default-aware: consumers of this property (RuleForms, ConfirmMultiDeleteModal)
+        // operate on the results-panel entity, which falls back to the default entity
+        // when the user hasn't explicitly selected one.
+        $this->searchableInstance = $this->state->getSearchableInstanceForResultsPanel();
     }
 
     protected function instanciateSearchKomponent(string $komponent, array $props = [])

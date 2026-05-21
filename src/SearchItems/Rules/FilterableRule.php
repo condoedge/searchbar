@@ -108,6 +108,7 @@ abstract class FilterableRule extends Rule
             _Flex(
                 $inlineInput,
                 _Link()->icon('x')
+                    ->class('inline-filter-cancel')
                     ->post('searchstate.delete-rule', ['i' => $index])
                     ->withAllFormValues()
                     ->refresh('navbar-search'),
