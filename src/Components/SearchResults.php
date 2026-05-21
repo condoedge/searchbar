@@ -23,17 +23,17 @@ class SearchResults extends Form
 
     public function render()
     {
-        $typeInstance = $this->state->getSearchableInstance();
+        $typeInstance = $this->state->getSearchableInstanceForResultsPanel();
 
         return _Rows(
             _Html(__(
                 'filter.search-results.with-values', 
-                ['entity' => $this->state->getSearchableInstance()?->searchableName()]
+                ['entity' => $typeInstance?->searchableName()]
             ))->class('text-2xl font-semibold'),
 
             $this->state->getRules()->count() ? _Flex($this->state->getRules()->map(fn($rule, $i) => $rule->render($i, false)))->class('gap-2 mb-3 mt-4') : null,
 
-            $typeInstance->getTableClassInstance([
+            !$typeInstance ? null : $typeInstance->getTableClassInstance([
                 'storeKey' => $this->storeKey,
             ]),
         );
