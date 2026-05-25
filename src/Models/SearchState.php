@@ -3,8 +3,9 @@
 namespace Kompo\Searchbar\Models;
 
 use Condoedge\Utils\Models\Model;
+use Kompo\Auth\Contracts\Security\NoTeamScope;
 
-class SearchState extends Model
+class SearchState extends Model implements NoTeamScope
 {
     protected $casts = [
         'type' => SearchStateType::class
