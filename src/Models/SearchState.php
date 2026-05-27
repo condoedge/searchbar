@@ -4,9 +4,13 @@ namespace Kompo\Searchbar\Models;
 
 use Condoedge\Utils\Models\Model;
 use Kompo\Auth\Contracts\Security\NoTeamScope;
+use Kompo\Auth\Contracts\Security\HasOwnedRecords;
+use Kompo\Auth\Models\Concerns\Security\OwnedByUserIdColumn;
 
-class SearchState extends Model implements NoTeamScope
+class SearchState extends Model implements NoTeamScope, HasOwnedRecords
 {
+    use OwnedByUserIdColumn;
+    
     protected $casts = [
         'type' => SearchStateType::class
     ];
