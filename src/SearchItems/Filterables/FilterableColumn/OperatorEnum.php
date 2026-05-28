@@ -106,6 +106,29 @@ enum OperatorEnum: int
 
     public function constructValue($val, ColumnRule $rule = null)
     {
+        // TEMP instrumentation: array reaching wildcardSpace means an upstream
+        // producer leaked a non-scalar value into CONTAINS/DOES_NOT_CONTAIN.
+        // Remove once root cause is fixed.
+        if (is_array($val) && ($this === self::CONTAINS || $this === self::DOES_NOT_CONTAIN)) {
+            try {
+                $state = searchService()->getStore()->getState();
+                \Log::warning('searchbar.array_value_at_wildcard', [
+                    'operator' => $this->name,
+                    'rule_class' => $rule ? get_class($rule) : null,
+                    'column' => $rule?->getColumn(),
+                    'key_reference' => $rule?->getKeyReference(),
+                    'value' => $val,
+                    'searchable_entity' => $state?->getSearchableEntity(),
+                    'stored_search' => $state?->getSearch(),
+                    'trace' => collect(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 12))
+                        ->map(fn($f) => ($f['class'] ?? '') . ($f['type'] ?? '') . ($f['function'] ?? '') . ' @ ' . ($f['file'] ?? '?') . ':' . ($f['line'] ?? '?'))
+                        ->all(),
+                ]);
+            } catch (\Throwable $e) {
+                // Logging must never break the request
+            }
+        }
+
         return match ($this) {
             self::CONTAINS => wildcardSpace($val),
             self::DOES_NOT_CONTAIN => wildcardSpace($val),
