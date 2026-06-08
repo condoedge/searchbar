@@ -100,8 +100,17 @@ class SearchService
             return null;
         }
 
-        $rules = $state->getSearchableEntity() ? $state->getRules() : $searchableEntity->getInitialRules($searchableEntity);
-        $rules->push($searchableEntity->defaultFilterRule());
+        if ($state->getSearchableEntity()) {
+            // Explicit entity: user-configured rules don't include the default
+            // full-text rule, so append it.
+            $rules = $state->getRules();
+            $rules->push($searchableEntity->defaultFilterRule());
+        } else {
+            // Initial rules already include the default full-text rule (pushed
+            // by getInitialRules when a search term is present); pushing again
+            // would duplicate the relevance selectRaw and break the SQL.
+            $rules = $searchableEntity->getInitialRules($searchableEntity);
+        }
 
         return $rules;
     }
