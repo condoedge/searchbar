@@ -24,7 +24,7 @@ class EnumEntityType extends EntityType
 
     public function from($value)
     {
-        return $this->enum::from((int) $value);
+        return $this->enum::tryFrom((int) $value);
     }
 
     public function getLabel($value)
