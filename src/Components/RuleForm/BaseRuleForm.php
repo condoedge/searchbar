@@ -32,6 +32,8 @@ class BaseRuleForm extends Modal
 
     public function getRuleForm($key)
     {
+        if (!$key) return null;
+
         return $this->searchableInstance->filterable($key)->form($key, searchService()->getStoreKey());
     }
 }

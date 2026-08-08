@@ -35,7 +35,7 @@ trait SearchableModelUtils
 
     public function filterable($key): Filterable
 	{
-		return $this->decoratedFilterables()[$key];
+		return $this->decoratedFilterables()[$key] ?? null;
 	}
 
 	public function decoratedFilterables()
