@@ -21,10 +21,10 @@ abstract class WithEntityRule extends ColumnRule
         if (is_array($this->value)) {
             return collect($this->value)->map(function ($value) use($filtSpec) {
                 return $filtSpec->getEntityType()->getLabel($value);
-            })->implode(', ');
+            })->filter()->implode(', ');
         }
 
-        return $filtSpec->getEntityType()->getLabel($this->value);
+        return $filtSpec->getEntityType()->getLabel($this->value) ?: '';
     }
 
     public function toArray()

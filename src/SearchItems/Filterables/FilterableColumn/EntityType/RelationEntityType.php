@@ -39,6 +39,6 @@ class RelationEntityType extends EntityType
 
     public function getLabel($value)
     {
-        return $this->parseLabelWithAllOption($value, fn() => $this->from($value)->label());
+        return $this->parseLabelWithAllOption($value, fn() => $this->from($value)?->label() ?? null);
     }
 }
