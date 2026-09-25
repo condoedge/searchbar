@@ -13,7 +13,10 @@ class EnhancedSearchbar extends Query
     public $perPage = 6;
     public $paginationType = 'Scroll';
     public $style = 'width: calc(100% - 5px)';
-    public $class = 'overflow-y-auto mini-scroll';
+    // Scroll pagination listens on the items wrapper, so it must be the element that scrolls:
+    // capped below one page of cards (6 × ~100px), or page 2 is never requested.
+    public $itemsWrapperClass = 'overflow-y-auto mini-scroll';
+    public $itemsWrapperStyle = 'max-height: 450px';
 
     public function noItemsFound()
     {

@@ -29,6 +29,6 @@ class EnumEntityType extends EntityType
 
     public function getLabel($value)
     {
-        return $this->from($value)->label();
+        return $this->from($value)?->label();
     }
 }

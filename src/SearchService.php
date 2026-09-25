@@ -85,9 +85,12 @@ class SearchService
 
         $rules = $this->getQueryRules();
 
-        return $rules->reduce(function($query, $rule) {
+        $query = $rules->reduce(function($query, $rule) {
             return $rule->query($query);
-        }, $searchableEntity::baseSearchQuery())->with($searchableEntity->getEagerRelationsKeys());
+        }, $searchableEntity::baseSearchQuery());
+
+        // Unique last key: tied rows otherwise repeat or vanish across LIMIT/OFFSET pages and export chunks.
+        return $query->orderBy($query->getModel()->getQualifiedKeyName())->with($searchableEntity->getEagerRelationsKeys());
     }
 
     public function getQueryRules()

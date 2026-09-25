@@ -117,7 +117,7 @@ enum FilterableColumnTypeEnum: int
         };
     }
 
-    public function inlineInput($name, $onEnter = null, $search = null)
+    public function inlineInput($name, $onEnter = null, $search = null, $options = [])
     {
         $compact = 'mb-0 text-xs [&>div]:flex [&>div]:h-5 [&>div]:items-center [&>div>input]:!px-1';
 
@@ -125,7 +125,13 @@ enum FilterableColumnTypeEnum: int
             ? $input->dontSubmitOnEnter()->onEnter($onEnter)->onBlur($onEnter)->focusOnLoad()
             : $input->focusOnLoad();
 
+        $applyChange = fn($input) => $onEnter ? $input->onChange($onEnter)->focusOnLoad() : $input->focusOnLoad();
+
         return match ($this) {
+            // These store ids/enum values: typed text was saved as the value and its label lookup failed.
+            self::ENUM, self::RELATION_SELECT, self::SELECT => $applyChange(_MultiSelect()->options($options)
+                ->default(is_array($search) ? $search : null)->noInputWrapper()->name($name)->class($compact . ' w-40')),
+
             self::NUMBER, self::NUMBER_CURRENCY => _Flex(
                 $applyEvents(_InputNumber()->noInputWrapper()->name($name . '[0]')->placeholder('filter.min')->class($compact . ' w-16')),
                 _Html('—')->class('text-xs px-1 text-gray-400'),

@@ -124,6 +124,6 @@ class FilterableColumn extends Filterable
     {
         $search = $defaultValue ?? searchService()->getStore()->getState()->getSearch();
 
-        return $this->getInputType()->inlineInput($name, $onEnter, $search);
+        return $this->getInputType()->inlineInput($name, $onEnter, $search, $this->getEntityType()?->optionsWithLabels() ?: []);
     }
 }

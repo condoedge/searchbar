@@ -180,7 +180,7 @@ class SearchStateController extends Controller
 
         $rule = $this->state->getRules()->get($ruleIndex);
 
-        if ($value !== null && $value !== '' && $value !== [null, null]) {
+        if ($value !== null && $value !== '' && $value !== [] && $value !== [null, null]) {
             $rule->setValue($value);
             $rule->setEditing(false);
             $this->state->replaceRule($ruleIndex, $rule);

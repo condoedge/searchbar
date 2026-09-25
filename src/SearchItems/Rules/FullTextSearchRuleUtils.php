@@ -17,10 +17,14 @@ trait FullTextSearchRuleUtils
         $naturalLanguageValue = trim(preg_replace('/[+\-*~<>()"@]+/', ' ', $value));
         $column = $this->getColumnForFullTextSearch();
 
-        return $query->whereRaw("MATCH(" . $column . ") AGAINST(? IN BOOLEAN MODE)", [$value])
+        $query->whereRaw("MATCH(" . $column . ") AGAINST(? IN BOOLEAN MODE)", [$value])
             ->selectRaw("*, MATCH({$column}) AGAINST('{$naturalLanguageValue}' IN NATURAL LANGUAGE MODE) AS relevance")
-            ->orderByRaw('relevance DESC')
-            ->orderByRaw("LENGTH(" . $column . ") ASC");
+            ->orderByRaw('relevance DESC');
+
+        // Every exact match shares one relevance, so the tie-break is the order users see; a model can define its own.
+        return method_exists($query, 'getModel') && $query->getModel()->hasNamedScope('orderSearchResults')
+            ? $query->orderSearchResults()
+            : $query->orderByRaw("LENGTH(" . $column . ") ASC");
     }
 
     protected function getColumnForFullTextSearch()
