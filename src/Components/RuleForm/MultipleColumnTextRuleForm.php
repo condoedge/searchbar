@@ -13,7 +13,9 @@ class MultipleColumnTextRuleForm extends AbstractRuleForm
     {
         $value = request('value');
         $columns = request('columns');
-        $operator = OperatorEnum::from(request('operator'));
+        // Only a text operator; a crafted one (999, "x", missing) failed with a 500.
+        $operator = OperatorEnum::tryFrom((int) request('operator'));
+        $operator = in_array($operator, FilterableColumnTypeEnum::TEXT->operatorOptions(), true) ? $operator : FilterableColumnTypeEnum::TEXT->defaultOperator();
 
         return $colSpec->getRuleInstance(compact('value', 'operator', 'columns'));
     }
@@ -35,7 +37,7 @@ class MultipleColumnTextRuleForm extends AbstractRuleForm
             _Input()->name('value'),
 
             _FlexEnd(
-                _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh('navbar-search')->refresh('custom-filters-modal')->closeModal()),
+                _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh($this->refreshAfterSave())->closeModal()),
             ),
         );
     }

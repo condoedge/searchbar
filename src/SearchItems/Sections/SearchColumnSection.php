@@ -2,6 +2,8 @@
 
 namespace Kompo\Searchbar\SearchItems\Sections;
 
+use Kompo\Searchbar\SearchService;
+
 class SearchColumnSection extends SearchSection
 {
     protected $columns;
@@ -23,36 +25,29 @@ class SearchColumnSection extends SearchSection
         });
 	}
 
+    /** A pending rule of that column (its pill opens the editor). */
     public function getRule($index)
 	{
-        $filterable = $this->getFilterable($index);
-        $search = $this->searchContextService->getStore()->getState()?->getSearch();
-
-		return $filterable->getRuleInstance([
-            // 'value' => $search, For now putting this to null so we now the value is pending (We are going to open the input so they can change the value)
+		return $this->getFilterable($index)->getRuleInstance([
             'value' => null,
         ])->setKeyReference($index);
 	}
 
+    /**
+     * The typed search text becomes this field's filter, or the field's editor opens: the server decides from the
+     * key alone (SearchStateController::columnChip).
+     */
     protected function linkOption($option, $index)
     {
         $isSelected = $this->isOptionSelected($index);
 
-        $link = $isSelected
-            ? _Link($option)->icon(_Sax('tick-circle', 16))->class($this->chipClasses($isSelected))
-            : _Link($option)->icon(_Sax('search-normal-1', 14))->class($this->chipClasses($isSelected));
+        // Same icon size in both states: the chip width jumped when toggled.
+        $link = _Link($option)->icon(_Sax($isSelected ? 'tick-circle' : 'search-normal-1', 16))
+            ->class($this->chipClasses($isSelected))
+            ->title($isSelected ? 'filter.chip-selected-hint' : 'filter.chip-hint');
 
-        if ($isSelected) {
-            $ruleIndex = $this->getActiveFilterableRules()->search(fn($rule) => $rule->getKeyReference() === $index);
-
-            return $link->post('searchstate.delete-rule', ['i' => $ruleIndex])
-                ->withAllFormValues()
-                ->refresh('navbar-search');
-        }
-
-        return $link->post('searchstate.add-rule', ['rule' => serialize($this->getRule($index))])
-            ->withAllFormValues()
-            ->refresh('navbar-search');
+        // It may consume the typed text: the input is refreshed too.
+        return $this->busyAction($link, 'searchstate.column-chip', ['key' => $index], SearchService::CHANGE_TEXT_TO_RULE);
     }
 
     public function isOptionSelected($index): bool

@@ -9,7 +9,8 @@ class ScopeRuleForm extends AbstractRuleForm
 {
     public function constructRuleFromRequest(Filterable $colSpec): FilterableRule
     {
-        $value = request('value');
+        // The inputs are named param[i] (FilterableScope::getInputs): request('value') dropped every parameter.
+        $value = collect(request('param', []))->filter(fn($param) => is_null($param) || is_scalar($param))->values()->all();
 
         return $colSpec->getRuleInstance(compact('value'));
     }
@@ -27,7 +28,7 @@ class ScopeRuleForm extends AbstractRuleForm
             ),
 
             _FlexEnd(
-                _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh('navbar-search')->refresh('custom-filters-modal')->closeModal()),
+                _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh($this->refreshAfterSave())->closeModal()),
             ),
         );
     }
