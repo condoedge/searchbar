@@ -22,7 +22,8 @@ class SearchEntitySection extends SearchSection
 
 	public function options()
 	{
-		return $this->filterable->getEntityType()?->optionsWithLabels();
+		// Chip labels render as HTML: record names (relations) are escaped.
+		return collect($this->filterable->getEntityType()?->optionsWithLabels())->map(fn($label) => is_string($label) ? e($label) : $label);
 	}
 
 	public function getRule($type)
@@ -30,6 +31,12 @@ class SearchEntitySection extends SearchSection
 		return $this->filterable->getRuleInstance([
             'value' => [$type],
         ])->setKeyReference($this->filterableKey);
+	}
+
+	/** The filter key and the option: no serialized rule travels through the browser. */
+	protected function chipParams($index): array
+	{
+		return ['key' => $this->filterableKey, 'option' => $index];
 	}
 
 	public function isOptionSelected($index): bool

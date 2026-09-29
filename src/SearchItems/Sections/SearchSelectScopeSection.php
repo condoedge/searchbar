@@ -33,6 +33,12 @@ class SearchSelectScopeSection extends SearchSection
         ])->setKeyReference($this->filterableKey);
 	}
 
+	/** The filter key and the scope: no serialized rule travels through the browser. */
+	protected function chipParams($index): array
+	{
+		return ['key' => $this->filterableKey, 'option' => $index];
+	}
+
 	public function isOptionSelected($index): bool
 	{
 		return $this->getActiveFilterableRules()->contains(function ($rule) use ($index) {

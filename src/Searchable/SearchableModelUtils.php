@@ -33,15 +33,18 @@ trait SearchableModelUtils
 		return __('filter.' . strtolower(class_basename(static::class)));
 	}
 
-    public function filterable($key): Filterable
+    public function filterable($key): ?Filterable
 	{
 		return $this->decoratedFilterables()[$key] ?? null;
 	}
 
+	/** Each with this searchable's context and its own key (a select searching its options on the server names it). */
 	public function decoratedFilterables()
 	{
-		return collect(static::filterables())->map(function ($filterable) {
-			return $filterable->injectContext($this->searchContextService);
+		return collect(static::filterables())->map(function ($filterable, $key) {
+			$filterable = $filterable->injectContext($this->searchContextService);
+
+			return $filterable instanceof Filterable ? $filterable->setFilterKey((string) $key) : $filterable;
 		});
 	}
 

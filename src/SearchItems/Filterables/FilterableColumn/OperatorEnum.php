@@ -55,8 +55,9 @@ enum OperatorEnum: int
     public function renderRule($rule)
     {
         return match ($this) {
+            // Escaped: _Html renders with v-html, and the value is user text (or a DB label).
             default => _Html(__($this->label() . '.with-value', [
-                'value' => $rule->visualValue(),
+                'value' => e((string) $rule->visualValue()),
             ])),
         };
     }
@@ -96,37 +97,40 @@ enum OperatorEnum: int
     public function constructQuery($query, $column, $val)
     {
         return match ($this) {
-            self::BETWEEN => $query->whereBetween($column, collect($val)->sortKeys()->values()),
-            self::IN => $query->whereIn($column, $val),
-            self::NOT_IN => $query->whereNotIn($column, $val),
+            self::BETWEEN => $this->betweenQuery($query, $column, $val),
+            self::IN => $query->whereIn($column, (array) $val),
+            self::NOT_IN => $query->whereNotIn($column, (array) $val),
 
             default => $query->where($column, $this->operator(), $this->constructValue($val)),
         };
     }
 
+    /**
+     * [5, null] is ">= 5" and [null, 10] "<= 10" (whereBetween with a null bound matched nothing), and reversed
+     * bounds are swapped (sortKeys() only reordered the keys, never the values).
+     */
+    protected function betweenQuery($query, $column, $val)
+    {
+        [$from, $to] = array_values(array_map(
+            fn($v) => is_string($v) && trim($v) === '' ? null : $v,
+            is_array($val) ? array_values($val) : [$val, $val],
+        )) + [null, null];
+
+        return match (true) {
+            $from !== null && $to !== null => $query->whereBetween($column, $from <= $to ? [$from, $to] : [$to, $from]),
+            $from !== null => $query->where($column, '>=', $from),
+            $to !== null => $query->where($column, '<=', $to),
+            default => $query,
+        };
+    }
+
     public function constructValue($val, ColumnRule $rule = null)
     {
-        // TEMP instrumentation: array reaching wildcardSpace means an upstream
-        // producer leaked a non-scalar value into CONTAINS/DOES_NOT_CONTAIN.
-        // Remove once root cause is fixed.
+        // Wildcard operators take text. Arrays used to reach them when the custom filters modal rows shared one
+        // "value" field name (the last row won); the modal names its fields per row now, and pill editors normalize
+        // values per operator. Joining keeps any stored leftover from breaking the query.
         if (is_array($val) && ($this === self::CONTAINS || $this === self::DOES_NOT_CONTAIN)) {
-            try {
-                $state = searchService()->getStore()->getState();
-                \Log::warning('searchbar.array_value_at_wildcard', [
-                    'operator' => $this->name,
-                    'rule_class' => $rule ? get_class($rule) : null,
-                    'column' => $rule?->getColumn(),
-                    'key_reference' => $rule?->getKeyReference(),
-                    'value' => $val,
-                    'searchable_entity' => $state?->getSearchableEntity(),
-                    'stored_search' => $state?->getSearch(),
-                    'trace' => collect(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 12))
-                        ->map(fn($f) => ($f['class'] ?? '') . ($f['type'] ?? '') . ($f['function'] ?? '') . ' @ ' . ($f['file'] ?? '?') . ':' . ($f['line'] ?? '?'))
-                        ->all(),
-                ]);
-            } catch (\Throwable $e) {
-                // Logging must never break the request
-            }
+            $val = collect($val)->flatten()->filter(fn($v) => is_scalar($v) && $v !== '')->implode(' ');
         }
 
         return match ($this) {
@@ -135,5 +139,22 @@ enum OperatorEnum: int
 
             default => $rule?->getFilterable()?->defaultValueParsed($val) ?? $val,
         };
+    }
+
+    /** How a value is shown in a pill: "5 – 10", "≥ 5", "≤ 10" for ranges. */
+    public function visualValue($value)
+    {
+        if ($this === self::BETWEEN && is_array($value)) {
+            [$from, $to] = array_values($value) + [null, null];
+
+            return match (true) {
+                $from !== null && $to !== null => $from . ' – ' . $to,
+                $from !== null => '≥ ' . $from,
+                $to !== null => '≤ ' . $to,
+                default => '',
+            };
+        }
+
+        return is_array($value) ? implode(', ', array_filter($value, fn($v) => $v !== null && $v !== '')) : $value;
     }
 }

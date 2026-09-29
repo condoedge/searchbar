@@ -40,8 +40,28 @@ class SearchbarServiceProvider extends ServiceProvider
         $this->loadHelpers();
 
         $this->loadJSONTranslationsFrom(__DIR__.'/../resources/lang');
-        
+
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        $this->loadCommands();
+    }
+
+    protected function loadCommands()
+    {
+        if (!$this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->commands([
+            \Kompo\Searchbar\Commands\PruneSearchLinksCommand::class,
+            // Run by hand on deploy (--dry-run first): stored states to format v2, or back with --rollback.
+            \Kompo\Searchbar\Commands\MigrateSearchStatesCommand::class,
+        ]);
+
+        // Only resolved by the scheduler (schedule:run / schedule:list).
+        $this->callAfterResolving(\Illuminate\Console\Scheduling\Schedule::class, function ($schedule) {
+            $schedule->command('searchbar:prune-links')->daily();
+        });
     }
 
     protected function loadHelpers()

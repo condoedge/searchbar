@@ -17,7 +17,8 @@ interface Searchable
 	 * @return \Kompo\Searchbar\SearchItems\Filterables\Filterable[]
 	 */
     public static function filterables();
-    public function filterable(string $column): \Kompo\Searchbar\SearchItems\Filterables\Filterable;
+    /** Null for a key the searchable no longer declares (rules stored in sessions, links, favorites). */
+    public function filterable(string $column): ?\Kompo\Searchbar\SearchItems\Filterables\Filterable;
     
     public static function sections();
     public function decoratedSections();

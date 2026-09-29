@@ -10,12 +10,13 @@ class ColumnRuleForm extends AbstractRuleForm
 {
     public function constructRuleFromRequest(Filterable $colSpec): FilterableRule
     {
-        $operator = OperatorEnum::from(request('operator'));
-        $value = request('value');
+        $operator = OperatorEnum::tryFrom((int) request('operator'));
+        $operator = in_array($operator, $colSpec->getInputType()->operatorOptions(), true) ? $operator : $colSpec->getInputType()->defaultOperator();
 
         return $colSpec->getRuleInstance([
             'operator' => $operator,
-            'value' => $value,
+            // In the operator's shape: a scalar under BETWEEN, or an array under CONTAINS, broke the query.
+            'value' => $colSpec->getInputType()->normalizeValue(request('value'), $operator),
         ]);
     }
 
@@ -39,7 +40,7 @@ class ColumnRuleForm extends AbstractRuleForm
             )->id('input-panel'),
 
             _FlexEnd(
-                _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh('navbar-search')->refresh('custom-filters-modal')->closeModal()),
+                _SubmitButton('generic.save')->onSuccess(fn($e) => $e->refresh($this->refreshAfterSave())->closeModal()),
             ),
         );
     }
@@ -50,7 +51,9 @@ class ColumnRuleForm extends AbstractRuleForm
          * @var \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn $colSpec
          */
         $colSpec = $this->searchableInstance->filterable($this->key);
-        $operator = OperatorEnum::from($operator);
+        // A crafted operator (999, "x") failed with a 500: only the field's own operators.
+        $operator = OperatorEnum::tryFrom((int) $operator);
+        $operator = in_array($operator, $colSpec->getInputType()->operatorOptions(), true) ? $operator : $colSpec->getInputType()->defaultOperator();
 
         return $colSpec->getInput($operator);
     }
