@@ -4,12 +4,13 @@ namespace Kompo\Searchbar\Components;
 
 use Illuminate\Support\Str;
 use Kompo\Core\KompoAction;
+use Kompo\Core\RequestData;
+use Kompo\Komponents\KomponentManager;
 use Kompo\Searchbar\Components\Concerns\ExportsSearchbarFilters;
 use Kompo\Searchbar\Components\Concerns\HasSearchbarColumnHeaders;
 use Kompo\Searchbar\Components\Concerns\HasSearchbarViews;
 use Kompo\Searchbar\Components\Concerns\RemembersSearchbarState;
 use Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn;
-use Kompo\Searchbar\SearchItems\Rules\PremadeRuleWrapper;
 use Kompo\Searchbar\SearchItems\Sections\SearchColumnSection;
 use Kompo\Searchbar\SearchItems\Stores\SessionStore;
 use Kompo\Searchbar\SearchService;
@@ -243,7 +244,9 @@ trait HasSearchbarFilters
         return _Rows(
             _Hidden()->name('searchbar_client_js', false)
                 ->onLoad(fn($e) => $e->run('() => { (' . searchbarClientJs() . ')(); window.searchbarUnlock && searchbarUnlock();'
-                    . ' window.searchbarSyncFilterMenus && searchbarSyncFilterMenus(); }')),
+                    . ' window.searchbarSyncFilterMenus && searchbarSyncFilterMenus();'
+                    . ' window.searchbarKeepTableFilters && searchbarKeepTableFilters(' . json_encode($this->searchbarScopeClass()) . ');'
+                    . ' window.searchbarFocusTableEditor && searchbarFocusTableEditor(' . json_encode($this->searchbarScopeClass()) . '); }')),
             $this->searchbarForgetLinkInUrl(),
             $this->searchbarThLinks(),
             _Flex(
@@ -266,6 +269,30 @@ trait HasSearchbarFilters
     }
 
     /**
+     * A refresh of the table (every searchbar action refreshes it) draws the table's own filter fields (its bar above
+     * the searchbar) with the values the refresh posted: Kompo draws a Query's filters with their defaults, which
+     * emptied that bar. The page posts the current values (searchbarKeepTableFilters() in searchbarClientJs()). The
+     * searchbar's own fields (its box, the pill editors) are drawn from the state.
+     */
+    public function prepareOwnElementsForDisplay($renderedElements)
+    {
+        $elements = parent::prepareOwnElementsForDisplay($renderedElements);
+
+        if ($this->searchbarBooted && KompoAction::is('refresh-self')) {
+            KomponentManager::collectFields($this)->each(function ($field) {
+                $name = $field->name ?? null;
+
+                if (is_string($name) && $name !== '' && !preg_match('/^(searchbar_|inline_)/', $name)
+                    && (request()->has($name) || request()->has(str_replace('.', '_', $name)))) {
+                    $field->value(RequestData::get($name));
+                }
+            });
+        }
+
+        return $elements;
+    }
+
+    /**
      * The searchbar's filters (searchbarFilters()) folded under "Advanced filters", for a table keeping its own controls
      * (its search input, toggles) above them. Open while the state is off its defaults: its pills and search text apply
      * to the rows, never hidden (the box is rendered folded too: each browse carries its text). The count: pills besides
@@ -277,8 +304,7 @@ trait HasSearchbarFilters
             return null;
         }
 
-        $count = $this->state->getRules()->reject(fn($rule) => $rule instanceof PremadeRuleWrapper)->count()
-            + (trim((string) $this->state->getSearch()) !== '' ? 1 : 0);
+        $count = $this->state->countOffDefaults();
 
         return _Collapsible($filters->class('pt-2'))
             ->titleLabel(_Flex(

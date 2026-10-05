@@ -222,6 +222,27 @@ class SearchState extends SearchItem
      * No search text, no filter pill, and exactly its entity's default premade rules: a table with nothing to reset,
      * an export with no filter to describe. Without entity: true.
      */
+    /**
+     * How far the state is from its defaults (a table's "Advanced filters (n)"): its pills besides the premade rules,
+     * its search text, and each premade rule toggled away from its default (on or off). 0 when isOnDefaults().
+     */
+    public function countOffDefaults(): int
+    {
+        $rules = $this->getRules();
+        $count = $rules->reject(fn($rule) => $rule instanceof PremadeRuleWrapper)->count()
+            + (is_string($this->search) && trim($this->search) !== '' ? 1 : 0);
+
+        if ($searchable = $this->getSearchableInstance()) {
+            $keys = fn($premades) => collect($premades)->filter(fn($rule) => $rule instanceof PremadeRuleWrapper)
+                ->map(fn($rule) => (string) $rule->getKey())->unique()->values();
+            [$on, $defaults] = [$keys($rules), $keys($searchable->getDefaultRulesApplied())];
+
+            $count += $on->diff($defaults)->count() + $defaults->diff($on)->count();
+        }
+
+        return $count;
+    }
+
     public function isOnDefaults(): bool
     {
         $searchable = $this->getSearchableInstance();

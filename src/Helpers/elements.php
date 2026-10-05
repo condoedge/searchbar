@@ -82,6 +82,48 @@ function searchbarClientJs(): string
         locked = [];
     };
 
+    // A table's own filters (its bar above the searchbar) survive the table's refresh, which every searchbar action
+    // does: Kompo's refresh posts a Query's first filter values and draws its fields with their defaults, which cleared
+    // the bar and its filters. The table's Query posts its current values instead, and the server draws the fields
+    // with them (HasSearchbarFilters::prepareOwnElementsForDisplay()).
+    // A table's pill editor focuses itself on load (focusOnLoad), but under "Advanced filters" the collapsible shows
+    // its content a moment later (expandedByDefault waits a tick): the focus went nowhere, keys didn't reach the
+    // editor and a select's list stayed shut. Once the editor is displayed, its field gets the focus, unless the user
+    // focused something else meanwhile.
+    window.searchbarFocusTableEditor = (scopeClass) => {
+        const shown = (el) => {
+            for (let n = el; n && n !== document.body; n = n.parentElement) {
+                if (window.getComputedStyle(n).display === 'none') return false;
+            }
+            return true;
+        };
+        let tries = 0;
+        const tick = () => {
+            const bar = document.querySelector('.' + scopeClass);
+            const editor = bar && bar.querySelector('.inline-filter-editor');
+            if (!editor) return;
+            if (!shown(editor)) {
+                if (++tries < 20) setTimeout(tick, 25);
+                return;
+            }
+            // Focused already (the editor's own focusOnLoad worked), or the user is elsewhere.
+            if (document.activeElement && document.activeElement !== document.body) return;
+            const field = editor.querySelector('input:not([type=hidden]), textarea, select');
+            field && field.focus();
+        };
+        setTimeout(tick, 0);
+    };
+
+    window.searchbarKeepTableFilters = (scopeClass) => {
+        let el = document.querySelector('.' + scopeClass);
+        while (el && !(el.__vue__ && typeof el.__vue__.getJsonFormDataWithFilters === 'function')) el = el.parentElement;
+        const query = el && el.__vue__;
+        if (!query || query.searchbarKeepsFilters) return;
+        query.searchbarKeepsFilters = true;
+        const posted = query.getJsonFormDataWithFilters;
+        query.getJsonFormDataWithFilters = function (reset, ...rest) { return posted.call(this, false, ...rest); };
+    };
+
     // The navbar's results column, once lazy-loaded (EnhancedSearchbar).
     const resultsMounted = () => !!document.querySelector('#navbar-search .searchbar-results');
 

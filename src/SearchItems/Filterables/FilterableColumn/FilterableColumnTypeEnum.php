@@ -209,8 +209,12 @@ enum FilterableColumnTypeEnum: int
     {
         $id = 'inline-select-' . \Str::slug($name) . '-' . \Str::random(4);
 
-        // Its own stacking context above the open search panel (z 110): the list opens right where the panel starts.
+        // Its option list is moved under <body> while open (Kompo's floating options, as SISC's forms use them): inside
+        // a host's tabs (a transformed swipe container, an overflow-hidden tab body) a fixed list was shifted and cut
+        // off, and so was it in the phone's pills row. The class and the focus script below are the fallback of a
+        // bundle without floating options: the list's own stacking context above the open search panel (z 110).
         return $select->options($options)->noInputWrapper()->name($name, false)->id($id)
+            ->config(['floatingOptions' => true])
             ->class($compact . ' w-40 select-over-modal')
             ->focusOnLoad()
             ->onFocus(fn($e) => $e->run('() => {

@@ -289,18 +289,29 @@ class PersonsTable extends Table
 - **On some pages only.** A table shown on several pages boots the searchbar only where it should have it (e.g. from
   a prop its main page passes: props persist in the komponent's boot info). Not booted, the table is untouched:
   `searchbarQuery($base)` returns `$base` as is, `searchbarFilters()` and `searchbarAdvancedFilters()` draw nothing,
-  `searchbarTh()` is a plain header, and no state is stored. So the embedding pages keep the table as it was.
+  `searchbarTh()` is a plain header, `getExportableInstance()` is the table itself, and no state is stored. So the
+  embedding pages keep the table as it was.
 - **"Advanced filters".** `searchbarAdvancedFilters()` folds the whole card (search box, Filter and Views menus,
   pills) under a collapsible "Advanced filters (n)" below the table's own controls, which stay as they were (both
   searches apply). It is open while the state is off its defaults, so pills or search text never filter the rows out
-  of sight; the box is rendered folded too, so each browse carries its text. SISC shows it on the tables' main pages
-  only (members list, teams registry, activities, templates, receivables, the Brevets / Decorations pages).
+  of sight; the box is rendered folded too, so each browse carries its text. The count (`SearchState::
+  countOffDefaults()`) is the pills besides the premade rules, the search text and each premade rule switched away
+  from its default. SISC shows it on the tables' main pages only (members list, teams registry, activities,
+  templates, receivables, the Brevets / Decorations pages).
+- **The table's own filters survive the searchbar's actions.** Each action refreshes the table, and Kompo's refresh
+  posts a Query's first filter values and draws its fields with their defaults. On a booted table, the page posts the
+  current values (`searchbarKeepTableFilters()`, from the card's load) and the refresh draws the table's own fields
+  with them (`HasSearchbarFilters::prepareOwnElementsForDisplay()`); the searchbar's fields come from the state. A
+  pill editor opened in the folded card gets the focus once the card shows it (`searchbarFocusTableEditor()`).
 - The base query passed to `searchbarQuery()` must not have top-level `orWhere`s: wrap them in
   `where(fn ($q) => ...)`, since the state's filters are ANDed after them.
 - A table can drop its entity's premade rules with a filters-only subclass of the searchable: `premadeRules()`
-  returns `[]`, same permission key and `searchableName()`, not registered in the navbar (SISC's
-  `TeamMemberSearchable` for the members lists).
-- The table's own `top()` filter fields are reset by pill and Filter actions (they refresh the table).
+  returns `[]`, same permission key and `searchableName()`, not registered in the navbar. It also keeps a list to
+  the filters that fit it: SISC's members lists use `VolunteerMemberSearchable` (adults: roles, trainings,
+  background checks) and `ScoutMemberSearchable` (youth: allergies, swim levels) on `TeamMemberSearchable` (the
+  filters every member has, no young/adult type), and the Brevets / Decorations and teams tables have their own.
+- A pill editor's select opens its option list under `<body>` (Kompo's floating options): inside a host's tabs (a
+  transformed swipe container, an overflow-hidden tab body) a fixed list was shifted and cut off.
 - The "Filter" menu turns the text typed in the search box into **one more condition** on the chosen field (or opens
   that field's editor when the text can't be one of its values). Conditions on one field AND together (">= 5", then
   "<= 10"); options merge into the field's one IN rule; a condition the field already has is ignored, compared strictly
@@ -367,8 +378,8 @@ field has a condition; the rest of the header keeps Kompo's sort. Only for colum
 keys give a plain header). The package's exporter strips it from the headings; another exporter would export its HTML.
 
 Header sorts keep the unique-key tie-break (pages no longer repeat or skip tied rows); a `relation.column` sort is left
-to Kompo. SISC: the Person results table (name, email, phone, address, gender, linked to) and the members lists
-(gender, brevets).
+to Kompo. SISC: the Person results table (name, email, phone, address, gender, linked to), the members lists
+(gender, brevets) and the teams registry's units (name, branch, gender), on their main pages.
 
 ### Excel export
 

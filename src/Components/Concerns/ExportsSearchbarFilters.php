@@ -32,9 +32,10 @@ trait ExportsSearchbarFilters
     // ExportPlugin's methods (posted as ?method=, kept in a queued export's request).
     protected static array $searchbarExportMethods = ['exportToExcel', 'directExportToExcel', 'exportToExcelViaEmail', 'exportToExcelRaw'];
 
+    // A table that didn't boot the searchbar (a page showing it without) exports itself, as without this trait.
     public function getExportableInstance()
     {
-        return $this->searchbarTableExport();
+        return $this->searchbarBooted ? $this->searchbarTableExport() : $this;
     }
 
     /**
