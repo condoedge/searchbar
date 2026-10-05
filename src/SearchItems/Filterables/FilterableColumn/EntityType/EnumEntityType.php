@@ -14,7 +14,8 @@ class EnumEntityType extends EntityType
 
     public function optionsWithLabels()
     {
-        return $this->enum::optionsWithLabels();
+        // The "all" flag offered nothing (only relations added the option); unchanged without it.
+        return $this->allowAllOption ? $this->addAllOption(collect($this->enum::optionsWithLabels())) : $this->enum::optionsWithLabels();
     }
 
     public function getValue()
@@ -24,11 +25,18 @@ class EnumEntityType extends EntityType
 
     public function from($value)
     {
-        return $this->enum::tryFrom((int) $value);
+        if (!is_scalar($value)) {
+            return null;
+        }
+
+        // (int) for string-backed enums turned every value into 0: they never got a label.
+        $isIntBacked = (string) (new \ReflectionEnum($this->enum))->getBackingType() === 'int';
+
+        return $this->enum::tryFrom($isIntBacked ? (int) $value : (string) $value);
     }
 
     public function getLabel($value)
     {
-        return $this->from($value)->label();
+        return $this->from($value)?->label();
     }
 }
