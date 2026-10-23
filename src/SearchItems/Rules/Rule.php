@@ -15,9 +15,6 @@ abstract class Rule extends SearchItem
      */
     protected ?string $id = null;
 
-    /** Rules unserialized without an id (stored before ids): their state gives them positional ids, see SearchState. */
-    private static ?\WeakMap $unserializedWithoutId = null;
-
     public function query($query)
     {
         return $this->decorateQuery($query);
@@ -78,21 +75,4 @@ abstract class Rule extends SearchItem
         return $this;
     }
 
-    /**
-     * Stored before ids (session objects, v1 links and favorites): such a state is read again on each request until
-     * it is stored, so its rules need ids that are the same on every read. Remembered outside the object, so the
-     * mark is never stored.
-     */
-    public function __wakeup()
-    {
-        if ($this->id === null) {
-            self::$unserializedWithoutId ??= new \WeakMap();
-            self::$unserializedWithoutId[$this] = true;
-        }
-    }
-
-    public function wasUnserializedWithoutId(): bool
-    {
-        return $this->id === null && isset(self::$unserializedWithoutId[$this]);
-    }
 }

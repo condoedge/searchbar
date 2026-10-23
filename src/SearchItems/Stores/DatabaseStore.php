@@ -119,7 +119,7 @@ class DatabaseStore extends SearchStore
             return ($userId && !$row ? $this->sessionState() : null) ?? $this->getBaseState();
         }
 
-        // Rebuilt through the entity's current filterables (StateCodec; a v1 row too): a rule that no longer fits is
+        // Rebuilt through the entity's current filterables (StateCodec): a rule that no longer fits is
         // dropped. A row that isn't a state any more (its entity no longer a searchable) opens on the defaults and the
         // next write replaces it, instead of failing on every display.
         $state = rescue(fn() => StateCodec::decode($this->rowRaw, $this->getContext()), null, true);

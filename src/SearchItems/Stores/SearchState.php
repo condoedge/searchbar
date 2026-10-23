@@ -441,13 +441,10 @@ class SearchState extends SearchItem
             }
         }
 
-        foreach ($missing as $position => $rule) {
-            $legacy = $rule->wasUnserializedWithoutId();
-            $id = $legacy ? 'l' . $position : Rule::newId();
-
-            for ($n = 1; isset($taken[$id]); $n++) {
-                $id = $legacy ? 'l' . $position . 'x' . $n : Rule::newId();
-            }
+        foreach ($missing as $rule) {
+            do {
+                $id = Rule::newId();
+            } while (isset($taken[$id]));
 
             $rule->setId($id);
             $taken[$id] = true;

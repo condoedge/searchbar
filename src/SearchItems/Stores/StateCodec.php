@@ -32,8 +32,7 @@ use Kompo\Searchbar\SearchService;
  *   premade key the searchable no longer declares, an operator the field doesn't offer, an undeclared scope...
  * - Working states (session, remembered tables, a results page's link) keep pending pills, open editors, the header
  *   sort and the open flag; snapshots (favorites, shared views, recent searches, link copies) don't.
- * - v1 (serialized rules) is still read everywhere, without instantiating any of its classes (LegacyStateReader);
- *   searchbar:migrate-states converts the stored rows.
+ * - Nothing else is read: a stored state that isn't v2 opens as no state.
  */
 final class StateCodec
 {
@@ -113,14 +112,14 @@ final class StateCodec
     // DECODING
 
     /**
-     * A stored state (any format: see toV2()) rebuilt as a SearchState bound to $service, or null when it isn't one
+     * A stored state (see read()) rebuilt as a SearchState bound to $service, or null when it isn't one
      * (not a state, over maxBytes(), or its entity isn't a Searchable class: refused and logged). Its rules are rebuilt
      * through the entity's filterables and premade rules; those that can't be are dropped and logged
-     * (SearchState::droppedStoredRules() lists them). $log false: nothing is logged (searchbar:migrate-states reports).
+     * (SearchState::droppedStoredRules() lists them). $log false: nothing is logged.
      */
     public static function decode($payload, SearchService $service, bool $log = true): ?SearchState
     {
-        $data = static::toV2($payload, $log);
+        $data = static::read($payload, $log);
 
         if ($data === null) {
             return null;
@@ -153,13 +152,10 @@ final class StateCodec
     }
 
     /**
-     * Any stored state as v2 data, or null when it isn't one. Nothing is instantiated:
-     * - a v2 JSON string (a search_states row), at most maxBytes();
-     * - a serialized array (a v1 row; a v2 array serialized is read as v2);
-     * - an array or a collection: v2 (the session, a snapshot), else v1 (LegacyStateReader);
-     * - a SearchState object: the session of a release before v2.
+     * A stored state as v2 data, or null when it isn't one: a v2 JSON string (a search_states row, at most
+     * maxBytes()), or a v2 array or collection (the session, a snapshot). Nothing is instantiated.
      */
-    public static function toV2($payload, bool $log = true): ?array
+    public static function read($payload, bool $log = true): ?array
     {
         if ($payload instanceof Collection) {
             $payload = $payload->all();
@@ -169,17 +165,7 @@ final class StateCodec
             return static::fromString($payload, $log);
         }
 
-        if (is_object($payload)) {
-            return $payload instanceof SearchState || $payload instanceof \__PHP_Incomplete_Class
-                ? LegacyStateReader::fromObject($payload)
-                : null;
-        }
-
-        if (!is_array($payload)) {
-            return null;
-        }
-
-        return ($payload['v'] ?? null) === static::VERSION ? $payload : LegacyStateReader::fromArray($payload);
+        return is_array($payload) && ($payload['v'] ?? null) === static::VERSION ? $payload : null;
     }
 
     /**
@@ -188,13 +174,7 @@ final class StateCodec
      */
     public static function header($payload): ?array
     {
-        if (is_string($payload) && str_starts_with(ltrim($payload), 'a:')) {
-            // v1: the outer array only (its rules stay serialized strings).
-            $data = @unserialize($payload, ['allowed_classes' => false]);
-            $payload = is_array($data) ? array_diff_key($data, ['rules' => true]) : null;
-        }
-
-        $data = $payload === null ? null : static::toV2($payload);
+        $data = static::read($payload);
 
         return $data === null ? null : array_diff_key($data, ['rules' => true]);
     }
@@ -214,12 +194,6 @@ final class StateCodec
             $data = json_decode($raw, true, 16);
 
             return is_array($data) && ($data['v'] ?? null) === static::VERSION ? $data : null;
-        }
-
-        if (str_starts_with($raw, 'a:')) {
-            $data = @unserialize($raw, ['allowed_classes' => false]);
-
-            return is_array($data) ? static::toV2($data, $log) : null;
         }
 
         return null;
@@ -246,8 +220,8 @@ final class StateCodec
             $key = is_array($item) && is_scalar($item['key'] ?? null) ? (string) $item['key'] : null;
 
             try {
-                if (!is_array($item) || ($item['t'] ?? null) === 'legacy') {
-                    throw new UnusableRuleData(is_array($item) ? (string) ($item['reason'] ?? 'undecodable') : 'malformed');
+                if (!is_array($item)) {
+                    throw new UnusableRuleData('malformed');
                 }
 
                 if (!$searchable) {
@@ -303,7 +277,7 @@ final class StateCodec
     /**
      * The dropped rules ($state->droppedStoredRules()) that failed to rebuild (a filterable or the premade rules
      * throwing, e.g. without a signed-in user; no searchable to rebuild with) rather than no longer fitting: their
-     * stored data may be fine, so a state that lost them is not written back in bulk (searchbar:migrate-states).
+     * stored data may be fine, so a state that lost them is not written back by a read (the stores, a table's reopen).
      */
     public static function failedDrops(array $dropped): array
     {

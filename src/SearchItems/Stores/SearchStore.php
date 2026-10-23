@@ -87,29 +87,7 @@ abstract class SearchStore extends SearchItem
     }
 
     /**
-     * Seeds the state from a link made by self::toRequestPayload() (the older "Open in a table" links). An unsigned or
-     * tampered payload gives an empty state; a signed one is read as any stored state (StateCodec: its v1 rules
-     * without instantiating their classes).
-     */
-    public function setFromRequest($key)
-    {
-        $payload = searchbarVerify(request($key));
-        $data = $payload === null ? null : uncompressArray($payload);
-        $state = is_array($data) ? StateCodec::decode($data, $this->searchContextService) : null;
-
-        $this->storeState($state ?? $this->getBaseState()->injectContext($this->searchContextService));
-
-        return $state !== null;
-    }
-
-    /** @deprecated nothing links with it anymore ("Open in a table" saves a link): a signed v2 snapshot. */
-    public static function toRequestPayload(SearchState $state): string
-    {
-        return searchbarSign(compressArray($state->toArray()));
-    }
-
-    /**
-     * A state rebuilt from stored data (SearchState::toArray() / toStorageArray(), a row's v1 array too), bound to
+     * A state rebuilt from stored data (SearchState::toArray() / toStorageArray()), bound to
      * this store's service; not stored. A copy to change before storing it (a table opening a shared view). Null when
      * it isn't a state (StateCodec::decode()).
      */
@@ -120,7 +98,7 @@ abstract class SearchStore extends SearchItem
 
     /**
      * The state stored in a search_states row (a link, a favorite, a recent search) as v2 plain data, or null when it
-     * isn't a state. Nothing is instantiated (v1 rules are read from their properties, LegacyStateReader). $withRules
+     * isn't a state. Nothing is instantiated. $withRules
      * false: only its entity, search text and list data (StateCodec::header()), for lists.
      */
     public static function decodeRow($row, bool $withRules = true): ?array
@@ -129,10 +107,10 @@ abstract class SearchStore extends SearchItem
             return null;
         }
 
-        return $withRules ? StateCodec::toV2((string) $row->raw_state) : StateCodec::header((string) $row->raw_state);
+        return $withRules ? StateCodec::read((string) $row->raw_state) : StateCodec::header((string) $row->raw_state);
     }
 
-    /** Seeds and stores the state from stored data (any format, see StateCodec::toV2()); an empty state when it isn't one. */
+    /** Seeds and stores the state from stored data (StateCodec::read()); an empty state when it isn't one. */
     public function setFromCollection($collection)
     {
         $state = StateCodec::decode($collection, $this->searchContextService);
@@ -151,9 +129,4 @@ abstract class SearchStore extends SearchItem
         return $state;
     }
 
-    /** The session key of a state before format v2 (the SearchState object itself): SessionStore imports it. */
-    protected function getKey()
-    {
-        return 'searchState.' . $this->key;
-    }
 }

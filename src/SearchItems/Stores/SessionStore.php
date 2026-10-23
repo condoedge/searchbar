@@ -4,16 +4,11 @@ namespace Kompo\Searchbar\SearchItems\Stores;
 
 /**
  * A state in the session, as plain data (StateCodec, format v2), under "searchbarState.{key}". Read once while the
- * session holds that same array: a state changed but not stored yet is the one read again in the request, as when the
- * session held the SearchState object itself.
+ * session holds that same array: a state changed but not stored yet is the one read again in the request.
  *
  * Every request writes the whole session back when it ends: one that overlapped a change (the results' lazy load, an
  * option search, another tab) reverts it, and mutate() can't lock anything. The navbar of signed-in users is in
  * DatabaseStore rows when searchbar.store says so (guests stay here).
- *
- * A session of a release before v2 holds that object under "searchState.{key}": imported once (its rules rebuilt
- * through the filterables), then forgotten. The new key keeps a rolled back release from reading an array where it
- * expects an object.
  */
 class SessionStore extends SearchStore
 {
@@ -40,10 +35,6 @@ class SessionStore extends SearchStore
     protected function retrieveState(): ?SearchState
     {
         $data = session()->get($this->sessionKey());
-
-        if (!is_array($data)) {
-            $data = $this->importLegacyState();
-        }
 
         if (!is_array($data)) {
             return null;
@@ -88,7 +79,7 @@ class SessionStore extends SearchStore
 
     public function clearState(): void
     {
-        session()->forget([$this->sessionKey(), $this->getKey()]);
+        session()->forget($this->sessionKey());
 
         $this->readData = null;
         $this->readState = null;
@@ -99,22 +90,4 @@ class SessionStore extends SearchStore
         return static::SESSION_PREFIX . $this->key;
     }
 
-    /** The state a session of a release before v2 holds (the object), stored as v2 once, then forgotten. */
-    protected function importLegacyState(): ?array
-    {
-        if (!session()->has($this->getKey())) {
-            return null;
-        }
-
-        $legacy = session()->pull($this->getKey());
-        $state = is_object($legacy) ? StateCodec::decode($legacy, $this->getContext()) : null;
-
-        if (!$state) {
-            return null;
-        }
-
-        $this->storeState($state);
-
-        return $this->readData;
-    }
 }

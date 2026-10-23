@@ -14,7 +14,7 @@ class UnusableRuleData extends \InvalidArgumentException
         parent::__construct($reason);
     }
 
-    /** What was stored, as a short text for the logs and searchbar:migrate-states. */
+    /** What was stored, as a short text for the logs. */
     public static function describe($stored): string
     {
         return mb_strimwidth(is_scalar($stored) || $stored === null ? var_export($stored, true) : json_encode($stored), 0, 80, '…');

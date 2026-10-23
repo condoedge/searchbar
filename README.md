@@ -11,8 +11,7 @@ Search bar, filter pills and result tables for Kompo apps (`condoedge/searchbar`
   and one results table per searchable, `App\Kompo\Search\Search{Model}Table extends AbstractResultsTable`.
 - Run the migrations. The `searchbar:prune-links` command is scheduled daily: it deletes unused links, the navbar's
   working states (with `DatabaseStore`) unchanged for `working-lifetime-days`, the remembered filters of tables unused
-  for months, and each user's recent searches beyond `recent-searches` (see below). Then run
-  `php artisan searchbar:migrate-states --dry-run`, review it, and run it for real (see "Stored states").
+  for months, and each user's recent searches beyond `recent-searches` (see below).
 
 ## Filters
 
@@ -452,24 +451,8 @@ searches).
   sort and the panel's open flag. Snapshots (favorites, shared views, recent searches, link copies) don't.
 - A host filterable built on `Filterable` gets a default `ruleFromData()` (the stored operator and value through
   `getRuleInstance()`). Override it to check other data, and throw `UnusableRuleData` for data that no longer fits.
-- States stored before (v1: serialized rules) are still read everywhere, without instantiating any of their classes
-  (`LegacyStateReader`). They are written as v2 the next time they are stored.
-
-`php artisan searchbar:migrate-states` converts the stored rows to v2:
-- Run `--dry-run` first. Per type it shows: rows, already v2, v1, to convert, undecodable (left as they are), left v1
-  because a rule failed to rebuild (a filterable throwing without a signed-in user: still read), rules kept and
-  dropped, and each dropped rule with its row and reason. `--type=` (global, user, link, working, recent) and `--id=`
-  narrow it; `--details=` caps the rows listed.
-- The real run keeps each converted row's v1 payload in `search_states_v1` and leaves the rows' `updated_at` (their
-  prune age) unchanged. A row is written only while it holds exactly what was read (the row locked). A row the
-  application writes meanwhile is left alone and reported as "changed meanwhile": run the command again. A second
-  run changes nothing.
-- Run `--rollback` before downgrading to a release that reads v1 only. Each kept payload goes back while its row still
-  holds the v2 the conversion wrote. A row changed since, or written as v2 by the application, is written as v1 from
-  its current state (premade rules built without a signed-in user). A kept payload is forgotten only with the write
-  that restores its row. Rows whose rules fail to rebuild stay v2 and are reported.
-- Every store reads v1 anyway: converting stops the reading of serialized objects and gives the rollback path. The
-  app runs without it.
+- Only v2 is read: a stored state in another format opens as no state. Format v1 (serialized rules) is gone: the
+  migration `2026_10_23_000000` deletes the rows still in it and the conversion's backup table.
 
 ### No lost updates: `mutate()` and the navbar's rows
 
@@ -537,9 +520,8 @@ newer state they still hit their rule. `$change` may run again: it changes the s
 ## Security notes
 
 - Rules sent to the browser (option chips) are HMAC-signed and verified before being unserialized.
-- Stored states are never unserialized as objects. v2 is JSON, and its entity class is checked before use. v1 is read
-  with `allowed_classes => false`. Stored data never picks a SQL column, a rule class or a scope: those come from the
-  filter declared now.
+- Stored states are never unserialized: v2 is JSON, and its entity class is checked before use. Stored data never
+  picks a SQL column, a rule class or a scope: those come from the filter declared now.
 - Scope rules only call the model's local scopes; select-scope filters only accept their declared scopes.
 - Pill values are escaped (Kompo renders labels as HTML), and so are the option labels of relation and select filters
   and favorite names in a table's Views menu.

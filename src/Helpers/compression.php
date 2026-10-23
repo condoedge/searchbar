@@ -1,21 +1,8 @@
 <?php
 
-function compressArray($input = [])
-{
-    return base64_encode(gzcompress(json_encode($input)));
-}
-
-function uncompressArray(?string $input)
-{
-    $compressed = $input === null ? false : base64_decode($input, true);
-    $json = $compressed === false ? false : @gzuncompress($compressed);
-
-    return $json === false ? null : json_decode($json, true);
-}
-
 /**
- * Payloads the server hands to the browser and later unserializes (rules in chip links, the "Open in a table"
- * searchDetails) are signed: an unsigned one would let a client unserialize any class (PHP object injection).
+ * Payloads the server hands to the browser and later unserializes (rules in chip links) are signed: an unsigned one
+ * would let a client unserialize any class (PHP object injection).
  */
 function searchbarSign(string $payload): string
 {

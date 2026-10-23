@@ -19,8 +19,7 @@ use Kompo\Searchbar\SearchService;
  * Opened with:
  * - ?link=: a saved link; the author keeps editing it, anyone else gets a copy (what was shared doesn't change under them);
  * - ?from=: the navbar search of this session (its store key), saved as a new link (and one of the user's recent
- *   searches: RecentSearches);
- * - ?searchDetails=: the older signed links.
+ *   searches: RecentSearches).
  */
 class SearchResults extends Form
 {
@@ -83,10 +82,10 @@ class SearchResults extends Form
         $store = searchService(self::SEARCH_ID)->setStoreKey($token)->getStore();
 
         if ($link) {
-            // Rebuilt through the entity's current filterables (any format; a rule that no longer fits is dropped). A
+            // Rebuilt through the entity's current filterables (a rule that no longer fits is dropped). A
             // link that isn't a state any more or fails to rebuild: an empty copy (then the default entity) instead of
             // the page failing.
-            rescue(fn() => $store->setFromCollection(StateCodec::toV2((string) $link->raw_state) ?? []), fn() => $store->setFromCollection([]), true);
+            rescue(fn() => $store->setFromCollection(StateCodec::read((string) $link->raw_state) ?? []), fn() => $store->setFromCollection([]), true);
         } elseif (is_string(request('from')) && request('from') !== '') {
             // A separate service instance: setting the key on the navbar's singleton would switch the navbar's state.
             $navbarState = (new SearchService(SearchService::DEFAULT_KEY))->setStoreKey(request('from'))->getStore()->getState();
@@ -97,8 +96,6 @@ class SearchResults extends Form
             if (!TableStore::handles(request('from'))) {
                 RecentSearches::remember($navbarState);
             }
-        } elseif (request('searchDetails')) {
-            $store->setFromRequest('searchDetails');
         }
 
         $this->prepareStateForEditing($store);

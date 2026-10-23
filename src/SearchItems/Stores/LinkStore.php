@@ -56,7 +56,7 @@ class LinkStore extends SearchStore
             $source = $link ? (string) $link->raw_state : null;
 
             // Unchanged since this store read or wrote it: that same object (as DatabaseStore::readRow()). Else rebuilt
-            // through the entity's current filterables (StateCodec; a v1 link too). One that isn't a state any more
+            // through the entity's current filterables (StateCodec). One that isn't a state any more
             // (its entity no longer a searchable) opens as a pruned link instead of failing on every reload.
             if (!$this->cachedState || $source === null || $this->cachedSource !== $source) {
                 $this->cachedSource = $source;

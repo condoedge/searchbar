@@ -54,8 +54,6 @@ class SearchbarServiceProvider extends ServiceProvider
 
         $this->commands([
             \Kompo\Searchbar\Commands\PruneSearchLinksCommand::class,
-            // Run by hand on deploy (--dry-run first): stored states to format v2, or back with --rollback.
-            \Kompo\Searchbar\Commands\MigrateSearchStatesCommand::class,
         ]);
 
         // Only resolved by the scheduler (schedule:run / schedule:list).
