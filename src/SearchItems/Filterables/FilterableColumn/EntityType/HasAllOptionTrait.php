@@ -2,14 +2,15 @@
 
 namespace Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\EntityType;
 
-trait HasAllOptionTrait 
+trait HasAllOptionTrait
 {
     protected $allowAllOption = false;
 
     public function addAllOption($options)
     {
         if($this->allowAllOption) {
-            $options->prepend('filter.all-options', 'all');
+            // Translated here: option labels and pill values are shown as given (the raw key was displayed).
+            $options->prepend(__('filter.all-options'), 'all');
         }
 
         return $options;
@@ -18,7 +19,7 @@ trait HasAllOptionTrait
     public function parseLabelWithAllOption($value, $defaultCallback = null)
     {
         if($value == 'all') {
-            return 'filter.all';
+            return __('filter.all');
         }
 
         return $defaultCallback ? $defaultCallback() : $value;

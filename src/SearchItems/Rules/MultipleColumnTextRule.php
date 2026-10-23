@@ -22,9 +22,25 @@ class MultipleColumnTextRule extends FilterableRule
 
     public function decorateQuery($query)
     {
+        // A pending pill (no value yet) doesn't filter, as for column rules.
+        if ($this->isPendingValue() || !$this->columns) {
+            return $query;
+        }
+
         // If we have full text search enabled and the operator allows it, we use it. Here we don't derivate the responsibility to the operator.
         if($this->usesFullTextSearch()) {
             return $this->fullSearchQuery($query);
+        }
+
+        // "Contains x" in any of the columns, but "does not contain x" in all of them (OR matched almost every row).
+        // An empty (NULL) column doesn't contain it either: NULL NOT LIKE ... is NULL, which dropped those rows.
+        if ($this->operator->negative()) {
+            return $query->where(function ($query) {
+                foreach ($this->columns as $column) {
+                    $query->where(fn($q) => $q->whereNull($column)
+                        ->orWhere(fn($q) => $this->operator->constructQuery($q, $column, $this->queryValue())));
+                }
+            });
         }
 
         return $query->where(
@@ -36,20 +52,27 @@ class MultipleColumnTextRule extends FilterableRule
         );
     }
 
-    protected function getColumnForFullTextSearch()
+    /** One MATCH over every column (their FULLTEXT index is on that same list); qualified by fullSearchQuery(). */
+    protected function fullTextColumns(): array
     {
-        return collect($this->columns)->implode(', ');
+        return array_values((array) $this->columns);
     }
 
     public function renderContent()
     {
+        // Escaped: _Html renders with v-html and the value is user text.
         return _Html(__('filter.with-values.multiple-search', [
-            'columns' => collect($this->getFilterable()->getColumnsOptions())->filter(function($column, $i) {
-                return in_array($i, $this->columns);
-            })->map(fn($col) => _($col))->implode(', '),
+            'columns' => e(collect($this->getFilterable()?->getColumnsOptions())->filter(function($column, $i) {
+                return in_array($i, (array) $this->columns);
+            })->map(fn($col) => __($col))->implode(', ')),
             'operator' => __($this->operator->label()),
-            'value' => $this->value,
+            'value' => e((string) $this->visualValue()),
         ]));
+    }
+
+    public function isPendingValue(): bool
+    {
+        return $this->value === null || (is_string($this->value) && trim($this->value) === '');
     }
 
     public function queryValue()
@@ -73,6 +96,12 @@ class MultipleColumnTextRule extends FilterableRule
             $this->operator,
             $this->value,
         ];
+    }
+
+    /** Also the columns searched (keys of the filter's options, checked again when read back). */
+    public function toData(): array
+    {
+        return parent::toData() + ['columns' => array_values((array) $this->columns)];
     }
 
     // GETTERS

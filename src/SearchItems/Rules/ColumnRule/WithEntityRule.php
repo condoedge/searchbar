@@ -17,14 +17,18 @@ abstract class WithEntityRule extends ColumnRule
          * @var \Kompo\Searchbar\SearchItems\Filterables\FilterableColumn\FilterableColumn $filtSpec
          */
         $filtSpec = $this->getFilterable();
+        $entityType = $filtSpec?->getEntityType();
 
-        if (is_array($this->value)) {
-            return collect($this->value)->map(function ($value) use($filtSpec) {
-                return $filtSpec->getEntityType()->getLabel($value);
-            })->filter()->implode(', ');
+        if (!$entityType) {
+            return parent::visualValue();
         }
 
-        return $filtSpec->getEntityType()->getLabel($this->value) ?: '';
+        if (is_array($this->value)) {
+            // One lookup for all the values (a relation label was one find() per value, on every render).
+            return collect($entityType->getLabels(array_values($this->value)))->filter()->implode(', ');
+        }
+
+        return $entityType->getLabel($this->value) ?: '';
     }
 
     public function toArray()

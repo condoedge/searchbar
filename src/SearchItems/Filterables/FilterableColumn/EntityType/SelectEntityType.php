@@ -23,7 +23,17 @@ class SelectEntityType extends EntityType
 
     public function optionsWithLabels()
     {
-        return $this->calculateOptions();
+        // The "all" flag offered nothing (only relations added the option); unchanged without it.
+        return $this->allowAllOption ? $this->addAllOption(collect($this->calculateOptions())) : $this->calculateOptions();
+    }
+
+    /**
+     * The select's options, labels escaped as RelationEntityType's: Kompo renders them as HTML, and hosts build them
+     * from stored text (SISC: pluck() of the codes and descriptions admins type).
+     */
+    public function optionsForInput(array $selected = [])
+    {
+        return collect($this->optionsWithLabels())->map(fn($label) => is_string($label) ? e($label) : $label);
     }
 
     public function getValue()

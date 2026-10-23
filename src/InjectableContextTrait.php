@@ -15,7 +15,9 @@ trait InjectableContextTrait
     {
         $this->searchContextService = $contextService;
 
-        if(method_exists($this, 'created')) {
+        // Only an item's own created() hook: on Eloquent models (searchables) created() is the static "created" event
+        // registration, which made the SearchService a listener ("not callable" Error on the next insert of that model).
+        if (method_exists($this, 'created') && !(new \ReflectionMethod($this, 'created'))->isStatic()) {
             $this->created($contextService);
         }
 
@@ -25,5 +27,11 @@ trait InjectableContextTrait
     public function getContext()
     {
         return $this->searchContextService;
+    }
+
+    /** False before injectContext() (e.g. a freshly unserialized rule): the typed property can't be read then. */
+    public function hasContext(): bool
+    {
+        return isset($this->searchContextService);
     }
 }

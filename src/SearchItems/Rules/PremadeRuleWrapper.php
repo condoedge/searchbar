@@ -38,6 +38,14 @@ class PremadeRuleWrapper extends Rule
         return $this->rule->decorateQuery($query);
     }
 
+    /** Its pill's name ("Active", "In this team"), else its toggle's description. */
+    public function describe(): ?string
+    {
+        $label = trim(strip_tags((string) __((string) ($this->name ?: $this->description))));
+
+        return $label !== '' ? html_entity_decode($label, ENT_QUOTES | ENT_HTML5) : null;
+    }
+
     public function toArray()
     {
         return $this->rule->toArray();
@@ -50,6 +58,26 @@ class PremadeRuleWrapper extends Rule
         });
     }
 
+    /**
+     * Built the same way as $other: same rule with the same parameters, same labels and flags. A stored copy that isn't
+     * (built for another team, before a label changed) is rebuilt (SearchState::refreshPremadeRules()).
+     */
+    public function sameDefinitionAs(self $other): bool
+    {
+        return get_class($this->rule) === get_class($other->rule)
+            // Loose: a team id stored as a string equals the same id as an int.
+            && $this->toArray() == $other->toArray()
+            && [$this->name, $this->description, $this->removable, $this->inverse, $this->default]
+                === [$other->name, $other->description, $other->removable, $other->inverse, $other->default];
+    }
+
+    /** This premade rule as applied among $rules (the state's rules are addressed by id: see SearchState). */
+    public function findActiveIn($rules): ?Rule
+    {
+        return collect($rules)->first(fn($rule) => $rule instanceof static && $rule->getKey() == $this->getKey());
+    }
+
+    /** @deprecated positions shift: use findActiveIn() and the rule's id. */
     public function getIndexOnRules($rules)
     {
         return $rules->search(function ($rule) {
@@ -65,7 +93,7 @@ class PremadeRuleWrapper extends Rule
     {
         $state = $this->searchContextService->getStore()->getState();
 
-        return $this->getIndexOnRules($state->getRules()) !== false;
+        return $this->findActiveIn($state->getRules()) !== null;
     }
 
     public function getToggle()
@@ -73,7 +101,12 @@ class PremadeRuleWrapper extends Rule
         $active = $this->isActive();
         $value = $this->isInverse() ? !$active : $active;
 
-        return _Toggle($this->getDescription())->name('toggle' . $this->getKey())->value($value)->post('searchstate.toggle-default', ['key' => $this->getKey()])->withAllFormValues()->refresh('navbar-search');
+        // Kompo fields show no loading state: the searchbar lock is the only feedback until the refresh. Its state's
+        // keys in the URL: the toggle sits in the navbar's filters column or the custom filters modal.
+        return _Toggle($this->getDescription())->name('toggle' . $this->getKey())->value($value)
+            ->onChange(fn($e) => $e->run('() => { window.searchbarBusy && searchbarBusy(); }')
+                && $e->post('searchstate.toggle-default', $this->searchContextService->stateParams(['key' => $this->getKey()]))->withAllFormValues()
+                    ->refresh($this->searchContextService->refreshTargets()));
     }
 
     // GETTERS AND SETTERS

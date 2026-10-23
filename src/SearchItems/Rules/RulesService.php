@@ -3,17 +3,22 @@ namespace Kompo\Searchbar\SearchItems\Rules;
 
 class RulesService
 {
-    const RULES_KEY = 'rules';
-
-    public static function retrieveRulesFromStore($store, $key = self::RULES_KEY) 
+    /** A rule for a request parameter (chip links): signed, see searchbarSign(). */
+    public static function encodeRule(Rule $rule): string
     {
-        return collect($store($key))->map(function($rule) {
-            return unserialize($rule);
-        });
+        return searchbarSign(base64_encode(serialize($rule)));
     }
 
     public static function retrieveRuleFromRequest($key)
     {
-        return unserialize(request($key));
+        $payload = searchbarVerify(request($key));
+
+        if ($payload === null) {
+            return null;
+        }
+
+        $rule = unserialize(base64_decode($payload));
+
+        return $rule instanceof Rule ? $rule : null;
     }
 }
